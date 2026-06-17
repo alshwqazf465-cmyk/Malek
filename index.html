@@ -3,718 +3,1367 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>المنهج الذهبي لصيانة الهواتف - أندرويد</title>
+    <title>المنهج العملي الأسطوري لصيانة الهواتف - أندرويد</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>">
 </head>
 <body>
-    <!-- زر القائمة الجانبي للجوال -->
-    <button id="menu-toggle" class="menu-toggle">☰ الفصول</button>
 
-    <!-- القائمة الجانبية -->
+    <!-- ========== زر القائمة للجوال ========== -->
+    <button id="menu-toggle" class="menu-toggle">☰ قائمة الفصول</button>
+
+    <!-- ========== القائمة الجانبية ========== -->
     <nav id="sidebar" class="sidebar">
         <div class="sidebar-header">
-            <h2>📘 المنهج الذهبي</h2>
-            <p>صيانة هواتف أندرويد</p>
+            <h2>📱 المنهج الأسطوري</h2>
+            <p>صيانة هواتف أندرويد - عملي 100%</p>
+            <p style="font-size:0.7em;color:#ff9800;">إعداد: مالك 🌹</p>
         </div>
         <ul class="chapter-list">
-            <li class="active"><a href="#chapter1">📖 الفصل ١: قاموس المصطلحات</a></li>
-            <li><a href="#chapter2">🧱 الفصل ٢: تشريح نظام أندرويد</a></li>
-            <li><a href="#chapter3">🔌 الفصل ٣: أداة ADB</a></li>
-            <li><a href="#chapter4">⚡ الفصل ٤: أداة Fastboot</a></li>
-            <li><a href="#chapter5">📶 الفصل ٥: مشاكل الشبكة والـ IMEI</a></li>
-            <li><a href="#chapter6">🔄 الفصل ٦: مشاكل التشغيل والبطارية</a></li>
-            <li><a href="#chapter7">📦 الفصل ٧: الرومات وأنواعها والتفليش</a></li>
-            <li><a href="#chapter8">⚡ الفصل ٨: أساسيات الهاردوير</a></li>
-            <li><a href="#chapter9">🧰 الفصل ٩: أدوات الصيانة المادية</a></li>
-            <li><a href="#chapter10">🗺️ الفصل ١٠: مخططات الأعطال الشائعة</a></li>
+            <li class="active"><a href="#ch1">١- استقبال الهاتف من العميل</a></li>
+            <li><a href="#ch2">٢- الفحص البصري الخارجي</a></li>
+            <li><a href="#ch3">٣- اختبار التشغيل والبطارية</a></li>
+            <li><a href="#ch4">٤- اختبار الشاشة واللمس</a></li>
+            <li><a href="#ch5">٥- اختبار الأزرار والحساسات</a></li>
+            <li><a href="#ch6">٦- اختبار الصوتيات</a></li>
+            <li><a href="#ch7">٧- اختبار الكاميرات</a></li>
+            <li><a href="#ch8">٨- اختبار الشبكة والإتصال</a></li>
+            <li><a href="#ch9">٩- التشخيص عبر ADB</a></li>
+            <li><a href="#ch10">١٠- التشخيص عبر Fastboot</a></li>
+            <li><a href="#ch11">١١- فحص البوردة بالملتيميتر</a></li>
+            <li><a href="#ch12">١٢- مخططات الأعطال السريعة</a></li>
         </ul>
-        <div class="sidebar-footer">
-            <button id="download-pdf" class="btn-pdf">📥 تحميل PDF</button>
-        </div>
     </nav>
 
-    <!-- المحتوى الرئيسي -->
+    <!-- ========== المحتوى الرئيسي ========== -->
     <main id="main-content" class="main-content">
-        <!-- هيدر الصفحة -->
+
+        <!-- ========== هيدر الصفحة ========== -->
         <header class="page-header">
-            <h1>📱 المنهج الذهبي لصيانة الهواتف</h1>
-            <p class="subtitle">أندرويد - سوفتوير وهاردوير - بالعربي</p>
+            <h1>📱 المنهج العملي الأسطوري لصيانة الهواتف</h1>
+            <p class="subtitle">أندرويد - فحص، تشخيص، إصلاح - خطوة بخطوة مع شرح كل أمر</p>
             <div class="header-badges">
-                <span class="badge">✅ أندرويد فقط</span>
                 <span class="badge">✅ Samsung</span>
                 <span class="badge">✅ Xiaomi</span>
                 <span class="badge">✅ OnePlus</span>
                 <span class="badge">✅ Huawei</span>
-                <span class="badge">✅ صور توضيحية</span>
+                <span class="badge">✅ ADB</span>
+                <span class="badge">✅ Fastboot</span>
+                <span class="badge">✅ ملتيميتر</span>
             </div>
         </header>
 
-        <!-- ========== الفصل الأول ========== -->
-        <section id="chapter1" class="chapter">
+        <!-- ==================== الفصل الأول ==================== -->
+        <section id="ch1" class="chapter">
             <h2 class="chapter-title">
                 <span class="chapter-number">١</span>
-                قاموس المصطلحات (عربي - إنجليزي)
+                استقبال الهاتف من العميل – الأسئلة الذهبية
             </h2>
-            
-            <div class="search-box">
-                <input type="text" id="dict-search" placeholder="🔍 ابحث عن مصطلح..." class="search-input">
+
+            <div class="note-box warning">
+                <strong>⚠️ قاعدة ذهبية:</strong> 50% من التشخيص يتم قبل أن تفتح الهاتف! الأسئلة الصحيحة توفر عليك ساعات من العمل الضائع.
             </div>
 
+            <h3>🗣️ الأسئلة الذهبية العشرة (اسأل قبل أن تلمس)</h3>
             <div class="table-responsive">
-                <table class="dict-table" id="dict-table">
+                <table class="dict-table">
                     <thead>
                         <tr>
-                            <th>المصطلح (English)</th>
-                            <th>النطق</th>
-                            <th>المعنى (العربية)</th>
+                            <th>#</th>
+                            <th>السؤال</th>
+                            <th>لماذا أسأل؟ (الهدف التشخيصي)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><strong>Firmware</strong></td>
-                            <td>فيرموير</td>
-                            <td>البرنامج الثابت (النظام المدمج)</td>
+                            <td>١</td>
+                            <td><strong>ما المشكلة بالضبط؟</strong></td>
+                            <td>تحديد العطل الأساسي. لا تعتمد على "الهاتف خربان"، أصر على وصف دقيق.</td>
                         </tr>
                         <tr>
-                            <td><strong>ROM</strong></td>
-                            <td>روم</td>
-                            <td>نظام التشغيل المخزن (ذاكرة القراءة فقط)</td>
+                            <td>٢</td>
+                            <td><strong>متى بدأت المشكلة؟</strong></td>
+                            <td>مفاجئ = سقوط أو شورت. تدريجي = تآكل قطعة أو بطارية.</td>
                         </tr>
                         <tr>
-                            <td><strong>Bootloader</strong></td>
-                            <td>بوت لودر</td>
-                            <td>مُحمّل الإقلاع - بوابة تشغيل الهاتف</td>
+                            <td>٣</td>
+                            <td><strong>ماذا كنت تفعل عندما حدثت؟</strong></td>
+                            <td>تحديث؟ لعبة ثقيلة؟ شحن؟ تعرض للماء؟ كل سيناريو له تشخيصه.</td>
                         </tr>
                         <tr>
-                            <td><strong>Recovery</strong></td>
-                            <td>ريكفري</td>
-                            <td>وضع الاسترداد - قائمة الإصلاح</td>
+                            <td>٤</td>
+                            <td><strong>هل تعرض لسقوط قوي؟</strong></td>
+                            <td>اشتباه Cold Solder (لحام بارد) تحت المعالج أو الآي سي.</td>
                         </tr>
                         <tr>
-                            <td><strong>Fastboot</strong></td>
-                            <td>فاست بوت</td>
-                            <td>وضع التحميل السريع للتفليش</td>
+                            <td>٥</td>
+                            <td><strong>هل تعرض لماء أو رطوبة؟</strong></td>
+                            <td>تآكل، شورت، صدأ. لا تشحنه أبداً قبل الفتح والتنظيف.</td>
                         </tr>
                         <tr>
-                            <td><strong>ADB</strong></td>
-                            <td>أي دي بي</td>
-                            <td>جسر تصحيح أخطاء أندرويد</td>
+                            <td>٦</td>
+                            <td><strong>هل تم تغيير أي قطعة سابقاً؟</strong></td>
+                            <td>شاشة، بطارية، بورت. القطع التجارية قد تكون سبباً جديداً.</td>
                         </tr>
                         <tr>
-                            <td><strong>Flash</strong></td>
-                            <td>فلاش</td>
-                            <td>كتابة/تحميل النظام على الذاكرة</td>
+                            <td>٧</td>
+                            <td><strong>هل حاولت إصلاحه بنفسك أو عند فني آخر؟</strong></td>
+                            <td>اكتشاف عبث داخلي: براغي ناقصة، فيصلات مقطوعة، لحام رديء.</td>
                         </tr>
                         <tr>
-                            <td><strong>Wipe</strong></td>
-                            <td>وايب</td>
-                            <td>مسح البيانات أو الكاش</td>
+                            <td>٨</td>
+                            <td><strong>هل ظهرت رسائل خطأ معينة؟</strong></td>
+                            <td>مثلاً "الشبكة غير متوفرة" أو "ارتفاع حرارة الهاتف". رسالة محددة = تشخيص محدد.</td>
                         </tr>
                         <tr>
-                            <td><strong>Cache</strong></td>
-                            <td>كاش</td>
-                            <td>ذاكرة مخبأة - ملفات مؤقتة</td>
+                            <td>٩</td>
+                            <td><strong>هل تسخن منطقة معينة عند اللمس؟</strong></td>
+                            <td>تحديد الآي سي التالف. أعلى الكاميرا = شبكة. أسفل = شحن. الوسط = معالج.</td>
                         </tr>
                         <tr>
-                            <td><strong>Partition</strong></td>
-                            <td>بارتيشن</td>
-                            <td>قسم من أقسام الذاكرة</td>
+                            <td>١٠</td>
+                            <td><strong>هل تمانع مسح البيانات بالكامل؟</strong></td>
+                            <td>خذ إذن قبل أي Wipe. وإلا أنت مسؤول عن البيانات المفقودة.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>📋 نموذج استقبال جهاز (اطبعه وعلقه في محلك)</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>📋 نموذج استقبال جهاز للطباعة</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre>
+============================================
+        نموذج استقبال جهاز - ورشة الصيانة
+============================================
+اسم العميل: __________________  رقم الجوال: __________________
+نوع الهاتف: __________________  الموديل: __________________
+IMEI 1: __________________  IMEI 2: __________________
+المشكلة بالتفصيل: __________________________________________
+____________________________________________________________
+متى بدأت؟ _________________________________________________
+هل تعرض لسقوط؟ نعم / لا     هل تعرض لماء؟ نعم / لا
+هل تم فتحه سابقاً؟ نعم / لا     هل به كسر ظاهر؟ نعم / لا
+كلمة سر الهاتف: __________________
+حساب جوجل (ايميل): __________________
+تم إعلام العميل أن البيانات قد تمسح: نعم / لا
+توقيع العميل: __________________  التاريخ: ____/____/____
+============================================
+</pre>
+            </div>
+        </section>
+
+        <!-- ==================== الفصل الثاني ==================== -->
+        <section id="ch2" class="chapter">
+            <h2 class="chapter-title">
+                <span class="chapter-number">٢</span>
+                الفحص البصري الخارجي – ماذا ترى قبل أن تفتح؟
+            </h2>
+
+            <div class="note-box tip">
+                <strong>💡 الأدوات المطلوبة:</strong> عينك، عدسة مكبرة، كشاف ضوء أبيض، فرشاة ناعمة، كحول أيزوبروبيل 99%.
+            </div>
+
+            <h3>🔍 قائمة الفحص البصري – 10 نقاط تفحصها</h3>
+            <div class="table-responsive">
+                <table class="dict-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>العنصر</th>
+                            <th>ماذا تفحص؟</th>
+                            <th>علامات الخطر (Red Flags)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>١</td>
+                            <td><strong>الهيكل والإطار</strong></td>
+                            <td>انحناءات، فراغات بين الغطاء والجسم</td>
+                            <td>انحناء = سقوط قوي = Cold Solder تحت المعالج أو الرام</td>
                         </tr>
                         <tr>
-                            <td><strong>Kernel</strong></td>
-                            <td>كيرنل</td>
-                            <td>النواة - همزة الوصل بين النظام والهاردوير</td>
+                            <td>٢</td>
+                            <td><strong>الشاشة</strong></td>
+                            <td>كسور، خدوش عميقة، بقع</td>
+                            <td>بقعة بنفسجية/سوداء = ضغط داخلي على LCD = تغيير شاشة</td>
                         </tr>
                         <tr>
-                            <td><strong>Baseband</strong></td>
-                            <td>بيس باند</td>
-                            <td>حزمة الأساس - برنامج المودم والراديو</td>
+                            <td>٣</td>
+                            <td><strong>عدسة الكاميرا</strong></td>
+                            <td>مكسورة؟ غبار خلف العدسة؟</td>
+                            <td>غبار خلف العدسة = الهاتف فُتح سابقاً ولم يُغلق جيداً</td>
                         </tr>
                         <tr>
-                            <td><strong>Modem</strong></td>
-                            <td>مودم</td>
-                            <td>المودم - مسؤول الشبكة والاتصال</td>
+                            <td>٤</td>
+                            <td><strong>بورت الشحن</strong></td>
+                            <td>أوساخ، دبابيس معوجة، صدأ</td>
+                            <td>الدبوس الأوسط مكسور = تغيير البورت بالكامل</td>
                         </tr>
                         <tr>
-                            <td><strong>IMEI</strong></td>
-                            <td>آي إم إي آي</td>
-                            <td>المعرف الدولي للجهاز المحمول</td>
+                            <td>٥</td>
+                            <td><strong>فتحة المايك السفلية</strong></td>
+                            <td>مسدودة بغبار أو طين؟</td>
+                            <td>انسداد = صوت مايك ضعيف أو مقطوع</td>
                         </tr>
                         <tr>
-                            <td><strong>EFS</strong></td>
-                            <td>إي إف إس</td>
-                            <td>نظام الملفات المشفرة - يحمل IMEI</td>
+                            <td>٦</td>
+                            <td><strong>شبكة السماعة الأمامية</strong></td>
+                            <td>مسدودة؟</td>
+                            <td>انسداد = صوت سماعة الأذن منخفض جداً</td>
                         </tr>
                         <tr>
-                            <td><strong>NVRAM</strong></td>
-                            <td>إن في رام</td>
-                            <td>ذاكرة غير متطايرة لإعدادات الشبكة</td>
+                            <td>٧</td>
+                            <td><strong>حساس التقارب</strong></td>
+                            <td>غبار على الزجاج فوق الحساس؟</td>
+                            <td>غبار = الشاشة تطفى أثناء المكالمة ولا ترجع</td>
                         </tr>
                         <tr>
-                            <td><strong>QCN</strong></td>
-                            <td>كيو سي إن</td>
-                            <td>ملف معايرة الشبكة (كوالكوم)</td>
+                            <td>٨</td>
+                            <td><strong>مؤشر الرطوبة LDI</strong></td>
+                            <td>لونه؟ (أبيض أم أحمر)</td>
+                            <td>أحمر/وردي = دخول ماء! لا تشحن الهاتف. افتح ونظف فوراً.</td>
                         </tr>
                         <tr>
-                            <td><strong>Root</strong></td>
-                            <td>روت</td>
-                            <td>صلاحيات الجذر - وصول كامل للنظام</td>
+                            <td>٩</td>
+                            <td><strong>مسامير الهيكل</strong></td>
+                            <td>موجودة؟ عليها خدوش؟</td>
+                            <td>مسامير مفقودة أو مخدوشة = الهاتف فُتح سابقاً</td>
                         </tr>
                         <tr>
-                            <td><strong>Brick</strong></td>
-                            <td>بريك</td>
-                            <td>هاتف ميت برمجياً (طوبة)</td>
+                            <td>١٠</td>
+                            <td><strong>درج الشريحة</strong></td>
+                            <td>موجود؟ مطابق للجهاز؟</td>
+                            <td>درج غير أصلي قد يسبب مشاكل في قراءة SIM</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>💧 فحص دخول الماء – 4 خطوات</h3>
+            <ol class="steps-list">
+                <li><strong>ابحث عن مؤشر الرطوبة (LDI):</strong>
+                    <ul>
+                        <li><strong>Samsung:</strong> داخل درج الشريحة (أبيض = سليم، أحمر/بنفسجي = ماء)</li>
+                        <li><strong>Xiaomi:</strong> غالباً على البراغي الداخلية أو البطارية</li>
+                        <li><strong>OnePlus:</strong> داخل درج الشريحة</li>
+                        <li><strong>Huawei:</strong> خلف الغطاء الخلفي</li>
+                    </ul>
+                </li>
+                <li><strong>إذا وجدت أثر ماء:</strong> لا تشحن الهاتف أبداً!</li>
+                <li><strong>افتح الهاتف فوراً</strong> وافصل فيصل البطارية</li>
+                <li><strong>نظف البوردة</strong> بفرشاة + كحول أيزوبروبيل 99% وجفف جيداً</li>
+            </ol>
+        </section>
+
+        <!-- ==================== الفصل الثالث ==================== -->
+        <section id="ch3" class="chapter">
+            <h2 class="chapter-title">
+                <span class="chapter-number">٣</span>
+                اختبار التشغيل والبطارية – هل يشتغل؟
+            </h2>
+
+            <div class="note-box warning">
+                <strong>⚠️ تذكر:</strong> أول شيء تفحصه في أي هاتف لا يشتغل هو البطارية والبورت، وليس البوردة مباشرة.
+            </div>
+
+            <h3>🪫 سلم فحص الهاتف الميت تماماً (7 خطوات)</h3>
+            <div class="flow-chart">
+                <div class="flow-step">
+                    <span class="flow-num">1</span>
+                    <strong>وصله بشاحن أصلي لمدة 30 دقيقة</strong>
+                    <span class="flow-result fail">لا توجد علامة حياة ← انتقل للخطوة 2</span>
+                    <span class="flow-result success">يشتغل ← المشكلة كانت بطارية فارغة تماماً</span>
+                </div>
+                <div class="flow-step">
+                    <span class="flow-num">2</span>
+                    <strong>جرب سلك وشاحن آخر معروفين</strong>
+                    <span class="flow-result fail">لا يستجيب ← انتقل للخطوة 3</span>
+                    <span class="flow-result success">يشتغل ← السلك أو الشاحن القديم تالف</span>
+                </div>
+                <div class="flow-step">
+                    <span class="flow-num">3</span>
+                    <strong>نظف بورت الشحن</strong> (فرشاة + كحول + هواء مضغوط)
+                    <span class="flow-result fail">لا يستجيب ← انتقل للخطوة 4</span>
+                    <span class="flow-result success">يشتغل ← البورت كان مسدوداً بالغبار</span>
+                </div>
+                <div class="flow-step">
+                    <span class="flow-num">4</span>
+                    <strong>جرب الشحن اللاسلكي</strong> (إذا كان الهاتف يدعمه)
+                    <span class="flow-result fail">لا يستجيب ← انتقل للخطوة 5</span>
+                    <span class="flow-result success">يشحن ← بورت الشحن تالف ويحتاج تغيير</span>
+                </div>
+                <div class="flow-step">
+                    <span class="flow-num">5</span>
+                    <strong>افتح الهاتف وافصل فيصل البطارية</strong>
+                    <span class="flow-result">قس البطارية بالملتيميتر مباشرة</span>
+                </div>
+                <div class="flow-step">
+                    <span class="flow-num">6</span>
+                    <strong>البطارية أقل من 3.3V:</strong> اشحنها بباور سبلاي خارجي على 4V و 0.5A
+                    <span class="flow-result fail">لا تشحن ← البطارية تالفة، استبدلها</span>
+                    <span class="flow-result success">تشحن ← أعد توصيلها وجرب التشغيل</span>
+                </div>
+                <div class="flow-step">
+                    <span class="flow-num">7</span>
+                    <strong>البطارية سليمة (3.7V-4.2V) والهاتف لا يشتغل:</strong>
+                    <span class="flow-result fail">المشكلة في البوردة: IC شحن، PMIC، أو شورت</span>
+                </div>
+            </div>
+
+            <!-- أمر ADB 1 -->
+            <h3>📱 الأمر الأسطوري #1: فحص صحة البطارية عبر ADB</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>🔋 الأمر: فحص البطارية تفصيلياً</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb shell dumpsys battery</code></pre>
+            </div>
+            <div class="explain-box">
+                <h4>🧠 شرح الأمر وماذا يصلح:</h4>
+                <ul>
+                    <li><strong>ماذا يفعل هذا الأمر؟</strong> يعرض لك تقريراً كاملاً عن حالة البطارية من داخل نظام أندرويد.</li>
+                    <li><strong>متى تستخدمه؟</strong> عندما يشتكي العميل من "البطارية تخلص بسرعة" أو "الهاتف يفصل فجأة" أو "لا يشحن".</li>
+                    <li><strong>كيف تقرأ النتيجة؟</strong> انظر إلى هذه القيم:
+                        <ul>
+                            <li><code>health: 2</code> = البطارية سليمة ✅</li>
+                            <li><code>health: 1</code> = حالة غير معروفة ⚠️</li>
+                            <li><code>health: 3</code> = حرارة زائدة 🔥 (افصل الشاحن)</li>
+                            <li><code>health: 4</code> = البطارية تالفة ❌ (استبدلها)</li>
+                            <li><code>health: 5</code> = جهد زائد ⚡ (خطر!)</li>
+                            <li><code>level:</code> نسبة الشحن الحالية</li>
+                            <li><code>temperature: 350</code> = 35 درجة مئوية (طبيعي)</li>
+                            <li><code>temperature: 450+</code> = خطر! حرارة زائدة</li>
+                        </ul>
+                    </li>
+                    <li><strong>ماذا تصلح بهذا الأمر؟</strong> توفر على نفسك فتح الهاتف. تعرف في 3 ثوانٍ إذا كانت البطارية هي المشكلة أم لا.</li>
+                </ul>
+            </div>
+
+            <!-- أمر ADB 2 -->
+            <h3>📱 الأمر الأسطوري #2: معرفة عدد دورات شحن البطارية</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>🔋 الأمر: عدد دورات الشحن</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb shell cat /sys/class/power_supply/battery/cycle_count</code></pre>
+            </div>
+            <div class="explain-box">
+                <h4>🧠 شرح الأمر وماذا يصلح:</h4>
+                <ul>
+                    <li><strong>ماذا يفعل؟</strong> يقرأ عداد دورات الشحن الكاملة التي مرت على البطارية.</li>
+                    <li><strong>كيف تقرأ؟</strong> الرقم الظاهر = عدد الدورات. فوق 500 دورة = البطارية قاربت نهاية عمرها الافتراضي وتحتاج استبدال.</li>
+                    <li><strong>متى تستخدمه؟</strong> عندما يقول العميل "بطاريتي ما تعمر". هذا الرقم دليل قاطع.</li>
+                </ul>
+            </div>
+
+            <!-- أمر ADB 3 -->
+            <h3>📱 الأمر الأسطوري #3: معرفة السعة الفعلية المتبقية</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>🔋 الأمر: السعة الفعلية مقابل السعة الأصلية</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb shell cat /sys/class/power_supply/battery/charge_full
+adb shell cat /sys/class/power_supply/battery/charge_full_design</code></pre>
+            </div>
+            <div class="explain-box">
+                <h4>🧠 شرح الأمر وماذا يصلح:</h4>
+                <ul>
+                    <li><strong>ماذا يفعل؟</strong>
+                        <ul>
+                            <li><code>charge_full_design</code> = السعة الأصلية التي صممت عليها البطارية (مثلاً 4500 مللي أمبير)</li>
+                            <li><code>charge_full</code> = السعة الفعلية الحالية التي تستوعبها (مثلاً 3200 مللي أمبير)</li>
+                        </ul>
+                    </li>
+                    <li><strong>كيف تحسب التآكل؟</strong> اقسم <code>charge_full</code> على <code>charge_full_design</code> واضرب في 100. مثلاً: 3200 ÷ 4500 = 71% (فقدت 29% من عمرها).</li>
+                    <li><strong>ماذا تصلح؟</strong> دليل لا يقبل الجدل أمام العميل أن بطاريته تحتاج تغيير.</li>
+                </ul>
+            </div>
+
+            <h3>⚡ قياس البطارية بالملتيميتر (3 خطوات)</h3>
+            <ol class="steps-list">
+                <li>اضبط الملتيميتر على <strong>DC 20V</strong></li>
+                <li>الطرف الأحمر على <strong>+</strong> والأسود على <strong>-</strong></li>
+                <li>القراءة:
+                    <ul>
+                        <li><strong>3.7V - 4.2V</strong> = سليمة</li>
+                        <li><strong>3.3V - 3.6V</strong> = تحتاج شحن خارجي</li>
+                        <li><strong>أقل من 3.3V</strong> = فارغة بالكامل أو تالفة</li>
+                        <li><strong>أكثر من 4.3V</strong> = خطر! منتفخة</li>
+                        <li><strong>0V</strong> = دائرة حماية البطارية مفصولة أو البطارية ميته</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h3>🔌 فحص بورت الشحن بالملتيميتر (شورت)</h3>
+            <ol class="steps-list">
+                <li>اضبط الملتيميتر على <strong>Continuity / Buzzer (الجرس)</strong></li>
+                <li>ضع الطرف الأسود على <strong>GND</strong> (الهيكل المعدني للهاتف)</li>
+                <li>ضع الطرف الأحمر على كل دبوس في بورت الشحن واحداً واحداً</li>
+                <li><strong>إذا سمعت صفارة مستمرة</strong> على دبوس VCC أو Data = <strong>شورت في البورت! يحتاج تغيير.</strong></li>
+            </ol>
+        </section>
+
+        <!-- ==================== الفصل الرابع ==================== -->
+        <section id="ch4" class="chapter">
+            <h2 class="chapter-title">
+                <span class="chapter-number">٤</span>
+                اختبار الشاشة واللمس – هل الصورة واللمس سليمان؟
+            </h2>
+
+            <h3>🖥️ قاموس أعطال الشاشة واللمس</h3>
+            <div class="table-responsive">
+                <table class="dict-table">
+                    <thead>
+                        <tr>
+                            <th>العرض الذي يراه العميل</th>
+                            <th>السبب المحتمل</th>
+                            <th>الحل</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>شاشة سوداء والهاتف يشتغل (يسمع صوت)</td><td>شاشة تالفة أو فيصل الشاشة مفصول</td><td>أعد توصيل الفيصل. جرب شاشة معروفة.</td></tr>
+                        <tr><td>خطوط عمودية أو أفقية ثابتة</td><td>كسر في LCD أو الفيصل</td><td>تغيير الشاشة بالكامل</td></tr>
+                        <tr><td>بقعة سوداء أو بنفسجية</td><td>ضغط شديد على LCD</td><td>تغيير الشاشة بالكامل</td></tr>
+                        <tr><td>إضاءة ضعيفة جداً (ترى الصورة بصعوبة)</td><td>دائرة الإضاءة الخلفية (Backlight IC)</td><td>فحص IC الإضاءة أو تغيير الشاشة</td></tr>
+                        <tr><td>اللمس لا يستجيب في منطقة معينة</td><td>كسر في طبقة الديجتايزر</td><td>تغيير الشاشة</td></tr>
+                        <tr><td>Ghost Touch (لمس شبح - يضغط وحده)</td><td>شاشة تجارية رديئة أو فيصل تالف</td><td>تغيير الشاشة</td></tr>
+                        <tr><td>ألوان باهتة أو صورة محروقة (Burn-in)</td><td>شاشة AMOLED منتهية العمر</td><td>تغيير الشاشة</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>📱 الأكواد السرية لاختبار الشاشة حسب الماركة</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>📱 أكواد اختبار الشاشة – كل الماركات</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code># Samsung – القائمة الكاملة (شاشة، لمس، حساسات، كاميرات):
+*#0*#
+
+# Xiaomi – قائمة CIT (اختبار المصنع):
+*#*#6484#*#*
+
+# Huawei – قائمة Project Menu:
+*#*#2846579#*#*
+
+# عام (لبعض الأجهزة) – اختبار اللمس:
+*#*#2664#*#*
+
+# عام – اختبار البكسلات (RGB):
+*#*#0*#*#*</code></pre>
+            </div>
+
+            <div class="explain-box">
+                <h4>🧠 شرح الأكواد ومتى تستخدمها:</h4>
+                <ul>
+                    <li><strong>ماذا تفعل هذه الأكواد؟</strong> تفتح قائمة اختبار مصنعية تسمح لك بفحص كل بكسل في الشاشة وكل نقطة في اللمس.</li>
+                    <li><strong>متى تستخدمها؟</strong> عند الشك في وجود بكسلات ميته، أو اللمس لا يعمل في منطقة، أو ألوان الشاشة غير طبيعية.</li>
+                    <li><strong>كيف تختبر؟</strong> افتح الكود، ستظهر ألوان متتالية. انظر بعينك: أي نقطة لا تغير لونها = بكسل ميت. في اختبار اللمس، ارسم بإصبعك على كل الشاشة وتأكد أنه لا توجد منطقة فارغة.</li>
+                </ul>
+            </div>
+
+            <!-- أمر ADB 4 -->
+            <h3>📱 الأمر الأسطوري #4: إظهار نقاط اللمس على الشاشة</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>👆 الأمر: إظهار اللمس على الشاشة</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code># تفعيل إظهار نقاط اللمس:
+adb shell settings put system show_touches 1
+
+# إيقاف إظهار نقاط اللمس:
+adb shell settings put system show_touches 0</code></pre>
+            </div>
+            <div class="explain-box">
+                <h4>🧠 شرح الأمر وماذا يصلح:</h4>
+                <ul>
+                    <li><strong>ماذا يفعل؟</strong> يُظهر دائرة بيضاء صغيرة على الشاشة في كل مكان تلمسه بإصبعك.</li>
+                    <li><strong>متى تستخدمه؟</strong> عندما تشك في Ghost Touch أو أن منطقة من الشاشة لا تستجيب. هذا الأمر يفضح الخلل فوراً.</li>
+                    <li><strong>ماذا تصلح؟</strong> تثبت للعميل أن اللمس يضغط وحده (Ghost Touch) أو أن هناك منطقة ميته في الشاشة.</li>
+                </ul>
+            </div>
+
+            <!-- أمر ADB 5 -->
+            <h3>📱 الأمر الأسطوري #5: معرفة دقة الشاشة وكثافتها</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>📐 الأمر: دقة وكثافة الشاشة</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb shell wm size
+adb shell wm density</code></pre>
+            </div>
+            <div class="explain-box">
+                <h4>🧠 شرح الأمر وماذا يصلح:</h4>
+                <ul>
+                    <li><strong>ماذا يفعل؟</strong> يعرض دقة الشاشة (مثلاً 1080x2400) وكثافتها (مثلاً 440 dpi).</li>
+                    <li><strong>متى تستخدمه؟</strong> بعد تغيير شاشة، للتأكد أن الدقة مضبوطة. بعض الشاشات التجارية تغير الدقة وتسبب مشاكل.</li>
+                    <li><strong>ماذا تصلح؟</strong> إذا الدقة مختلفة عن الأصلية، يمكنك إعادتها بالأمر: <code>adb shell wm size 1080x2400</code></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ==================== الفصل الخامس ==================== -->
+        <section id="ch5" class="chapter">
+            <h2 class="chapter-title">
+                <span class="chapter-number">٥</span>
+                اختبار الأزرار والحساسات – هل الأزرار تشتغل؟
+            </h2>
+
+            <h3>🔘 قائمة فحص الأزرار والحساسات</h3>
+            <div class="table-responsive">
+                <table class="dict-table">
+                    <thead>
+                        <tr>
+                            <th>العنصر</th>
+                            <th>كيف تفحصه؟</th>
+                            <th>العطل المحتمل</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>زر التشغيل</strong></td>
+                            <td>اضغط مرة (يقفل/يفتح). اضغط مطولاً (قائمة الإطفاء).</td>
+                            <td>لا يستجيب = الفيصل الداخلي تالف أو الزر مكسور</td>
                         </tr>
                         <tr>
-                            <td><strong>Bootloop</strong></td>
-                            <td>بوت لوب</td>
-                            <td>حلقة الإقلاع - شعار متكرر</td>
+                            <td><strong>أزرار الصوت</strong></td>
+                            <td>ارفع وخفض الصوت. يظهر مؤشر على الشاشة.</td>
+                            <td>لا يستجيب = الفيصل مفصول أو الزر تالف</td>
                         </tr>
                         <tr>
-                            <td><strong>OEM</strong></td>
-                            <td>أو إي إم</td>
-                            <td>الشركة المصنعة الأصلية</td>
+                            <td><strong>البصمة</strong></td>
+                            <td>سجل بصمة جديدة وجربها 3 مرات.</td>
+                            <td>لا تقرأ = السنسور تالف أو الفيصل مفصول</td>
                         </tr>
                         <tr>
-                            <td><strong>FRP</strong></td>
-                            <td>إف آر بي</td>
-                            <td>حماية إعادة ضبط المصنع</td>
+                            <td><strong>حساس التقارب</strong></td>
+                            <td>افتح تطبيق الهاتف. غطِّ أعلى الشاشة بيدك.</td>
+                            <td>لا تطفئ الشاشة = الحساس تالف أو عليه غبار</td>
                         </tr>
                         <tr>
-                            <td><strong>PMIC</strong></td>
-                            <td>بي إم آي سي</td>
-                            <td>دارة إدارة الطاقة المتكاملة</td>
+                            <td><strong>حساس الضوء</strong></td>
+                            <td>فعل السطوع التلقائي. وجّه كشافاً للحساس.</td>
+                            <td>لا يتغير = الحساس تالف</td>
                         </tr>
                         <tr>
-                            <td><strong>IC</strong></td>
-                            <td>آي سي</td>
-                            <td>دارة متكاملة - شريحة</td>
+                            <td><strong>الجيروسكوب</strong></td>
+                            <td>افتح يوتيوب. قلب الهاتف أفقياً.</td>
+                            <td>لا يدور = Gyro تالف</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- أمر ADB 6 -->
+            <h3>📱 الأمر الأسطوري #6: فحص كل الحساسات دفعة واحدة</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>📡 الأمر: فحص كل حساسات الهاتف</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb shell dumpsys sensorservice</code></pre>
+            </div>
+            <div class="explain-box">
+                <h4>🧠 شرح الأمر وماذا يصلح:</h4>
+                <ul>
+                    <li><strong>ماذا يفعل؟</strong> يعرض قائمة بكل حساسات الهاتف (Accelerometer, Gyroscope, Proximity, Light, Fingerprint...)، وحالتها، وآخر قراءة.</li>
+                    <li><strong>متى تستخدمه؟</strong> عند الشك في أي حساس. يظهر لك إذا كان الحساس موجوداً ويقرأ بيانات.</li>
+                    <li><strong>ماذا تصلح؟</strong> تكتشف في ثوانٍ إذا كان الحساس مفصولاً أو تالفاً أو يعطي بيانات خاطئة.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ==================== الفصل السادس ==================== -->
+        <section id="ch6" class="chapter">
+            <h2 class="chapter-title">
+                <span class="chapter-number">٦</span>
+                اختبار الصوتيات – المايك والسماعات
+            </h2>
+
+            <h3>🎤 سلم فحص الصوتيات</h3>
+            <div class="table-responsive">
+                <table class="dict-table">
+                    <thead>
+                        <tr>
+                            <th>المكون</th>
+                            <th>كيف تفحص؟</th>
+                            <th>العطل الشائع</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>سماعة الأذن</strong></td>
+                            <td>اتصل على رقم. استمع للطرف الآخر.</td>
+                            <td>صوت مشوش = السماعة تالفة أو فيها ماء</td>
                         </tr>
                         <tr>
-                            <td><strong>Short Circuit</strong></td>
-                            <td>شورت سيركت</td>
-                            <td>قفلة/تماس كهربائي</td>
+                            <td><strong>السماعة الخارجية</strong></td>
+                            <td>شغل موسيقى. فعل مكبر الصوت.</td>
+                            <td>لا صوت = السماعة تالفة أو IC Audio</td>
                         </tr>
                         <tr>
-                            <td><strong>Voltage</strong></td>
-                            <td>فولتية</td>
-                            <td>جهد كهربائي (يقاس بالفولت)</td>
+                            <td><strong>المايك السفلي</strong></td>
+                            <td>سجل مذكرة صوتية. استمع للتسجيل.</td>
+                            <td>صوت منخفض = فتحة المايك مسدودة</td>
                         </tr>
                         <tr>
-                            <td><strong>Capacitor</strong></td>
-                            <td>كاباستر</td>
-                            <td>مكثف - يخزن الشحنة الكهربائية</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Resistor</strong></td>
-                            <td>ريزستور</td>
-                            <td>مقاومة - تقلل التيار أو الجهد</td>
+                            <td><strong>مايك المكالمات</strong></td>
+                            <td>اتصل بشخص. اسأله: "هل تسمعني بوضوح؟"</td>
+                            <td>لا يسمعك = مايك المكالمات تالف</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
             <div class="note-box tip">
-                <strong>💡 نصيحة:</strong> اقرأ هذا القاموس مرة كل يوم، هذه هي لغتك الجديدة في عالم الصيانة.
+                <strong>💡 نصيحة المليون:</strong> 90% من شكاوى "المايك لا يعمل في المكالمات" سببها <strong>فتحة المايك السفلية مسدودة بالغبار!</strong> نظفها بإبرة رفيعة جداً قبل أن تفتح الهاتف.
+            </div>
+
+            <!-- أمر ADB 7 -->
+            <h3>📱 الأمر الأسطوري #7: فحص حالة الصوت في النظام</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>🔊 الأمر: فحص خدمات الصوت</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb shell dumpsys audio</code></pre>
+            </div>
+            <div class="explain-box">
+                <h4>🧠 شرح الأمر وماذا يصلح:</h4>
+                <ul>
+                    <li><strong>ماذا يفعل؟</strong> يعرض حالة كل شيء متعلق بالصوت: مستوى الصوت، المسار الصوتي النشط، الأجهزة الصوتية المتصلة، المايك المفتوح.</li>
+                    <li><strong>متى تستخدمه؟</strong> عندما يكون الصوت منخفضاً، أو لا يوجد صوت في تطبيق معين، أو المايك لا يشتغل.</li>
+                    <li><strong>ماذا تصلح؟</strong> تعرف إذا كانت المشكلة سوفتوير (إعدادات) أم هاردوير (قطعة تالفة).</li>
+                </ul>
             </div>
         </section>
 
-        <!-- ========== الفصل الثاني ========== -->
-        <section id="chapter2" class="chapter">
+        <!-- ==================== الفصل السابع ==================== -->
+        <section id="ch7" class="chapter">
             <h2 class="chapter-title">
-                <span class="chapter-number">٢</span>
-                تشريح نظام أندرويد
+                <span class="chapter-number">٧</span>
+                اختبار الكاميرات – أمامية وخلفية وفلاش
             </h2>
-            
-            <h3>🧱 هرم أندرويد (من الأسفل للأعلى)</h3>
-            <div class="code-block">
-<pre>
-┌─────────────────────────────┐
-│       التطبيقات (Apps)       │  ← فيسبوك، واتساب...
-├─────────────────────────────┤
-│     إطار العمل (Framework)   │  ← يدير النوافذ والإشعارات
-├─────────────────────────────┤
-│       المكتبات (Libraries)   │  ← SQLite, WebKit, OpenGL
-├─────────────────────────────┤
-│    بيئة التشغيل (Runtime)    │  ← ART (Android Runtime)
-├─────────────────────────────┤
-│       النواة (Kernel)        │  ← Linux Kernel
-├─────────────────────────────┤
-│      الهاردوير (Hardware)    │  ← المعالج، الذاكرة، الشاشة
-└─────────────────────────────┘
-</pre>
-            </div>
 
-            <h3>🧩 أقسام الذاكرة (Partitions)</h3>
+            <h3>📸 سلم فحص الكاميرات</h3>
+            <ol class="steps-list">
+                <li>افتح تطبيق الكاميرا. الكاميرا الخلفية: هل الصورة واضحة؟</li>
+                <li>حول للكاميرا الأمامية: هل تشتغل؟</li>
+                <li>غطِّ العدسة: هل تظهر صورة سوداء تماماً؟ (إذا ظهرت خطوط = مشكلة)</li>
+                <li>جرب التصوير بفلاش. جرب الفيديو.</li>
+                <li>جرب التقريب (Zoom) إن وجد.</li>
+            </ol>
+
             <div class="table-responsive">
                 <table class="dict-table">
                     <thead>
-                        <tr><th>القسم</th><th>الوظيفة</th></tr>
+                        <tr><th>العرض</th><th>السبب المحتمل</th><th>الحل</th></tr>
                     </thead>
                     <tbody>
-                        <tr><td><strong>/boot</strong></td><td>ملفات الإقلاع والنواة (Kernel)</td></tr>
-                        <tr><td><strong>/system</strong></td><td>نظام أندرويد الأساسي</td></tr>
-                        <tr><td><strong>/recovery</strong></td><td>وضع الاسترداد</td></tr>
-                        <tr><td><strong>/data</strong></td><td>بيانات المستخدم والتطبيقات</td></tr>
-                        <tr><td><strong>/cache</strong></td><td>ملفات مؤقتة</td></tr>
-                        <tr><td><strong>/modem</strong></td><td>برنامج المودم والراديو</td></tr>
-                        <tr><td><strong>/efs</strong></td><td>معلومات حساسة (IMEI، شهادات)</td></tr>
-                        <tr><td><strong>/persist</strong></td><td>إعدادات دائمة (WiFi، BT)</td></tr>
-                        <tr><td><strong>/vendor</strong></td><td>تعريفات خاصة بالجهاز</td></tr>
+                        <tr><td>شاشة سوداء عند فتح الكاميرا</td><td>الكاميرا مفصولة أو تالفة</td><td>أعد توصيل الفيصل. جرب كاميرا معروفة.</td></tr>
+                        <tr><td>صورة ضبابية</td><td>عدسة متسخة أو مخدوشة</td><td>نظف العدسة. إذا استمر = تغيير زجاج الكاميرا.</td></tr>
+                        <tr><td>الفلاش لا يشتعل</td><td>LED تالف أو فيصل</td><td>جرب كود الاختبار *#0*# (سامسونج)</td></tr>
+                        <tr><td>خطأ "Camera failed"</td><td>سوفتوير أو الكاميرا تالفة</td><td>امسح بيانات تطبيق الكاميرا. إذا استمر = تغيير كاميرا.</td></tr>
                     </tbody>
                 </table>
             </div>
 
-            <div class="image-container">
-                <img src="images/android-layers.jpg" alt="طبقات نظام أندرويد" class="chapter-image" onerror="this.style.display='none'">
-                <p class="image-caption">شكل (١): طبقات وهيكل نظام أندرويد</p>
+            <!-- أمر ADB 8 -->
+            <h3>📱 الأمر الأسطوري #8: معرفة مواصفات الكاميرات</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>📸 الأمر: مواصفات الكاميرات المثبتة</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb shell dumpsys media.camera</code></pre>
             </div>
+            <div class="explain-box">
+                <h4>🧠 شرح الأمر وماذا يصلح:</h4>
+                <ul>
+                    <li><strong>ماذا يفعل؟</strong> يعرض مواصفات كل كاميرا في الهاتف: الدقة، الفتحة، المميزات المدعومة، حالة الاتصال.</li>
+                    <li><strong>متى تستخدمه؟</strong> عندما لا تشتغل إحدى الكاميرات. الأمر يخبرك إذا كان النظام يتعرف على الكاميرا أصلاً أم لا.</li>
+                    <li><strong>ماذا تصلح؟</strong> إذا لم تظهر الكاميرا في القائمة = فيصل مفصول أو الكاميرا تالفة هاردوير.</li>
+                </ul>
+            </div>
+        </section>
 
-            <h3>🔄 دورة الإقلاع (Boot Process)</h3>
-            <ol class="steps-list">
-                <li><strong>زر التشغيل</strong> ← كهرباء من البطارية/PMIC</li>
-                <li><strong>Boot ROM</strong> ← فحص Bootloader</li>
-                <li><strong>Bootloader</strong> ← تحميل النواة</li>
-                <li><strong>Kernel</strong> ← تشغيل التعريفات</li>
-                <li><strong>Init</strong> ← خدمات النظام</li>
-                <li><strong>Zygote</strong> ← تهيئة ART</li>
-                <li><strong>System Server</strong> ← النوافذ والإشعارات</li>
-                <li><strong>Launcher</strong> ← ظهور الشاشة الرئيسية ✅</li>
-            </ol>
+        <!-- ==================== الفصل الثامن ==================== -->
+        <section id="ch8" class="chapter">
+            <h2 class="chapter-title">
+                <span class="chapter-number">٨</span>
+                اختبار الشبكة والإتصال – SIM, WiFi, Bluetooth
+            </h2>
 
             <div class="note-box warning">
-                <strong>⚠️ تشخيص:</strong> توقف عند ٣ = مشكلة Bootloader، توقف عند ٤-٦ = Bootloop غالباً.
-            </div>
-        </section>
-
-        <!-- ========== الفصل الثالث ========== -->
-        <section id="chapter3" class="chapter">
-            <h2 class="chapter-title">
-                <span class="chapter-number">٣</span>
-                أداة ADB
-            </h2>
-            
-            <h3>🔌 ما هو ADB؟</h3>
-            <p>جسر أوامر بين الكمبيوتر والهاتف، يسمح بإرسال أوامر والهاتف شغال أو في Recovery.</p>
-
-            <h3>🛠️ التحضير (كل الماركات)</h3>
-            <div class="code-block">
-                <div class="code-header">
-                    <span>ويندوز - تثبيت Platform Tools</span>
-                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
-                </div>
-<pre><code>1. حمل Platform Tools من موقع أندرويد الرسمي
-2. فك الضغط في C:\adb
-3. افتح CMD واكتب:
-cd C:\adb</code></pre>
+                <strong>⚠️ تذكر:</strong> مشاكل الشبكة هي الأصعب. ابدأ دائماً من السوفتوير قبل أن تلمس الهاردوير.
             </div>
 
-            <h3>📱 تفعيل خيارات المطور:</h3>
-            <ol class="steps-list">
-                <li>الإعدادات > حول الهاتف</li>
-                <li>اضغط <strong>رقم الإصدار ٧ مرات</strong></li>
-                <li>الإعدادات > خيارات المطور</li>
-                <li>فعل <strong>تصحيح أخطاء USB</strong></li>
-            </ol>
-
-            <h3>📋 أوامر ADB الأساسية</h3>
-            <div class="code-block">
-                <div class="code-header">
-                    <span>أوامر ADB</span>
-                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
-                </div>
-<pre><code>adb devices              # عرض الأجهزة المتصلة
-adb reboot               # إعادة تشغيل
-adb reboot recovery      # دخول الريكفري
-adb reboot bootloader    # دخول الفاست بوت
-adb shell                # فتح نافذة أوامر داخل الهاتف
-adb install app.apk      # تثبيت تطبيق
-adb pull /path/file      # سحب ملف من الهاتف
-adb push file /path/     # إرسال ملف للهاتف
-adb logcat               # سجل النظام للتشخيص
-adb bugreport            # تقرير تشخيصي كامل</code></pre>
-            </div>
-
-            <div class="code-block">
-                <div class="code-header">
-                    <span>أوامر متقدمة مفيدة</span>
-                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
-                </div>
-<pre><code># معرفة حالة البطارية
-adb shell dumpsys battery
-
-# معرفة نسخة الأندرويد
-adb shell getprop ro.build.version.release
-
-# قائمة بكل خصائص الجهاز
-adb shell getprop
-
-# إعادة تشغيل الواجهة (لحل تجمد الشاشة)
-adb shell am start -a android.intent.action.MAIN \
-  -c android.intent.category.HOME
-
-# مسح كاش تطبيق معين
-adb shell pm clear com.example.app</code></pre>
-            </div>
-        </section>
-
-        <!-- ========== الفصل الرابع ========== -->
-        <section id="chapter4" class="chapter">
-            <h2 class="chapter-title">
-                <span class="chapter-number">٤</span>
-                أداة Fastboot
-            </h2>
-            
-            <h3>⚡ ما هو Fastboot؟</h3>
-            <p>بروتوكول يشتغل <strong>قبل</strong> نظام أندرويد، يستخدم لتفليش ملفات النظام وتعديل الأقسام. يعمل فقط في وضع Bootloader.</p>
-
-            <h3>📥 الدخول إلى Fastboot حسب الماركة</h3>
-            <div class="table-responsive">
-                <table class="dict-table">
-                    <thead>
-                        <tr><th>الماركة</th><th>طريقة الدخول (والهاتف مطفأ)</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Samsung</strong></td>
-                            <td>زر خفض الصوت + تشغيل (Download Mode، يستخدم Odin)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Xiaomi</strong></td>
-                            <td>زر خفض الصوت + تشغيل</td>
-                        </tr>
-                        <tr>
-                            <td><strong>OnePlus</strong></td>
-                            <td>زر رفع الصوت + تشغيل</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Huawei</strong></td>
-                            <td>زر خفض الصوت + تشغيل + توصيل USB</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="note-box warning">
-                <strong>⚠️ سامسونج خاصة:</strong> لا تستخدم Fastboot! تستخدم <strong>Download Mode</strong> مع برنامج <strong>Odin</strong>.
-            </div>
-
-            <h3>📋 أوامر Fastboot الأساسية</h3>
-            <div class="code-block">
-                <div class="code-header">
-                    <span>أوامر Fastboot</span>
-                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
-                </div>
-<pre><code>fastboot devices              # التحقق من اتصال الهاتف
-fastboot reboot               # إعادة تشغيل
-fastboot oem unlock           # فتح البوت لودر (يمسح البيانات!)
-fastboot oem lock             # إغلاق البوت لودر
-fastboot flash [قسم] [ملف]   # تفليش ملف إلى قسم
-fastboot boot [ملف.img]       # تشغيل ريكفري مؤقت
-fastboot getvar all           # عرض معلومات الجهاز</code></pre>
-            </div>
-
-            <div class="code-block">
-                <div class="code-header">
-                    <span>مثال: تفليش ريكفري لـ Xiaomi</span>
-                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
-                </div>
-<pre><code>fastboot flash recovery twrp.img
-fastboot reboot recovery</code></pre>
-            </div>
-        </section>
-
-        <!-- ========== الفصل الخامس ========== -->
-        <section id="chapter5" class="chapter">
-            <h2 class="chapter-title">
-                <span class="chapter-number">٥</span>
-                تشخيص مشاكل الشبكة والـ IMEI
-            </h2>
-            
-            <h3>📶 مسار الاتصال في الهاتف</h3>
-            <div class="code-block">
-<pre>
-شريحة SIM → قارئ الشريحة → مودم (Baseband) ← EFS/NVRAM/QCN
-                                              ↓
-                                         نظام أندرويد ← عرض الأبراج
-</pre>
-            </div>
-
-            <h3>🔍 سلم التشخيص الذهبي للشبكة</h3>
+            <h3>📶 سلم تشخيص الشبكة الذهبي (6 خطوات)</h3>
             <div class="flow-chart">
                 <div class="flow-step">
                     <span class="flow-num">1</span>
-                    <strong>هل الشريحة مقروءة؟</strong>
-                    <span class="flow-result fail">لا ← نظف الشريحة أو جرب أخرى</span>
+                    <strong>هل الشريحة مقروءة؟</strong> (تظهر أبراج أو اسم الشبكة؟)
+                    <span class="flow-result fail">لا ← نظف الشريحة، جرب شريحة أخرى، افحص درج SIM</span>
                 </div>
                 <div class="flow-step">
                     <span class="flow-num">2</span>
-                    <strong>هل IMEI موجود؟</strong>
-                    <span class="flow-result fail">لا ← *#06# يظهر null/0 ← EFS تالف</span>
+                    <strong>هل IMEI موجود؟</strong> (اطلب *#06#)
+                    <span class="flow-result fail">null / 0 ← EFS تالف. استعادة نسخة احتياطية أو فلاش روم.</span>
                 </div>
                 <div class="flow-step">
                     <span class="flow-num">3</span>
-                    <strong>هل Baseband موجود؟</strong>
-                    <span class="flow-result fail">لا ← إعدادات > حول الهاتف = "غير متوفر"</span>
+                    <strong>هل Baseband موجود؟</strong> (الإعدادات > حول الهاتف > إصدار القاعدة)
+                    <span class="flow-result fail">غير متوفر ← فلاش مودم أو روم رسمي كامل</span>
                 </div>
                 <div class="flow-step">
                     <span class="flow-num">4</span>
-                    <strong>هل يبحث عن شبكات؟</strong>
-                    <span class="flow-result fail">لا ← مشكلة مودم أو أنتين</span>
+                    <strong>هل يبحث عن شبكات؟</strong> (الإعدادات > الشبكات > بحث يدوي)
+                    <span class="flow-result fail">لا يجد شيئاً ← مشكلة أنتين أو آي سي شبكة</span>
                 </div>
                 <div class="flow-step">
                     <span class="flow-num">5</span>
-                    <strong>هل يسجل على الشبكة؟</strong>
-                    <span class="flow-result fail">لا ← مشكلة EFS/شهادة</span>
+                    <strong>هل يسجل على الشبكة؟</strong> (يظهر اسم الشبكة لكن لا اتصال)
+                    <span class="flow-result fail">لا ← مشكلة EFS/شهادة أو آي سي شبكة تالف جزئياً</span>
                 </div>
                 <div class="flow-step">
                     <span class="flow-num">6</span>
                     <strong>الهاردوير</strong>
-                    <span class="flow-result">آي سي الشبكة أو باور</span>
+                    <span class="flow-result">آخر حل: إعادة لحام أو تغيير IC الشبكة</span>
                 </div>
             </div>
 
-            <h3>📱 أكواد فحص الشبكة حسب الماركة</h3>
+            <!-- أمر ADB 9 -->
+            <h3>📱 الأمر الأسطوري #9: فحص IMEI مباشرة (أضمن طريقة)</h3>
             <div class="code-block">
                 <div class="code-header">
-                    <span>Samsung</span>
+                    <span>📶 الأمر: عرض IMEI الحقيقي من النظام</span>
                     <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
                 </div>
-<pre><code>*#0011#    # معلومات الشبكة الحية
-*#06#      # عرض IMEI
-*#0808#    # إعدادات USB</code></pre>
+<pre><code>adb shell service call iphonesubinfo 1 | awk -F "'" '{print $2}' | sed 's/\.//g'</code></pre>
+            </div>
+            <div class="explain-box">
+                <h4>🧠 شرح الأمر وماذا يصلح:</h4>
+                <ul>
+                    <li><strong>ماذا يفعل؟</strong> يقرأ IMEI مباشرة من مودم الهاتف، وليس من الإعدادات (التي قد تكون مزورة).</li>
+                    <li><strong>متى تستخدمه؟</strong> عندما تشك أن IMEI مزور أو عندما لا يظهر في *#06#.</li>
+                    <li><strong>النتيجة:</strong> إذا ظهر رقم حقيقي = EFS سليم. إذا ظهر 0000000 أو null = EFS تالف.</li>
+                </ul>
             </div>
 
+            <!-- أمر ADB 10 -->
+            <h3>📱 الأمر الأسطوري #10: فحص Baseband (هل المودم حي؟)</h3>
             <div class="code-block">
                 <div class="code-header">
-                    <span>Xiaomi</span>
+                    <span>📡 الأمر: فحص إصدار المودم</span>
                     <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
                 </div>
-<pre><code>*#*#6484#*#*   # قائمة اختبار المصنع (CIT)
-*#*#4636#*#*   # معلومات الهاتف والشبكة</code></pre>
+<pre><code>adb shell getprop gsm.version.baseband</code></pre>
+            </div>
+            <div class="explain-box">
+                <h4>🧠 شرح الأمر وماذا يصلح:</h4>
+                <ul>
+                    <li><strong>ماذا يفعل؟</strong> يعرض إصدار Baseband (برنامج المودم).</li>
+                    <li><strong>النتيجة:</strong> إذا ظهر رقم إصدار طويل = المودم شغال. إذا ظهر فارغ أو "unknown" = المودم ميت أو غير موجود.</li>
+                    <li><strong>ماذا تصلح؟</strong> Baseband ميت = لا شبكة. الحل: فلاش مودم أو روم رسمي. إذا استمر = آي سي شبكة تالف.</li>
+                </ul>
             </div>
 
+            <!-- أمر ADB 11 -->
+            <h3>📱 الأمر الأسطوري #11: فحص قوة الإشارة بالديسيبل</h3>
             <div class="code-block">
                 <div class="code-header">
-                    <span>OnePlus / Huawei</span>
+                    <span>📶 الأمر: قوة الإشارة الحقيقية</span>
                     <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
                 </div>
-<pre><code>*#06#             # IMEI (OnePlus)
-*#*#2846579#*#*   # Project Menu (Huawei)</code></pre>
+<pre><code>adb shell dumpsys telephony.registry | grep mSignalStrength</code></pre>
             </div>
-
-            <div class="code-block">
-                <div class="code-header">
-                    <span>عبر ADB (لأي جهاز)</span>
-                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
-                </div>
-<pre><code># فحص Baseband
-adb shell getprop gsm.version.baseband
-
-# عرض IMEI
-adb shell service call iphonesubinfo 1</code></pre>
+            <div class="explain-box">
+                <h4>🧠 شرح الأمر وماذا يصلح:</h4>
+                <ul>
+                    <li><strong>ماذا يفعل؟</strong> يعرض قوة الإشارة بوحدة dBm (ديسيبل ميلي واط)، وهي أدق من الأبراج.</li>
+                    <li><strong>كيف تقرأ؟</strong>
+                        <ul>
+                            <li>-50 إلى -79 = ممتاز (أنت قريب من البرج)</li>
+                            <li>-80 إلى -99 = جيد (طبيعي)</li>
+                            <li>-100 إلى -109 = ضعيف (منطقة بعيدة)</li>
+                            <li>-110 فأعلى = سيء جداً (اشتباه عطل أنتين أو IC شبكة)</li>
+                        </ul>
+                    </li>
+                    <li><strong>ماذا تصلح؟</strong> إذا كانت الإشارة ضعيفة جداً (-110+) في منطقة إشارتها قوية، فالمشكلة في الهاتف (أنتين أو IC شبكة).</li>
+                </ul>
             </div>
         </section>
 
-        <!-- ========== الفصل السادس ========== -->
-        <section id="chapter6" class="chapter">
-            <h2 class="chapter-title">
-                <span class="chapter-number">٦</span>
-                مشاكل التشغيل والبطارية (سوفتوير)
-            </h2>
-            
-            <h3>🪫 الهاتف لا يشحن / شحن وهمي</h3>
-            <ol class="steps-list">
-                <li>نظف البورت (فرشاة ناعمة + كحول أيزوبروبيل)</li>
-                <li>جرب سلك وشاحن معروفين</li>
-                <li>اتركه بالشاحن 30 دقيقة (بطارية مستنزفة)</li>
-                <li>ادخل Recovery وامسح الكاش</li>
-                <li>معايرة البطارية (بحاجة Root):
-                    <div class="code-block">
-<pre><code>adb shell
-su
-rm /data/system/batterystats.bin
-reboot</code></pre>
-                    </div>
-                </li>
-            </ol>
-
-            <h3>🔁 Bootloop (شعار متكرر)</h3>
-            <p><strong>الأسباب:</strong> تحديث فاشل، تطبيق خبيث، ملف System تالف.</p>
-            <ol class="steps-list">
-                <li>ادخل Recovery (رفع صوت + تشغيل)</li>
-                <li><strong>Wipe Cache Partition</strong></li>
-                <li>إذا لم ينفع: <strong>Wipe Data/Factory Reset</strong> (يمسح كل شيء!)</li>
-                <li>إذا استمر: فلاش روم رسمي</li>
-            </ol>
-        </section>
-
-        <!-- ========== الفصل السابع ========== -->
-        <section id="chapter7" class="chapter">
-            <h2 class="chapter-title">
-                <span class="chapter-number">٧</span>
-                الرومات وأنواعها والتفليش
-            </h2>
-            
-            <h3>📦 أنواع الرومات</h3>
-            <div class="table-responsive">
-                <table class="dict-table">
-                    <thead>
-                        <tr><th>النوع</th><th>الوصف</th><th>الاستخدام</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><strong>Stock ROM</strong></td><td>روم المصنع الرسمي</td><td>إصلاح مشاكل النظام</td></tr>
-                        <tr><td><strong>Custom ROM</strong></td><td>روم معدل (LineageOS)</td><td>تحديثات، مميزات إضافية</td></tr>
-                        <tr><td><strong>Fastboot ROM</strong></td><td>بصيغة img</td><td>Xiaomi/OnePlus</td></tr>
-                        <tr><td><strong>Recovery ROM</strong></td><td>بصيغة zip</td><td>تحديثات OTA</td></tr>
-                        <tr><td><strong>Odin ROM</strong></td><td>بصيغة tar.md5</td><td>خاص بسامسونج</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <h3>🔧 التفليش حسب الماركة</h3>
-            
-            <h4>1. Samsung – عبر Odin</h4>
-            <ol class="steps-list">
-                <li>حمل Odin وروم رسمي (من SamMobile)</li>
-                <li>ادخل Download Mode (خفض صوت + تشغيل)</li>
-                <li>الروم يحتوي: BL, AP, CP, CSC</li>
-                <li>ضع كل ملف في مكانه واضغط Start</li>
-            </ol>
-
-            <h4>2. Xiaomi – عبر Mi Flash Tool</h4>
-            <ol class="steps-list">
-                <li>حمل Mi Flash Tool وروم Fastboot</li>
-                <li>ادخل Fastboot</li>
-                <li>اختر مسار الروم واختر Clean All</li>
-                <li>اضغط Flash</li>
-            </ol>
-
-            <h4>3. OnePlus – Fastboot / MSM Tool</h4>
-            <p>MSM Tool خاصة بكوالكوم، تعيد الهاتف من Hard Brick.</p>
-
-            <h4>4. Huawei – Hisuite / DC-Phoenix</h4>
-            <p>Hisuite رسمي، DC-Phoenix مدفوع للإصلاح العميق.</p>
-        </section>
-
-        <!-- ========== الفصل الثامن ========== -->
-        <section id="chapter8" class="chapter">
-            <h2 class="chapter-title">
-                <span class="chapter-number">٨</span>
-                أساسيات الهاردوير للمبتدئين
-            </h2>
-            
-            <h3>⚡ مفاهيم كهربائية</h3>
-            <div class="table-responsive">
-                <table class="dict-table">
-                    <thead>
-                        <tr><th>المفهوم</th><th>الرمز</th><th>الوحدة</th><th>تشبيه</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>الجهد</td><td>V</td><td>فولت</td><td>ضغط الماء</td></tr>
-                        <tr><td>التيار</td><td>I</td><td>أمبير</td><td>كمية الماء</td></tr>
-                        <tr><td>المقاومة</td><td>R</td><td>أوم Ω</td><td>ضيق الأنبوب</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <h3>🧱 المكونات الأساسية</h3>
-            <ul>
-                <li><strong>مكثف:</strong> يخزن شحنة - إذا انتفخ = شورت</li>
-                <li><strong>مقاومة:</strong> تقلل التيار - إذا كانت مفتوحة = تالفة</li>
-                <li><strong>ملف:</strong> ينظم التيار - إذا OL = تالف</li>
-                <li><strong>PMIC:</strong> يدير توزيع الطاقة</li>
-                <li><strong>Modem IC:</strong> مسؤول الشبكة</li>
-                <li><strong>Charging IC:</strong> تنظيم الشحن</li>
-            </ul>
-
-            <h3>🩺 فحص الشورت (القفلة)</h3>
-            <ol class="steps-list">
-                <li>ضع الملتيميتر على وضع <strong>الجرس</strong></li>
-                <li>طرف على GND وطرف على نقطة القياس</li>
-                <li>سمعت صفارة = القطعة <strong>شورت</strong></li>
-            </ol>
-        </section>
-
-        <!-- ========== الفصل التاسع ========== -->
-        <section id="chapter9" class="chapter">
+        <!-- ==================== الفصل التاسع ==================== -->
+        <section id="ch9" class="chapter">
             <h2 class="chapter-title">
                 <span class="chapter-number">٩</span>
-                أدوات الصيانة المادية
+                التشخيص عبر الكمبيوتر – أوامر ADB الأسطورية الكاملة
             </h2>
-            
-            <h3>🧰 عدة المبتدئين</h3>
-            <ol>
-                <li>مفكات دقيقة (Phillips #00, #000)</li>
-                <li>ملتيميتر رقمي (DT830D)</li>
-                <li>باور سبلاي (0-15V/2A)</li>
-                <li>كاوية لحام 60W</li>
-                <li>سلك لحام + فلوكس</li>
-                <li>عدسة مكبرة برأس</li>
-                <li>فرشاة ناعمة + كحول أيزوبروبيل 99%</li>
-                <li>ملقط (Tweezers)</li>
-                <li>سجادة مضادة للكهرباء الساكنة</li>
-                <li>أكواب لحفظ البراغي</li>
-            </ol>
+
+            <h3>🔌 ما هو ADB ومتى تستخدمه؟</h3>
+            <p><strong>ADB (Android Debug Bridge):</strong> جسر أوامر بين الكمبيوتر والهاتف. يعمل عندما يكون الهاتف شغالاً وفي وضع Recovery. هو <strong>أهم أداة في جيبك</strong> لتشخيص أي مشكلة بدون فتح الهاتف.</p>
+
+            <h3>🛠️ تجهيز ADB على الكمبيوتر (مرة واحدة فقط)</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>💻 تثبيت ADB على ويندوز</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>1. حمل Platform Tools من موقع أندرويد الرسمي
+2. فك الضغط في C:\adb
+3. افتح CMD (موجه الأوامر) واكتب:
+   cd C:\adb
+4. وصل الهاتف بالكمبيوتر عبر USB
+5. تأكد من تفعيل "تصحيح أخطاء USB" في خيارات المطور
+6. اكتب: adb devices
+   - يجب أن يظهر رقم تسلسلي = تم التعرف على الهاتف ✅</code></pre>
+            </div>
+
+            <!-- أوامر ADB كاملة -->
+            <h3>📋 جميع أوامر ADB الأسطورية (23 أمراً)</h3>
+
+            <!-- 1 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#1: عرض الأجهزة المتصلة</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb devices</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> أول أمر تستخدمه دائماً. إذا لم يظهر جهازك = مشكلة في الكيبل أو التعريفات أو USB Debugging غير مفعل.</p>
+            </div>
+
+            <!-- 2 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#2: الدخول إلى شيل الهاتف</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb shell</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> يفتح نافذة أوامر داخل الهاتف. من هنا تقدر تكتب أي أمر Linux وتستكشف الملفات.</p>
+            </div>
+
+            <!-- 3 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#3: إعادة تشغيل الهاتف</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb reboot</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> تجميد الهاتف، بطء، مشاكل مؤقتة. أسرع من نزع البطارية.</p>
+            </div>
+
+            <!-- 4 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#4: دخول الريكفري</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb reboot recovery</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> للوصول لقائمة Wipe/Factory Reset بدون أزرار الهاتف (مفيد إذا الأزرار لا تعمل).</p>
+            </div>
+
+            <!-- 5 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#5: دخول Fastboot</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb reboot bootloader</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> للدخول لوضع Fastboot للتفليش دون ضغط أزرار.</p>
+            </div>
+
+            <!-- 6 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#6: تثبيت تطبيق عن بعد</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb install app.apk</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> تثبيت تطبيق تشخيص أو إصلاح بدون فتح متجر بلاي.</p>
+            </div>
+
+            <!-- 7 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#7: سحب ملف من الهاتف</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb pull /sdcard/file.txt</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> استخراج صور العميل أو ملفات مهمة قبل المسح.</p>
+            </div>
+
+            <!-- 8 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#8: إرسال ملف للهاتف</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb push file.apk /sdcard/</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> إرسال روم أو ملف إصلاح للهاتف.</p>
+            </div>
+
+            <!-- 9 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#9: سحب سجل الأخطاء كامل</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb logcat -d > errors.txt</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> يسحب كل الأخطاء. افتح الملف وابحث عن "FATAL" أو "ERROR" لتعرف سبب أي مشكلة.</p>
+            </div>
+
+            <!-- 10 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#10: تقرير تشخيصي كامل</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb bugreport</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> ينشئ ملف ZIP فيه تقرير عن كل شيء. استخدمه لتشخيص مشاكل معقدة.</p>
+            </div>
+
+            <!-- 11 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#11: قائمة التطبيقات المثبتة</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb shell pm list packages -3</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> البحث عن تطبيقات خبيثة أو ضارة. -3 يعني تطبيقات المستخدم فقط.</p>
+            </div>
+
+            <!-- 12 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#12: إزالة تطبيق عن بعد</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb shell pm uninstall -k --user 0 com.package.name</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> إزالة تطبيق خبيث يسبب Bootloop أو إعلانات، بدون فتح الهاتف.</p>
+            </div>
+
+            <!-- 13 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#13: مسح كاش تطبيق معين</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb shell pm clear com.example.app</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> إذا تطبيق معين يعلق أو يستهلك بطارية. يمسح الكاش فقط، وليس البيانات.</p>
+            </div>
+
+            <!-- 14 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#14: إعادة تشغيل واجهة النظام</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb shell am start -a android.intent.action.MAIN -c android.intent.category.HOME</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> عندما تتجمد الشاشة على تطبيق ولا تستجيب. يعيد تشغيل الواجهة بدون إعادة تشغيل الهاتف.</p>
+            </div>
+
+            <!-- 15 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#15: فحص إذا البوت لودر مفتوح</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb shell getprop ro.boot.flash.locked</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> 1 = مغلق، 0 = مفتوح. تعرف إذا الهاتف تم العبث به سابقاً.</p>
+            </div>
+
+            <!-- 16 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#16: فحص صلاحيات الروت</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb shell su -c "id"</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> إذا ظهر uid=0(root) = الهاتف عليه روت. مهم للتشخيص.</p>
+            </div>
+
+            <!-- 17 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#17: فحص مساحة التخزين</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb shell df -h</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> إذا الهاتف بطيء أو التطبيقات لا تثبت. قد تكون المساحة ممتلئة.</p>
+            </div>
+
+            <!-- 18 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#18: فحص الرام</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb shell cat /proc/meminfo</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> معرفة حجم الرام المتاح. إذا كان قليلاً جداً = تطبيقات تستهلك أو تسريب ذاكرة.</p>
+            </div>
+
+            <!-- 19 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#19: فحص المعالج</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb shell cat /proc/cpuinfo</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> معرفة نوع المعالج وسرعته وعدد الأنوية. للتأكد من مطابقته للمواصفات.</p>
+            </div>
+
+            <!-- 20 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#20: فحص درجة حرارة المعالج</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb shell cat /sys/class/thermal/thermal_zone*/temp</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> الرقم بالملي درجة. 45000 = 45°C. إذا فوق 70°C = مشكلة تبريد أو IC تالف يسخن.</p>
+            </div>
+
+            <!-- 21 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#21: سكرين شوت ونقله للكمبيوتر</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb shell screencap -p /sdcard/screen.png
+adb pull /sdcard/screen.png</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> توثيق حالة الهاتف للعميل أو للرجوع إليها.</p>
+            </div>
+
+            <!-- 22 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#22: فحص كل خصائص الهاتف</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb shell getprop</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> يعرض مئات المعلومات عن الهاتف. ابحث بداخلها عن أي شيء.</p>
+            </div>
+
+            <!-- 23 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#23: معرفة إصدار الأندرويد</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb shell getprop ro.build.version.release</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> معرفة إصدار أندرويد بسرعة (مثلاً 13، 14).</p>
+            </div>
         </section>
 
-        <!-- ========== الفصل العاشر ========== -->
-        <section id="chapter10" class="chapter">
+        <!-- ==================== الفصل العاشر ==================== -->
+        <section id="ch10" class="chapter">
             <h2 class="chapter-title">
                 <span class="chapter-number">١٠</span>
-                مخططات الأعطال الشائعة
+                التشخيص عبر Fastboot – أوامر ما قبل النظام
             </h2>
-            
+
+            <h3>⚡ ما هو Fastboot ومتى تستخدمه؟</h3>
+            <p><strong>Fastboot:</strong> بروتوكول يشتغل قبل نظام أندرويد. تستخدمه لتفليش ملفات النظام، فتح البوت لودر، وإصلاح الهاتف الميت برمجياً.</p>
+
+            <div class="note-box warning">
+                <strong>⚠️ مهم:</strong> سامسونج لا تستخدم Fastboot. تستخدم Download Mode مع برنامج Odin.
+            </div>
+
+            <h3>📥 الدخول إلى Fastboot حسب الماركة</h3>
+            <div class="table-responsive">
+                <table class="dict-table">
+                    <thead><tr><th>الماركة</th><th>طريقة الدخول (الهاتف مطفأ)</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Samsung</strong></td><td>زر خفض الصوت + زر التشغيل = Download Mode (يستخدم Odin)</td></tr>
+                        <tr><td><strong>Xiaomi</strong></td><td>زر خفض الصوت + زر التشغيل</td></tr>
+                        <tr><td><strong>OnePlus</strong></td><td>زر رفع الصوت + زر التشغيل</td></tr>
+                        <tr><td><strong>Huawei</strong></td><td>زر خفض الصوت + توصيل USB (من البداية)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>📋 جميع أوامر Fastboot الأسطورية</h3>
+
+            <!-- Fastboot 1 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#1: التحقق من اتصال الهاتف</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>fastboot devices</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> إذا ظهر ? = مشكلة في تعريف USB. إذا لم يظهر شيء = الهاتف ليس في وضع Fastboot.</p>
+            </div>
+
+            <!-- Fastboot 2 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#2: عرض كل معلومات الجهاز</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>fastboot getvar all</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> كنز من المعلومات: unlocked، version، product، serialno. تعرف حالة البوت لودر وطراز الهاتف.</p>
+            </div>
+
+            <!-- Fastboot 3 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#3: فتح البوت لودر (يحذف كل شيء!)</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>fastboot oem unlock</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> لفتح البوت لودر لتفليش رومات مخصصة. ⚠️ يمسح الهاتف بالكامل!</p>
+            </div>
+
+            <!-- Fastboot 4 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#4: تفليش ريكفري مخصص (TWRP)</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>fastboot flash recovery twrp.img</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> تركيب ريكفري مخصص لأخذ نسخة احتياطية كاملة أو تفليش روم.</p>
+            </div>
+
+            <!-- Fastboot 5 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#5: تشغيل ريكفري مؤقت (بدون تفليش)</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>fastboot boot twrp.img</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> يجرب الريكفري بدون ما يمسح الأصلي. ممتاز للتجربة الآمنة.</p>
+            </div>
+
+            <!-- Fastboot 6 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#6: تفليش boot</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>fastboot flash boot boot.img</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> إصلاح Bootloop أو مشاكل الإقلاع. يفلش النواة فقط.</p>
+            </div>
+
+            <!-- Fastboot 7 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#7: تفليش system</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>fastboot flash system system.img</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> إعادة تركيب نظام أندرويد عند تلفه.</p>
+            </div>
+
+            <!-- Fastboot 8 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#8: مسح userdata</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>fastboot erase userdata</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> مسح كل بيانات المستخدم لحل مشاكل الإقلاع المستعصية.</p>
+            </div>
+
+            <!-- Fastboot 9 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#9: إعادة التشغيل</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>fastboot reboot</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> الخروج من Fastboot والعودة للنظام.</p>
+            </div>
+
+            <!-- Fastboot 10 -->
+            <div class="code-block">
+                <div class="code-header">
+                    <span>#10: إعادة قفل البوت لودر</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>fastboot oem lock</code></pre>
+            </div>
+            <div class="explain-box">
+                <p><strong>يصلح:</strong> إعادة قفل البوت لودر بعد الإصلاح. ⚠️ يمسح البيانات أيضاً!</p>
+            </div>
+        </section>
+
+        <!-- ==================== الفصل الحادي عشر ==================== -->
+        <section id="ch11" class="chapter">
+            <h2 class="chapter-title">
+                <span class="chapter-number">١١</span>
+                فحص البوردة بالملتيميتر – اكتشاف الشورت
+            </h2>
+
+            <h3>⚡ أدواتك: الملتيميتر (الأفوميتر)</h3>
+            <div class="table-responsive">
+                <table class="dict-table">
+                    <thead>
+                        <tr><th>الوضع</th><th>الاستخدام</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>DC 20V</strong></td><td>قياس فولت البطارية ونقاط البوردة</td></tr>
+                        <tr><td><strong>Continuity / Buzzer</strong></td><td>اكتشاف القفلة (شورت). صفارة = الشورت!</td></tr>
+                        <tr><td><strong>Resistance (Ω)</strong></td><td>قياس المقاومات والتأكد من سلامتها</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>🩺 فحص البوردة – 4 خطوات أساسية</h3>
+            <ol class="steps-list">
+                <li><strong>افصل البطارية أولاً!</strong> قبل أي شيء.</li>
+                <li>ضع الملتيميتر على <strong>الجرس (Buzzer/Continuity)</strong></li>
+                <li>ضع الطرف الأسود على <strong>GND</strong> (أي جزء معدني كبير في البوردة)</li>
+                <li>ضع الطرف الأحمر على النقاط المشتبهة: بورت الشحن، حول IC، المكثفات</li>
+            </ol>
+            <div class="note-box warning">
+                <strong>⚠️ القاعدة:</strong> إذا سمعت صفارة = القطعة شورت. إذا كان OL أو رقم كبير = سليم (دائرة مفتوحة).
+            </div>
+
+            <h3>🎯 أشهر نقاط القياس في البوردة</h3>
+            <div class="table-responsive">
+                <table class="dict-table">
+                    <thead>
+                        <tr><th>النقطة</th><th>ماذا تقيس؟</th><th>الطبيعي</th><th>الخطر</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>دبابيس بورت الشحن</td><td>شورت في VCC أو Data</td><td>OL (مفتوح)</td><td>صفارة = شورت = تغيير بورت</td></tr>
+                        <tr><td>المكثفات حول PMIC</td><td>شورت في آي سي الطاقة</td><td>OL أو مقاومة عالية</td><td>صفارة = شورت = PMIC تالف</td></tr>
+                        <tr><td>المكثفات حول IC الشبكة</td><td>شورت في دائرة الشبكة</td><td>OL</td><td>صفارة = IC شبكة تالف</td></tr>
+                        <tr><td>المكثفات حول IC الشحن</td><td>شورت في دائرة الشحن</td><td>OL</td><td>صفارة = IC شحن تالف</td></tr>
+                        <tr><td>فيصل البطارية</td><td>وجود فولت</td><td>3.7-4.2V</td><td>0V = لا يصل كهرباء</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==================== الفصل الثاني عشر ==================== -->
+        <section id="ch12" class="chapter">
+            <h2 class="chapter-title">
+                <span class="chapter-number">١٢</span>
+                مخططات الأعطال السريعة – خريطة الإصلاح
+            </h2>
+
+            <h3>🗺️ المخطط الأول: الهاتف لا يشتعل أبداً</h3>
             <div class="code-block">
 <pre>
-                 ┌──────────────┐
-                 │  الهاتف لا يعمل │
-                 └──────┬───────┘
-                        │
-              ┌─────────▼──────────┐
-              │ هل يستجيب للشاحن؟   │
-              └────┬──────────┬────┘
-                 نعم          لا
-                 │             │
-    ┌────────────▼────┐   ┌───▼──────────────────┐
-    │ هل يشتعل كلياً؟ │   │ جرب شاحن/سلك آخر     │
-    └──┬──────────┬───┘   │ اتركه 30د بالشاحن    │
-      نعم         لا       └───┬──────────────────┘
-      │           │            │
-      │   ┌───────▼──────┐     │
-      │   │ Bootloop?    │     │
-      │   └──┬───────┬───┘     │
-      │    نعم       لا        │
-      │     │         │        │
-      │  ┌──▼──┐  ┌──▼──────────┐
-      │  │وايب │  │هل يهتز/يضيء │
-      │  │كاش  │  │إشعار ولكن   │
-      │  │/داتا│  │الشاشة سوداء؟│
-      │  └─────┘  └──┬───────┬──┘
-      │            نعم       لا
-      │             │         │
-      │        ┌────▼──┐  ┌──▼──────────┐
-      │        │تغيير  │  │ميت تماماً   │
-      │        │شاشة   │  │فحص البطارية │
-      │        └───────┘  │والشورت      │
-      │                   └─────────────┘
+الهاتف لا يشتعل ← جرب شاحن/سلك آخر ← لا ← نظف البورت ← لا
+← افتح الهاتف ← قس البطارية ←
+  ├── أقل من 3.3V: اشحن خارجي
+  ├── 0V: بطارية تالفة ← استبدلها
+  └── 3.7-4.2V: المشكلة في البوردة ←
+      افحص IC الشحن و PMIC بالملتيميتر (باحثاً عن شورت)
+</pre>
+            </div>
+
+            <h3>🗺️ المخطط الثاني: لا توجد شبكة</h3>
+            <div class="code-block">
+<pre>
+لا شبكة ← *#06# ←
+  ├── IMEI موجود ← Baseband موجود؟ ←
+  │   ├── نعم ← ابحث يدوي عن شبكات ← لا يجد ← IC شبكة
+  │   └── لا ← فلاش مودم/روم
+  └── IMEI null/0 ← EFS تالف ← استعادة نسخة EFS/QCN
+</pre>
+            </div>
+
+            <h3>🗺️ المخطط الثالث: شاشة سوداء والهاتف يشتغل</h3>
+            <div class="code-block">
+<pre>
+شاشة سوداء + الهاتف يرن ←
+  ├── أعد توصيل فيصل الشاشة ← لا ←
+  ├── جرب شاشة معروفة ← لا ←
+  └── افحص IC الإضاءة الخلفية أو دائرة الشاشة
 </pre>
             </div>
 
             <div class="note-box tip">
-                <strong>💡 قاعدة ذهبية:</strong> السوفتوير أولاً (مجاني وآمن)، التشخيص قبل التفكيك، صور كل خطوة.
+                <strong>💎 الخلاصة:</strong> السوفتوير أولاً (مجاني وآمن)، التشخيص قبل التفكيك، صور كل خطوة، واحتفظ بنسخ EFS لكل هاتف.
             </div>
         </section>
 
         <footer class="page-footer">
-            <p>❤️ المنهج الذهبي لصيانة الهواتف - أندرويد</p>
-            <p>أسأل الله أن يفتح عليك أبواب العلم والرزق</p>
+            <p>❤️ المنهج العملي الأسطوري لصيانة الهواتف – أندرويد</p>
+            <p>إعداد: مالك 🌹 | أسأل الله أن يفتح عليك أبواب العلم والرزق</p>
         </footer>
+
     </main>
 
-    <!-- زر العودة للأعلى -->
     <button id="scroll-top" class="scroll-top">⬆️</button>
 
     <script src="script.js"></script>
 </body>
-</html>
+                        </html>
