@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المنهج الذهبي لصيانة الهواتف - أندرويد</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- زر القائمة الجانبي للجوال -->
+    <button id="menu-toggle" class="menu-toggle">☰ الفصول</button>
+
+    <!-- القائمة الجانبية -->
+    <nav id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2>📘 المنهج الذهبي</h2>
+            <p>صيانة هواتف أندرويد</p>
+        </div>
+        <ul class="chapter-list">
+            <li class="active"><a href="#chapter1">📖 الفصل ١: قاموس المصطلحات</a></li>
+            <li><a href="#chapter2">🧱 الفصل ٢: تشريح نظام أندرويد</a></li>
+            <li><a href="#chapter3">🔌 الفصل ٣: أداة ADB</a></li>
+            <li><a href="#chapter4">⚡ الفصل ٤: أداة Fastboot</a></li>
+            <li><a href="#chapter5">📶 الفصل ٥: مشاكل الشبكة والـ IMEI</a></li>
+            <li><a href="#chapter6">🔄 الفصل ٦: مشاكل التشغيل والبطارية</a></li>
+            <li><a href="#chapter7">📦 الفصل ٧: الرومات وأنواعها والتفليش</a></li>
+            <li><a href="#chapter8">⚡ الفصل ٨: أساسيات الهاردوير</a></li>
+            <li><a href="#chapter9">🧰 الفصل ٩: أدوات الصيانة المادية</a></li>
+            <li><a href="#chapter10">🗺️ الفصل ١٠: مخططات الأعطال الشائعة</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <button id="download-pdf" class="btn-pdf">📥 تحميل PDF</button>
+        </div>
+    </nav>
+
+    <!-- المحتوى الرئيسي -->
+    <main id="main-content" class="main-content">
+        <!-- هيدر الصفحة -->
+        <header class="page-header">
+            <h1>📱 المنهج الذهبي لصيانة الهواتف</h1>
+            <p class="subtitle">أندرويد - سوفتوير وهاردوير - بالعربي</p>
+            <div class="header-badges">
+                <span class="badge">✅ أندرويد فقط</span>
+                <span class="badge">✅ Samsung</span>
+                <span class="badge">✅ Xiaomi</span>
+                <span class="badge">✅ OnePlus</span>
+                <span class="badge">✅ Huawei</span>
+                <span class="badge">✅ صور توضيحية</span>
+            </div>
+        </header>
+
+        <!-- ========== الفصل الأول ========== -->
+        <section id="chapter1" class="chapter">
+            <h2 class="chapter-title">
+                <span class="chapter-number">١</span>
+                قاموس المصطلحات (عربي - إنجليزي)
+            </h2>
+            
+            <div class="search-box">
+                <input type="text" id="dict-search" placeholder="🔍 ابحث عن مصطلح..." class="search-input">
+            </div>
+
+            <div class="table-responsive">
+                <table class="dict-table" id="dict-table">
+                    <thead>
+                        <tr>
+                            <th>المصطلح (English)</th>
+                            <th>النطق</th>
+                            <th>المعنى (العربية)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Firmware</strong></td>
+                            <td>فيرموير</td>
+                            <td>البرنامج الثابت (النظام المدمج)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ROM</strong></td>
+                            <td>روم</td>
+                            <td>نظام التشغيل المخزن (ذاكرة القراءة فقط)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Bootloader</strong></td>
+                            <td>بوت لودر</td>
+                            <td>مُحمّل الإقلاع - بوابة تشغيل الهاتف</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Recovery</strong></td>
+                            <td>ريكفري</td>
+                            <td>وضع الاسترداد - قائمة الإصلاح</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Fastboot</strong></td>
+                            <td>فاست بوت</td>
+                            <td>وضع التحميل السريع للتفليش</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ADB</strong></td>
+                            <td>أي دي بي</td>
+                            <td>جسر تصحيح أخطاء أندرويد</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Flash</strong></td>
+                            <td>فلاش</td>
+                            <td>كتابة/تحميل النظام على الذاكرة</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Wipe</strong></td>
+                            <td>وايب</td>
+                            <td>مسح البيانات أو الكاش</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cache</strong></td>
+                            <td>كاش</td>
+                            <td>ذاكرة مخبأة - ملفات مؤقتة</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Partition</strong></td>
+                            <td>بارتيشن</td>
+                            <td>قسم من أقسام الذاكرة</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kernel</strong></td>
+                            <td>كيرنل</td>
+                            <td>النواة - همزة الوصل بين النظام والهاردوير</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Baseband</strong></td>
+                            <td>بيس باند</td>
+                            <td>حزمة الأساس - برنامج المودم والراديو</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Modem</strong></td>
+                            <td>مودم</td>
+                            <td>المودم - مسؤول الشبكة والاتصال</td>
+                        </tr>
+                        <tr>
+                            <td><strong>IMEI</strong></td>
+                            <td>آي إم إي آي</td>
+                            <td>المعرف الدولي للجهاز المحمول</td>
+                        </tr>
+                        <tr>
+                            <td><strong>EFS</strong></td>
+                            <td>إي إف إس</td>
+                            <td>نظام الملفات المشفرة - يحمل IMEI</td>
+                        </tr>
+                        <tr>
+                            <td><strong>NVRAM</strong></td>
+                            <td>إن في رام</td>
+                            <td>ذاكرة غير متطايرة لإعدادات الشبكة</td>
+                        </tr>
+                        <tr>
+                            <td><strong>QCN</strong></td>
+                            <td>كيو سي إن</td>
+                            <td>ملف معايرة الشبكة (كوالكوم)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Root</strong></td>
+                            <td>روت</td>
+                            <td>صلاحيات الجذر - وصول كامل للنظام</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Brick</strong></td>
+                            <td>بريك</td>
+                            <td>هاتف ميت برمجياً (طوبة)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Bootloop</strong></td>
+                            <td>بوت لوب</td>
+                            <td>حلقة الإقلاع - شعار متكرر</td>
+                        </tr>
+                        <tr>
+                            <td><strong>OEM</strong></td>
+                            <td>أو إي إم</td>
+                            <td>الشركة المصنعة الأصلية</td>
+                        </tr>
+                        <tr>
+                            <td><strong>FRP</strong></td>
+                            <td>إف آر بي</td>
+                            <td>حماية إعادة ضبط المصنع</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PMIC</strong></td>
+                            <td>بي إم آي سي</td>
+                            <td>دارة إدارة الطاقة المتكاملة</td>
+                        </tr>
+                        <tr>
+                            <td><strong>IC</strong></td>
+                            <td>آي سي</td>
+                            <td>دارة متكاملة - شريحة</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Short Circuit</strong></td>
+                            <td>شورت سيركت</td>
+                            <td>قفلة/تماس كهربائي</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Voltage</strong></td>
+                            <td>فولتية</td>
+                            <td>جهد كهربائي (يقاس بالفولت)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Capacitor</strong></td>
+                            <td>كاباستر</td>
+                            <td>مكثف - يخزن الشحنة الكهربائية</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Resistor</strong></td>
+                            <td>ريزستور</td>
+                            <td>مقاومة - تقلل التيار أو الجهد</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="note-box tip">
+                <strong>💡 نصيحة:</strong> اقرأ هذا القاموس مرة كل يوم، هذه هي لغتك الجديدة في عالم الصيانة.
+            </div>
+        </section>
+
+        <!-- ========== الفصل الثاني ========== -->
+        <section id="chapter2" class="chapter">
+            <h2 class="chapter-title">
+                <span class="chapter-number">٢</span>
+                تشريح نظام أندرويد
+            </h2>
+            
+            <h3>🧱 هرم أندرويد (من الأسفل للأعلى)</h3>
+            <div class="code-block">
+<pre>
+┌─────────────────────────────┐
+│       التطبيقات (Apps)       │  ← فيسبوك، واتساب...
+├─────────────────────────────┤
+│     إطار العمل (Framework)   │  ← يدير النوافذ والإشعارات
+├─────────────────────────────┤
+│       المكتبات (Libraries)   │  ← SQLite, WebKit, OpenGL
+├─────────────────────────────┤
+│    بيئة التشغيل (Runtime)    │  ← ART (Android Runtime)
+├─────────────────────────────┤
+│       النواة (Kernel)        │  ← Linux Kernel
+├─────────────────────────────┤
+│      الهاردوير (Hardware)    │  ← المعالج، الذاكرة، الشاشة
+└─────────────────────────────┘
+</pre>
+            </div>
+
+            <h3>🧩 أقسام الذاكرة (Partitions)</h3>
+            <div class="table-responsive">
+                <table class="dict-table">
+                    <thead>
+                        <tr><th>القسم</th><th>الوظيفة</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>/boot</strong></td><td>ملفات الإقلاع والنواة (Kernel)</td></tr>
+                        <tr><td><strong>/system</strong></td><td>نظام أندرويد الأساسي</td></tr>
+                        <tr><td><strong>/recovery</strong></td><td>وضع الاسترداد</td></tr>
+                        <tr><td><strong>/data</strong></td><td>بيانات المستخدم والتطبيقات</td></tr>
+                        <tr><td><strong>/cache</strong></td><td>ملفات مؤقتة</td></tr>
+                        <tr><td><strong>/modem</strong></td><td>برنامج المودم والراديو</td></tr>
+                        <tr><td><strong>/efs</strong></td><td>معلومات حساسة (IMEI، شهادات)</td></tr>
+                        <tr><td><strong>/persist</strong></td><td>إعدادات دائمة (WiFi، BT)</td></tr>
+                        <tr><td><strong>/vendor</strong></td><td>تعريفات خاصة بالجهاز</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="image-container">
+                <img src="images/android-layers.jpg" alt="طبقات نظام أندرويد" class="chapter-image" onerror="this.style.display='none'">
+                <p class="image-caption">شكل (١): طبقات وهيكل نظام أندرويد</p>
+            </div>
+
+            <h3>🔄 دورة الإقلاع (Boot Process)</h3>
+            <ol class="steps-list">
+                <li><strong>زر التشغيل</strong> ← كهرباء من البطارية/PMIC</li>
+                <li><strong>Boot ROM</strong> ← فحص Bootloader</li>
+                <li><strong>Bootloader</strong> ← تحميل النواة</li>
+                <li><strong>Kernel</strong> ← تشغيل التعريفات</li>
+                <li><strong>Init</strong> ← خدمات النظام</li>
+                <li><strong>Zygote</strong> ← تهيئة ART</li>
+                <li><strong>System Server</strong> ← النوافذ والإشعارات</li>
+                <li><strong>Launcher</strong> ← ظهور الشاشة الرئيسية ✅</li>
+            </ol>
+
+            <div class="note-box warning">
+                <strong>⚠️ تشخيص:</strong> توقف عند ٣ = مشكلة Bootloader، توقف عند ٤-٦ = Bootloop غالباً.
+            </div>
+        </section>
+
+        <!-- ========== الفصل الثالث ========== -->
+        <section id="chapter3" class="chapter">
+            <h2 class="chapter-title">
+                <span class="chapter-number">٣</span>
+                أداة ADB
+            </h2>
+            
+            <h3>🔌 ما هو ADB؟</h3>
+            <p>جسر أوامر بين الكمبيوتر والهاتف، يسمح بإرسال أوامر والهاتف شغال أو في Recovery.</p>
+
+            <h3>🛠️ التحضير (كل الماركات)</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>ويندوز - تثبيت Platform Tools</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>1. حمل Platform Tools من موقع أندرويد الرسمي
+2. فك الضغط في C:\adb
+3. افتح CMD واكتب:
+cd C:\adb</code></pre>
+            </div>
+
+            <h3>📱 تفعيل خيارات المطور:</h3>
+            <ol class="steps-list">
+                <li>الإعدادات > حول الهاتف</li>
+                <li>اضغط <strong>رقم الإصدار ٧ مرات</strong></li>
+                <li>الإعدادات > خيارات المطور</li>
+                <li>فعل <strong>تصحيح أخطاء USB</strong></li>
+            </ol>
+
+            <h3>📋 أوامر ADB الأساسية</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>أوامر ADB</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>adb devices              # عرض الأجهزة المتصلة
+adb reboot               # إعادة تشغيل
+adb reboot recovery      # دخول الريكفري
+adb reboot bootloader    # دخول الفاست بوت
+adb shell                # فتح نافذة أوامر داخل الهاتف
+adb install app.apk      # تثبيت تطبيق
+adb pull /path/file      # سحب ملف من الهاتف
+adb push file /path/     # إرسال ملف للهاتف
+adb logcat               # سجل النظام للتشخيص
+adb bugreport            # تقرير تشخيصي كامل</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span>أوامر متقدمة مفيدة</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code># معرفة حالة البطارية
+adb shell dumpsys battery
+
+# معرفة نسخة الأندرويد
+adb shell getprop ro.build.version.release
+
+# قائمة بكل خصائص الجهاز
+adb shell getprop
+
+# إعادة تشغيل الواجهة (لحل تجمد الشاشة)
+adb shell am start -a android.intent.action.MAIN \
+  -c android.intent.category.HOME
+
+# مسح كاش تطبيق معين
+adb shell pm clear com.example.app</code></pre>
+            </div>
+        </section>
+
+        <!-- ========== الفصل الرابع ========== -->
+        <section id="chapter4" class="chapter">
+            <h2 class="chapter-title">
+                <span class="chapter-number">٤</span>
+                أداة Fastboot
+            </h2>
+            
+            <h3>⚡ ما هو Fastboot؟</h3>
+            <p>بروتوكول يشتغل <strong>قبل</strong> نظام أندرويد، يستخدم لتفليش ملفات النظام وتعديل الأقسام. يعمل فقط في وضع Bootloader.</p>
+
+            <h3>📥 الدخول إلى Fastboot حسب الماركة</h3>
+            <div class="table-responsive">
+                <table class="dict-table">
+                    <thead>
+                        <tr><th>الماركة</th><th>طريقة الدخول (والهاتف مطفأ)</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Samsung</strong></td>
+                            <td>زر خفض الصوت + تشغيل (Download Mode، يستخدم Odin)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Xiaomi</strong></td>
+                            <td>زر خفض الصوت + تشغيل</td>
+                        </tr>
+                        <tr>
+                            <td><strong>OnePlus</strong></td>
+                            <td>زر رفع الصوت + تشغيل</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Huawei</strong></td>
+                            <td>زر خفض الصوت + تشغيل + توصيل USB</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="note-box warning">
+                <strong>⚠️ سامسونج خاصة:</strong> لا تستخدم Fastboot! تستخدم <strong>Download Mode</strong> مع برنامج <strong>Odin</strong>.
+            </div>
+
+            <h3>📋 أوامر Fastboot الأساسية</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>أوامر Fastboot</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>fastboot devices              # التحقق من اتصال الهاتف
+fastboot reboot               # إعادة تشغيل
+fastboot oem unlock           # فتح البوت لودر (يمسح البيانات!)
+fastboot oem lock             # إغلاق البوت لودر
+fastboot flash [قسم] [ملف]   # تفليش ملف إلى قسم
+fastboot boot [ملف.img]       # تشغيل ريكفري مؤقت
+fastboot getvar all           # عرض معلومات الجهاز</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span>مثال: تفليش ريكفري لـ Xiaomi</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>fastboot flash recovery twrp.img
+fastboot reboot recovery</code></pre>
+            </div>
+        </section>
+
+        <!-- ========== الفصل الخامس ========== -->
+        <section id="chapter5" class="chapter">
+            <h2 class="chapter-title">
+                <span class="chapter-number">٥</span>
+                تشخيص مشاكل الشبكة والـ IMEI
+            </h2>
+            
+            <h3>📶 مسار الاتصال في الهاتف</h3>
+            <div class="code-block">
+<pre>
+شريحة SIM → قارئ الشريحة → مودم (Baseband) ← EFS/NVRAM/QCN
+                                              ↓
+                                         نظام أندرويد ← عرض الأبراج
+</pre>
+            </div>
+
+            <h3>🔍 سلم التشخيص الذهبي للشبكة</h3>
+            <div class="flow-chart">
+                <div class="flow-step">
+                    <span class="flow-num">1</span>
+                    <strong>هل الشريحة مقروءة؟</strong>
+                    <span class="flow-result fail">لا ← نظف الشريحة أو جرب أخرى</span>
+                </div>
+                <div class="flow-step">
+                    <span class="flow-num">2</span>
+                    <strong>هل IMEI موجود؟</strong>
+                    <span class="flow-result fail">لا ← *#06# يظهر null/0 ← EFS تالف</span>
+                </div>
+                <div class="flow-step">
+                    <span class="flow-num">3</span>
+                    <strong>هل Baseband موجود؟</strong>
+                    <span class="flow-result fail">لا ← إعدادات > حول الهاتف = "غير متوفر"</span>
+                </div>
+                <div class="flow-step">
+                    <span class="flow-num">4</span>
+                    <strong>هل يبحث عن شبكات؟</strong>
+                    <span class="flow-result fail">لا ← مشكلة مودم أو أنتين</span>
+                </div>
+                <div class="flow-step">
+                    <span class="flow-num">5</span>
+                    <strong>هل يسجل على الشبكة؟</strong>
+                    <span class="flow-result fail">لا ← مشكلة EFS/شهادة</span>
+                </div>
+                <div class="flow-step">
+                    <span class="flow-num">6</span>
+                    <strong>الهاردوير</strong>
+                    <span class="flow-result">آي سي الشبكة أو باور</span>
+                </div>
+            </div>
+
+            <h3>📱 أكواد فحص الشبكة حسب الماركة</h3>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>Samsung</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>*#0011#    # معلومات الشبكة الحية
+*#06#      # عرض IMEI
+*#0808#    # إعدادات USB</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span>Xiaomi</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>*#*#6484#*#*   # قائمة اختبار المصنع (CIT)
+*#*#4636#*#*   # معلومات الهاتف والشبكة</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span>OnePlus / Huawei</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code>*#06#             # IMEI (OnePlus)
+*#*#2846579#*#*   # Project Menu (Huawei)</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span>عبر ADB (لأي جهاز)</span>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 نسخ</button>
+                </div>
+<pre><code># فحص Baseband
+adb shell getprop gsm.version.baseband
+
+# عرض IMEI
+adb shell service call iphonesubinfo 1</code></pre>
+            </div>
+        </section>
+
+        <!-- ========== الفصل السادس ========== -->
+        <section id="chapter6" class="chapter">
+            <h2 class="chapter-title">
+                <span class="chapter-number">٦</span>
+                مشاكل التشغيل والبطارية (سوفتوير)
+            </h2>
+            
+            <h3>🪫 الهاتف لا يشحن / شحن وهمي</h3>
+            <ol class="steps-list">
+                <li>نظف البورت (فرشاة ناعمة + كحول أيزوبروبيل)</li>
+                <li>جرب سلك وشاحن معروفين</li>
+                <li>اتركه بالشاحن 30 دقيقة (بطارية مستنزفة)</li>
+                <li>ادخل Recovery وامسح الكاش</li>
+                <li>معايرة البطارية (بحاجة Root):
+                    <div class="code-block">
+<pre><code>adb shell
+su
+rm /data/system/batterystats.bin
+reboot</code></pre>
+                    </div>
+                </li>
+            </ol>
+
+            <h3>🔁 Bootloop (شعار متكرر)</h3>
+            <p><strong>الأسباب:</strong> تحديث فاشل، تطبيق خبيث، ملف System تالف.</p>
+            <ol class="steps-list">
+                <li>ادخل Recovery (رفع صوت + تشغيل)</li>
+                <li><strong>Wipe Cache Partition</strong></li>
+                <li>إذا لم ينفع: <strong>Wipe Data/Factory Reset</strong> (يمسح كل شيء!)</li>
+                <li>إذا استمر: فلاش روم رسمي</li>
+            </ol>
+        </section>
+
+        <!-- ========== الفصل السابع ========== -->
+        <section id="chapter7" class="chapter">
+            <h2 class="chapter-title">
+                <span class="chapter-number">٧</span>
+                الرومات وأنواعها والتفليش
+            </h2>
+            
+            <h3>📦 أنواع الرومات</h3>
+            <div class="table-responsive">
+                <table class="dict-table">
+                    <thead>
+                        <tr><th>النوع</th><th>الوصف</th><th>الاستخدام</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Stock ROM</strong></td><td>روم المصنع الرسمي</td><td>إصلاح مشاكل النظام</td></tr>
+                        <tr><td><strong>Custom ROM</strong></td><td>روم معدل (LineageOS)</td><td>تحديثات، مميزات إضافية</td></tr>
+                        <tr><td><strong>Fastboot ROM</strong></td><td>بصيغة img</td><td>Xiaomi/OnePlus</td></tr>
+                        <tr><td><strong>Recovery ROM</strong></td><td>بصيغة zip</td><td>تحديثات OTA</td></tr>
+                        <tr><td><strong>Odin ROM</strong></td><td>بصيغة tar.md5</td><td>خاص بسامسونج</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>🔧 التفليش حسب الماركة</h3>
+            
+            <h4>1. Samsung – عبر Odin</h4>
+            <ol class="steps-list">
+                <li>حمل Odin وروم رسمي (من SamMobile)</li>
+                <li>ادخل Download Mode (خفض صوت + تشغيل)</li>
+                <li>الروم يحتوي: BL, AP, CP, CSC</li>
+                <li>ضع كل ملف في مكانه واضغط Start</li>
+            </ol>
+
+            <h4>2. Xiaomi – عبر Mi Flash Tool</h4>
+            <ol class="steps-list">
+                <li>حمل Mi Flash Tool وروم Fastboot</li>
+                <li>ادخل Fastboot</li>
+                <li>اختر مسار الروم واختر Clean All</li>
+                <li>اضغط Flash</li>
+            </ol>
+
+            <h4>3. OnePlus – Fastboot / MSM Tool</h4>
+            <p>MSM Tool خاصة بكوالكوم، تعيد الهاتف من Hard Brick.</p>
+
+            <h4>4. Huawei – Hisuite / DC-Phoenix</h4>
+            <p>Hisuite رسمي، DC-Phoenix مدفوع للإصلاح العميق.</p>
+        </section>
+
+        <!-- ========== الفصل الثامن ========== -->
+        <section id="chapter8" class="chapter">
+            <h2 class="chapter-title">
+                <span class="chapter-number">٨</span>
+                أساسيات الهاردوير للمبتدئين
+            </h2>
+            
+            <h3>⚡ مفاهيم كهربائية</h3>
+            <div class="table-responsive">
+                <table class="dict-table">
+                    <thead>
+                        <tr><th>المفهوم</th><th>الرمز</th><th>الوحدة</th><th>تشبيه</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>الجهد</td><td>V</td><td>فولت</td><td>ضغط الماء</td></tr>
+                        <tr><td>التيار</td><td>I</td><td>أمبير</td><td>كمية الماء</td></tr>
+                        <tr><td>المقاومة</td><td>R</td><td>أوم Ω</td><td>ضيق الأنبوب</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>🧱 المكونات الأساسية</h3>
+            <ul>
+                <li><strong>مكثف:</strong> يخزن شحنة - إذا انتفخ = شورت</li>
+                <li><strong>مقاومة:</strong> تقلل التيار - إذا كانت مفتوحة = تالفة</li>
+                <li><strong>ملف:</strong> ينظم التيار - إذا OL = تالف</li>
+                <li><strong>PMIC:</strong> يدير توزيع الطاقة</li>
+                <li><strong>Modem IC:</strong> مسؤول الشبكة</li>
+                <li><strong>Charging IC:</strong> تنظيم الشحن</li>
+            </ul>
+
+            <h3>🩺 فحص الشورت (القفلة)</h3>
+            <ol class="steps-list">
+                <li>ضع الملتيميتر على وضع <strong>الجرس</strong></li>
+                <li>طرف على GND وطرف على نقطة القياس</li>
+                <li>سمعت صفارة = القطعة <strong>شورت</strong></li>
+            </ol>
+        </section>
+
+        <!-- ========== الفصل التاسع ========== -->
+        <section id="chapter9" class="chapter">
+            <h2 class="chapter-title">
+                <span class="chapter-number">٩</span>
+                أدوات الصيانة المادية
+            </h2>
+            
+            <h3>🧰 عدة المبتدئين</h3>
+            <ol>
+                <li>مفكات دقيقة (Phillips #00, #000)</li>
+                <li>ملتيميتر رقمي (DT830D)</li>
+                <li>باور سبلاي (0-15V/2A)</li>
+                <li>كاوية لحام 60W</li>
+                <li>سلك لحام + فلوكس</li>
+                <li>عدسة مكبرة برأس</li>
+                <li>فرشاة ناعمة + كحول أيزوبروبيل 99%</li>
+                <li>ملقط (Tweezers)</li>
+                <li>سجادة مضادة للكهرباء الساكنة</li>
+                <li>أكواب لحفظ البراغي</li>
+            </ol>
+        </section>
+
+        <!-- ========== الفصل العاشر ========== -->
+        <section id="chapter10" class="chapter">
+            <h2 class="chapter-title">
+                <span class="chapter-number">١٠</span>
+                مخططات الأعطال الشائعة
+            </h2>
+            
+            <div class="code-block">
+<pre>
+                 ┌──────────────┐
+                 │  الهاتف لا يعمل │
+                 └──────┬───────┘
+                        │
+              ┌─────────▼──────────┐
+              │ هل يستجيب للشاحن؟   │
+              └────┬──────────┬────┘
+                 نعم          لا
+                 │             │
+    ┌────────────▼────┐   ┌───▼──────────────────┐
+    │ هل يشتعل كلياً؟ │   │ جرب شاحن/سلك آخر     │
+    └──┬──────────┬───┘   │ اتركه 30د بالشاحن    │
+      نعم         لا       └───┬──────────────────┘
+      │           │            │
+      │   ┌───────▼──────┐     │
+      │   │ Bootloop?    │     │
+      │   └──┬───────┬───┘     │
+      │    نعم       لا        │
+      │     │         │        │
+      │  ┌──▼──┐  ┌──▼──────────┐
+      │  │وايب │  │هل يهتز/يضيء │
+      │  │كاش  │  │إشعار ولكن   │
+      │  │/داتا│  │الشاشة سوداء؟│
+      │  └─────┘  └──┬───────┬──┘
+      │            نعم       لا
+      │             │         │
+      │        ┌────▼──┐  ┌──▼──────────┐
+      │        │تغيير  │  │ميت تماماً   │
+      │        │شاشة   │  │فحص البطارية │
+      │        └───────┘  │والشورت      │
+      │                   └─────────────┘
+</pre>
+            </div>
+
+            <div class="note-box tip">
+                <strong>💡 قاعدة ذهبية:</strong> السوفتوير أولاً (مجاني وآمن)، التشخيص قبل التفكيك، صور كل خطوة.
+            </div>
+        </section>
+
+        <footer class="page-footer">
+            <p>❤️ المنهج الذهبي لصيانة الهواتف - أندرويد</p>
+            <p>أسأل الله أن يفتح عليك أبواب العلم والرزق</p>
+        </footer>
+    </main>
+
+    <!-- زر العودة للأعلى -->
+    <button id="scroll-top" class="scroll-top">⬆️</button>
+
+    <script src="script.js"></script>
+</body>
+</html>
