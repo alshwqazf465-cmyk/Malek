@@ -1,0 +1,524 @@
+
+# ── chapter1.html ── أساسيات Android
+ch1 = '''<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الفصل 1: أساسيات Android | أكاديمية صيانة الهواتف</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg: #0f172a; --c-surface: #1e293b; --c-surface2: #334155;
+  --c-primary: #38bdf8; --c-secondary: #818cf8; --c-accent: #f472b6;
+  --c-success: #34d399; --c-warning: #fbbf24; --c-danger: #f87171;
+  --c-text: #f1f5f9; --c-text2: #94a3b8; --c-border: #334155;
+  --glow: 0 0 20px rgba(56,189,248,0.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Tajawal', sans-serif; background: var(--c-bg); color: var(--c-text); line-height: 1.8; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(15,23,42,0.9); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--c-border); padding: 0.75rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { font-weight: 800; font-size: 1.2rem; color: var(--c-primary); text-decoration: none; }
+.nav-back { color: var(--c-text2); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.nav-back:hover { color: var(--c-primary); }
+
+main { max-width: 900px; margin: 0 auto; padding: 6rem 2rem 3rem; }
+
+.chapter-header {
+  text-align: center; margin-bottom: 3rem; padding: 2rem;
+  background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(129,140,248,0.1));
+  border-radius: 20px; border: 1px solid rgba(56,189,248,0.2);
+}
+.chapter-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 50px; height: 50px; background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; font-weight: 900; border-radius: 14px; font-size: 1.3rem; margin-bottom: 1rem;
+}
+.chapter-header h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.75rem; }
+.chapter-header p { color: var(--c-text2); font-size: 1.1rem; }
+
+h2 {
+  font-size: 1.6rem; font-weight: 800; margin: 2.5rem 0 1rem;
+  padding-right: 1rem; border-right: 4px solid var(--c-primary);
+  color: var(--c-text);
+}
+h3 { font-size: 1.2rem; font-weight: 700; margin: 1.5rem 0 0.75rem; color: var(--c-primary); }
+p { color: var(--c-text2); margin-bottom: 1rem; font-size: 1.05rem; }
+
+.code-block {
+  background: #0d1117; border: 1px solid #30363d; border-radius: 12px;
+  overflow: hidden; margin: 1.5rem 0; direction: ltr; text-align: left;
+}
+.code-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.6rem 1rem; background: #161b22; border-bottom: 1px solid #30363d;
+}
+.code-title { font-family: 'Fira Code', monospace; font-size: 0.8rem; color: #8b949e; }
+.code-dots { display: flex; gap: 6px; }
+.code-dot { width: 10px; height: 10px; border-radius: 50%; }
+.code-dot.r { background: #ff5f56; } .code-dot.y { background: #ffbd2e; } .code-dot.g { background: #27c93f; }
+pre {
+  padding: 1.2rem; overflow-x: auto; font-family: 'Fira Code', monospace;
+  font-size: 0.85rem; line-height: 1.7; color: #e6edf3;
+}
+pre .comment { color: #8b949e; }
+pre .keyword { color: #ff7b72; }
+pre .string { color: #a5d6ff; }
+pre .func { color: #d2a8ff; }
+pre .num { color: #79c0ff; }
+
+.terminal {
+  background: #0d1117; border: 1px solid #30363d; border-radius: 12px;
+  overflow: hidden; margin: 1.5rem 0; direction: ltr; text-align: left;
+}
+.terminal-header {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.6rem 1rem; background: #161b22; border-bottom: 1px solid #30363d;
+}
+.terminal-body {
+  padding: 1.2rem; font-family: 'Fira Code', monospace;
+  font-size: 0.85rem; line-height: 1.8; color: #e6edf3;
+}
+.terminal-body .cmd { color: #7ee787; }
+.terminal-body .output { color: #8b949e; }
+.terminal-body .prompt { color: #ff7b72; }
+
+.data-table {
+  width: 100%; border-collapse: collapse; margin: 1.5rem 0;
+  background: var(--c-surface); border-radius: 12px; overflow: hidden;
+  border: 1px solid var(--c-border);
+}
+.data-table th {
+  background: var(--c-surface2); padding: 1rem; text-align: right;
+  font-weight: 700; color: var(--c-primary); font-size: 0.9rem;
+}
+.data-table td {
+  padding: 0.9rem 1rem; border-top: 1px solid var(--c-border);
+  color: var(--c-text2); font-size: 0.9rem;
+}
+.data-table tr:hover td { background: rgba(56,189,248,0.05); }
+
+.alert {
+  padding: 1rem 1.25rem; border-radius: 12px; margin: 1.5rem 0;
+  display: flex; align-items: flex-start; gap: 0.75rem; border: 1px solid;
+}
+.alert-info { background: rgba(56,189,248,0.08); border-color: rgba(56,189,248,0.3); color: var(--c-primary); }
+.alert-warn { background: rgba(251,191,36,0.08); border-color: rgba(251,191,36,0.3); color: var(--c-warning); }
+.alert-danger { background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.3); color: var(--c-danger); }
+.alert-success { background: rgba(52,211,153,0.08); border-color: rgba(52,211,153,0.3); color: var(--c-success); }
+.alert-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+.img-wrap {
+  border-radius: 16px; overflow: hidden; margin: 1.5rem 0;
+  border: 1px solid var(--c-border); background: var(--c-surface);
+}
+.img-wrap img { width: 100%; height: auto; display: block; }
+.img-caption {
+  padding: 0.75rem 1rem; text-align: center; color: var(--c-text2);
+  font-size: 0.85rem; background: var(--c-surface); border-top: 1px solid var(--c-border);
+}
+
+.diagram-box {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 16px; padding: 2rem; margin: 1.5rem 0;
+}
+.diagram-step {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem; margin: 0.5rem 0; border-radius: 10px;
+  background: rgba(56,189,248,0.05); border: 1px solid rgba(56,189,248,0.15);
+}
+.diagram-step .num {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.9rem; flex-shrink: 0;
+}
+.diagram-step .text { font-size: 0.95rem; color: var(--c-text); }
+.diagram-arrow {
+  text-align: center; font-size: 1.5rem; color: var(--c-primary); margin: 0.25rem 0;
+}
+
+.next-prev {
+  display: flex; justify-content: space-between; margin-top: 3rem;
+  padding-top: 2rem; border-top: 1px solid var(--c-border);
+}
+.next-prev a {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.8rem 1.5rem; border-radius: 12px;
+  text-decoration: none; font-weight: 700; transition: all 0.3s;
+}
+.next-prev .prev { color: var(--c-text2); border: 1px solid var(--c-border); }
+.next-prev .prev:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.next-prev .next {
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; box-shadow: 0 4px 15px rgba(56,189,248,0.3);
+}
+.next-prev .next:hover { transform: translateX(-3px); }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar-thumb { background: var(--c-surface2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-primary); }
+
+@media (max-width: 768px) {
+  main { padding: 5rem 1rem 2rem; }
+  .chapter-header h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.3rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">📱 أكاديمية صيانة الهواتف</a>
+  <a href="index.html" class="nav-back">← العودة للرئيسية</a>
+</nav>
+
+<main>
+
+<div class="chapter-header">
+  <div class="chapter-num">01</div>
+  <h1>أساسيات Android</h1>
+  <p>Bootloader · Recovery · Fastboot · ADB · ROM · Modem · EFS · IMEI · Partitions</p>
+</div>
+
+<h2>🔧 ما هو Bootloader؟</h2>
+<p>Bootloader هو أول برنامج يعمل عند تشغيل الهاتف. يتحقق من سلامة النظام ثم يُطلق النواة (Kernel). إذا كان <strong>Locked</strong>، لن تستطيع تثبيت ROMs غير رسمية.</p>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div><strong>معلومة مهمة:</strong> فتح Bootloader يمسح جميع بيانات الجهاز تلقائياً كإجراء أمان. احفظ نسخة احتياطية قبل البدء!</div>
+</div>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">Fastboot — فحص حالة Bootloader</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># التحقق من حالة القفل</span>
+<span class="prompt">$</span> <span class="func">fastboot</span> <span class="keyword">oem</span> device-info
+<span class="output">(bootloader) Device unlocked: false</span>
+<span class="output">(bootloader) Device critical unlocked: false</span>
+
+<span class="comment"># فتح Bootloader (سيُمسح كل شيء!)</span>
+<span class="prompt">$</span> <span class="func">fastboot</span> <span class="keyword">flashing</span> unlock
+<span class="output">OKAY [  0.023s]</span>
+<span class="output">finished. total time: 0.023s</span></pre>
+</div>
+
+<h2>🔄 Recovery Mode</h2>
+<p>بيئة خاصة للصيانة. النوع الرسمي (Stock) يتيح إعادة ضبط المصنع وتحديثات OTA فقط. النوع المعدّل (Custom مثل TWRP) يتيح نسخ احتياطي كامل وتفليش ROMs.</p>
+
+<div class="diagram-box">
+  <h3 style="margin-top:0">مقارنة بين Recovery modes</h3>
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>Stock Recovery</strong> — رسمي من الشركة: Factory Reset + Apply Update from ADB</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>Custom Recovery (TWRP)</strong> — معدّل: Backup/Restore + Flash ZIP + File Manager + Terminal</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>Recovery Mode الدخول:</strong> Power + Volume Up (أو Home في سامسونج القديمة)</div>
+  </div>
+</div>
+
+<h2>⚡ Fastboot Mode</h2>
+<p>وضع برمجي منخفض المستوى يتيح التفليش المباشر للأقسام. يعمل قبل إقلاع النظام الرئيسي.</p>
+
+<div class="terminal">
+  <div class="terminal-header">
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+    <span class="code-title">Terminal</span>
+  </div>
+  <div class="terminal-body">
+<span class="prompt">$</span> <span class="cmd">adb reboot bootloader</span>          <span class="comment"># إعادة التشغيل إلى Fastboot</span>
+<span class="prompt">$</span> <span class="cmd">fastboot devices</span>                 <span class="comment"># التحقق من الاتصال</span>
+<span class="output">ABC123DEF    fastboot</span>
+<span class="prompt">$</span> <span class="cmd">fastboot flash boot boot.img</span>     <span class="comment"># تفليش قسم boot</span>
+<span class="output">Sending 'boot' (131072 KB)       OKAY [  3.210s]</span>
+<span class="output">Writing 'boot'                   OKAY [  0.890s]</span>
+<span class="output">Finished. Total time: 4.100s</span>
+<span class="prompt">$</span> <span class="cmd">fastboot reboot</span>                  <span class="comment"># إعادة التشغيل</span>
+  </div>
+</div>
+
+<h2>🔌 ADB (Android Debug Bridge)</h2>
+<p>جسر بين الكمبيوتر والهاتف. يتيح تنفيذ أوامر Shell، نقل ملفات، تثبيت تطبيقات، وحتى الوصول للهاتف المعطّل جزئياً.</p>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">ADB — الأوامر الأساسية</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># التحقق من الاتصال</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">devices</span>
+<span class="output">List of devices attached</span>
+<span class="output">ABC123DEF    device</span>
+
+<span class="comment"># الدخول إلى Shell</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">shell</span>
+<span class="output">bullhead:/ $</span>
+
+<span class="comment"># تثبيت APK</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">install</span> <span class="string">app.apk</span>
+
+<span class="comment"># سحب ملف من الهاتف</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">pull</span> <span class="string">/sdcard/photo.jpg</span> <span class="string">./photo.jpg</span>
+
+<span class="comment"># دفع ملف إلى الهاتف</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">push</span> <span class="string">file.zip</span> <span class="string">/sdcard/Download/</span>
+
+<span class="comment"># إعادة التشغيل إلى Recovery</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">reboot</span> recovery
+
+<span class="comment"># إعادة التشغيل إلى Fastboot</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">reboot</span> bootloader
+
+<span class="comment"># تسجيل Logcat (للتشخيص)</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">logcat</span> <span class="keyword">-d</span> <span class="keyword">></span> <span class="string">log.txt</span></pre>
+</div>
+
+<h2>📦 ROM / Firmware</h2>
+
+<table class="data-table">
+  <tr>
+    <th>المصطلح</th>
+    <th>الشرح</th>
+    <th>الملفات</th>
+  </tr>
+  <tr>
+    <td><strong>Stock ROM</strong></td>
+    <td>النظام الرسمي من الشركة</td>
+    <td>.tar, .tar.md5, .zip</td>
+  </tr>
+  <tr>
+    <td><strong>Custom ROM</strong></td>
+    <td>نظام معدّل (LineageOS, Pixel Experience)</td>
+    <td>.zip</td>
+  </tr>
+  <tr>
+    <td><strong>Firmware</strong></td>
+    <td>ROM + Modem + Bootloader + Recovery</td>
+    <td>مجلد كامل</td>
+  </tr>
+  <tr>
+    <td><strong>Factory Image</strong></td>
+    <td>صورة المصنع الكاملة</td>
+    <td>.img لكل قسم</td>
+  </tr>
+</table>
+
+<h2>📡 Modem / Baseband</h2>
+<p>الجزء المسؤول عن الاتصال الخلوي. إذا فُقد Baseband: لا شبكة، لا مكالمات، لا إنترنت. يُخزّن في قسم <code>modem</code> أو <code>radio</code>.</p>
+
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div><strong>تحذير:</strong> تفليش ملف Modem خاطئ لطراز مختلف قد يُدمر IC الشبكة بشكل دائم!</div>
+</div>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">التحقق من Baseband</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># عبر ADB Shell</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">shell</span> <span class="func">getprop</span> <span class="keyword">|</span> <span class="func">grep</span> <span class="string">baseband</span>
+<span class="output">[gsm.version.baseband]: [M8992_20210.05.05.21R]</span>
+
+<span class="comment"># أو عبر الإعدادات</span>
+<span class="comment"># Settings > About Phone > Baseband version</span>
+
+<span class="comment"># إذا ظهر "Unknown" — المشكلة في Modem/EFS</span></pre>
+</div>
+
+<h2>🔐 EFS (Encrypting File System)</h2>
+<p>قسم حساس يحتوي على معلومات الجهاز الفريدة:</p>
+<ul style="color:var(--c-text2); margin:1rem 0; padding-right:1.5rem;">
+  <li>IMEI (رقم الهوية)</li>
+  <li>معايرة الشبكة (Calibration)</li>
+  <li>WiFi MAC Address</li>
+  <li>Bluetooth Address</li>
+</ul>
+
+<div class="alert alert-danger">
+  <span class="alert-icon">🚨</span>
+  <div><strong>خطر!</strong> تلف EFS يعني فقدان IMEI للأبد إذا لم يكن لديك نسخة احتياطية. <strong>احفظ نسخة EFS قبل أي تفليش!</strong></div>
+</div>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">نسخ احتياطي واستعادة EFS</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># نسخ احتياطي (يتطلب Root)</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">shell</span> <span class="func">su</span> <span class="keyword">-c</span> <span class="string">"dd if=/dev/block/bootdevice/by-name/efs of=/sdcard/efs_backup.img"</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">pull</span> <span class="string">/sdcard/efs_backup.img</span> <span class="string">./efs_backup.img</span>
+
+<span class="comment"># استعادة</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">push</span> <span class="string">efs_backup.img</span> <span class="string">/sdcard/</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">shell</span> <span class="func">su</span> <span class="keyword">-c</span> <span class="string">"dd if=/sdcard/efs_backup.img of=/dev/block/bootdevice/by-name/efs"</span></pre>
+</div>
+
+<h2>📱 IMEI</h2>
+<p>رقم هوية الجهاز الفريد (15 رقم). يُخزّن في EFS وعلى شريحة IC منفصلة (eMMC/UFS). <strong>تغييره غير قانوني</strong>، لكن استعادته بعد فقدان EFS مسموح.</p>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">التحقق من IMEI</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># عبر الاتصال</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">shell</span> <span class="func">service</span> <span class="keyword">call</span> <span class="num">iphonesubinfo</span> <span class="num">1</span>
+<span class="output">Result: Parcel( 0x00000000: '000000000000000' )</span>
+
+<span class="comment"># أو عبر الكود في الهاتف</span>
+<span class="comment"># *#06#</span></pre>
+</div>
+
+<h2>💾 Partitions (أقسام الذاكرة)</h2>
+
+<table class="data-table">
+  <tr>
+    <th>القسم</th>
+    <th>الوظيفة</th>
+    <th>الحجم التقريبي</th>
+  </tr>
+  <tr>
+    <td><code>boot</code></td>
+    <td>Kernel + Ramdisk (initrd)</td>
+    <td>32-64 MB</td>
+  </tr>
+  <tr>
+    <td><code>system</code></td>
+    <td>نظام Android + التطبيقات المثبتة مسبقاً</td>
+    <td>2-4 GB</td>
+  </tr>
+  <tr>
+    <td><code>vendor</code></td>
+    <td>تعريفات الشركة (Samsung, Xiaomi...)</td>
+    <td>500 MB - 1 GB</td>
+  </tr>
+  <tr>
+    <td><code>data</code></td>
+    <td>بيانات المستخدم + التطبيقات + الإعدادات</td>
+    <td>باقي المساحة</td>
+  </tr>
+  <tr>
+    <td><code>cache</code></td>
+    <td>ذاكرة مؤقتة للتحديثات</td>
+    <td>256-512 MB</td>
+  </tr>
+  <tr>
+    <td><code>recovery</code></td>
+    <td>بيئة الاسترداد</td>
+    <td>32-64 MB</td>
+  </tr>
+  <tr>
+    <td><code>bootloader</code></td>
+    <td>محمّل الإقلاع (SPL/ABOOT)</td>
+    <td>1-2 MB</td>
+  </tr>
+  <tr>
+    <td><code>modem</code></td>
+    <td>برنامج الشبكة (Baseband)</td>
+    <td>64-128 MB</td>
+  </tr>
+  <tr>
+    <td><code>efs</code></td>
+    <td>IMEI, WiFi, Bluetooth MAC</td>
+    <td>16-32 MB</td>
+  </tr>
+  <tr>
+    <td><code>misc</code></td>
+    <td>إعدادات Boot (مثل recovery command)</td>
+    <td>1 MB</td>
+  </tr>
+</table>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">عرض جميع الأقسام</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># عبر ADB (يتطلب Root)</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">shell</span> <span class="func">ls</span> <span class="string">/dev/block/bootdevice/by-name/</span>
+<span class="output">boot      modem    system    userdata</span>
+<span class="output">recovery  cache    vendor    efs</span>
+<span class="output">misc      persist  frp       sec</span>
+
+<span class="comment"># معلومات تفصيلية</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">shell</span> <span class="func">cat</span> <span class="string">/proc/partitions</span>
+<span class="output">major minor  #blocks  name</span>
+<span class="output"> 259        0   33554432 mmcblk0</span>
+<span class="output"> 259        1      32768 mmcblk0p1  boot</span></pre>
+</div>
+
+<h2>📊 مخطط تدفق إقلاع Android</h2>
+
+<div class="diagram-box">
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>Power ON</strong> — الضغط على زر التشغيل</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>Boot ROM (PBL)</strong> — شريحة صلبة في المعالج، تتحقق من Bootloader</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>Bootloader (SBL/ABOOT)</strong> — يتحقق من توقيع Kernel</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text"><strong>Kernel</strong> — يُحمّل نظام Android الأساسي</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">5</div>
+    <div class="text"><strong>init</strong> — أول عملية في Android، تُطلق Zygote</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">6</div>
+    <div class="text"><strong>Zygote</strong> — يُطلق System Server وكل التطبيقات</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">7</div>
+    <div class="text"><strong>System Server</strong> — يُطلق كل خدمات Android (ActivityManager, WindowManager...)</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">8</div>
+    <div class="text"><strong>Launcher</strong> — الشاشة الرئيسية تظهر! ✅</div>
+  </div>
+</div>
+
+<div class="next-prev">
+  <a href="index.html" class="prev">← العودة للرئيسية</a>
+  <a href="chapter2.html" class="next">الفصل 2: تثبيت ADB/Fastboot →</a>
+</div>
+
+</main>
+
+</body>
+</html>'''
+
+with open(f"{base}/chapter1.html", "w", encoding="utf-8") as f:
+    f.write(ch1)
+
+print("✅ chapter1.html created")
