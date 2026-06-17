@@ -1,13 +1,4 @@
 
-import os, json, textwrap
-
-# Create project structure
-base = "/mnt/agents/output/phone-repair-guide"
-os.makedirs(f"{base}/images", exist_ok=True)
-os.makedirs(f"{base}/css", exist_ok=True)
-os.makedirs(f"{base}/js", exist_ok=True)
-
-# ── index.html ──
 index_html = '''<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -669,8 +660,3 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </script>
 </body>
 </html>'''
-
-with open(f"{base}/index.html", "w", encoding="utf-8") as f:
-    f.write(index_html)
-
-print("✅ index.html created")
