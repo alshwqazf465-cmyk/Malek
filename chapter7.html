@@ -1,0 +1,499 @@
+# ── chapter7.html ── مشاكل الشاشة
+ch7 = '''<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الفصل 7: مشاكل الشاشة | أكاديمية صيانة الهواتف</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg: #0f172a; --c-surface: #1e293b; --c-surface2: #334155;
+  --c-primary: #38bdf8; --c-secondary: #818cf8; --c-accent: #f472b6;
+  --c-success: #34d399; --c-warning: #fbbf24; --c-danger: #f87171;
+  --c-text: #f1f5f9; --c-text2: #94a3b8; --c-border: #334155;
+  --glow: 0 0 20px rgba(56,189,248,0.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Tajawal', sans-serif; background: var(--c-bg); color: var(--c-text); line-height: 1.8; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(15,23,42,0.9); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--c-border); padding: 0.75rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { font-weight: 800; font-size: 1.2rem; color: var(--c-primary); text-decoration: none; }
+.nav-back { color: var(--c-text2); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.nav-back:hover { color: var(--c-primary); }
+
+main { max-width: 900px; margin: 0 auto; padding: 6rem 2rem 3rem; }
+
+.chapter-header {
+  text-align: center; margin-bottom: 3rem; padding: 2rem;
+  background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(129,140,248,0.1));
+  border-radius: 20px; border: 1px solid rgba(56,189,248,0.2);
+}
+.chapter-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 50px; height: 50px; background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; font-weight: 900; border-radius: 14px; font-size: 1.3rem; margin-bottom: 1rem;
+}
+.chapter-header h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.75rem; }
+.chapter-header p { color: var(--c-text2); font-size: 1.1rem; }
+
+h2 {
+  font-size: 1.6rem; font-weight: 800; margin: 2.5rem 0 1rem;
+  padding-right: 1rem; border-right: 4px solid var(--c-primary);
+  color: var(--c-text);
+}
+h3 { font-size: 1.2rem; font-weight: 700; margin: 1.5rem 0 0.75rem; color: var(--c-primary); }
+p { color: var(--c-text2); margin-bottom: 1rem; font-size: 1.05rem; }
+
+.code-block {
+  background: #0d1117; border: 1px solid #30363d; border-radius: 12px;
+  overflow: hidden; margin: 1.5rem 0; direction: ltr; text-align: left;
+}
+.code-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.6rem 1rem; background: #161b22; border-bottom: 1px solid #30363d;
+}
+.code-title { font-family: 'Fira Code', monospace; font-size: 0.8rem; color: #8b949e; }
+.code-dots { display: flex; gap: 6px; }
+.code-dot { width: 10px; height: 10px; border-radius: 50%; }
+.code-dot.r { background: #ff5f56; } .code-dot.y { background: #ffbd2e; } .code-dot.g { background: #27c93f; }
+pre {
+  padding: 1.2rem; overflow-x: auto; font-family: 'Fira Code', monospace;
+  font-size: 0.85rem; line-height: 1.7; color: #e6edf3;
+}
+pre .comment { color: #8b949e; }
+pre .keyword { color: #ff7b72; }
+pre .string { color: #a5d6ff; }
+pre .func { color: #d2a8ff; }
+pre .num { color: #79c0ff; }
+
+.terminal {
+  background: #0d1117; border: 1px solid #30363d; border-radius: 12px;
+  overflow: hidden; margin: 1.5rem 0; direction: ltr; text-align: left;
+}
+.terminal-header {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.6rem 1rem; background: #161b22; border-bottom: 1px solid #30363d;
+}
+.terminal-body {
+  padding: 1.2rem; font-family: 'Fira Code', monospace;
+  font-size: 0.85rem; line-height: 1.8; color: #e6edf3;
+}
+.terminal-body .cmd { color: #7ee787; }
+.terminal-body .output { color: #8b949e; }
+.terminal-body .prompt { color: #ff7b72; }
+
+.data-table {
+  width: 100%; border-collapse: collapse; margin: 1.5rem 0;
+  background: var(--c-surface); border-radius: 12px; overflow: hidden;
+  border: 1px solid var(--c-border);
+}
+.data-table th {
+  background: var(--c-surface2); padding: 1rem; text-align: right;
+  font-weight: 700; color: var(--c-primary); font-size: 0.9rem;
+}
+.data-table td {
+  padding: 0.9rem 1rem; border-top: 1px solid var(--c-border);
+  color: var(--c-text2); font-size: 0.9rem;
+}
+.data-table tr:hover td { background: rgba(56,189,248,0.05); }
+
+.alert {
+  padding: 1rem 1.25rem; border-radius: 12px; margin: 1.5rem 0;
+  display: flex; align-items: flex-start; gap: 0.75rem; border: 1px solid;
+}
+.alert-info { background: rgba(56,189,248,0.08); border-color: rgba(56,189,248,0.3); color: var(--c-primary); }
+.alert-warn { background: rgba(251,191,36,0.08); border-color: rgba(251,191,36,0.3); color: var(--c-warning); }
+.alert-danger { background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.3); color: var(--c-danger); }
+.alert-success { background: rgba(52,211,153,0.08); border-color: rgba(52,211,153,0.3); color: var(--c-success); }
+.alert-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+.img-wrap {
+  border-radius: 16px; overflow: hidden; margin: 1.5rem 0;
+  border: 1px solid var(--c-border); background: var(--c-surface);
+}
+.img-wrap img { width: 100%; height: auto; display: block; }
+.img-caption {
+  padding: 0.75rem 1rem; text-align: center; color: var(--c-text2);
+  font-size: 0.85rem; background: var(--c-surface); border-top: 1px solid var(--c-border);
+}
+
+.diagram-box {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 16px; padding: 2rem; margin: 1.5rem 0;
+}
+.diagram-step {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem; margin: 0.5rem 0; border-radius: 10px;
+  background: rgba(56,189,248,0.05); border: 1px solid rgba(56,189,248,0.15);
+}
+.diagram-step .num {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.9rem; flex-shrink: 0;
+}
+.diagram-step .text { font-size: 0.95rem; color: var(--c-text); }
+.diagram-arrow {
+  text-align: center; font-size: 1.5rem; color: var(--c-primary); margin: 0.25rem 0;
+}
+
+.flowchart {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 16px; padding: 2rem; margin: 1.5rem 0;
+}
+.flow-node {
+  padding: 1rem 1.5rem; border-radius: 12px; margin: 0.75rem 0;
+  text-align: center; font-weight: 600; font-size: 0.95rem;
+  border: 2px solid;
+}
+.flow-node.start { background: rgba(52,211,153,0.1); border-color: var(--c-success); color: var(--c-success); }
+.flow-node.question { background: rgba(251,191,36,0.1); border-color: var(--c-warning); color: var(--c-warning); border-radius: 50px; }
+.flow-node.action { background: rgba(56,189,248,0.1); border-color: var(--c-primary); color: var(--c-primary); }
+.flow-node.end { background: rgba(248,113,113,0.1); border-color: var(--c-danger); color: var(--c-danger); }
+.flow-node.success { background: rgba(52,211,153,0.1); border-color: var(--c-success); color: var(--c-success); }
+.flow-line {
+  text-align: center; color: var(--c-text2); font-size: 1.5rem; margin: 0.25rem 0;
+}
+.flow-yesno {
+  display: flex; justify-content: center; gap: 2rem; margin: 0.5rem 0;
+  font-size: 0.8rem; color: var(--c-text2);
+}
+
+.next-prev {
+  display: flex; justify-content: space-between; margin-top: 3rem;
+  padding-top: 2rem; border-top: 1px solid var(--c-border);
+}
+.next-prev a {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.8rem 1.5rem; border-radius: 12px;
+  text-decoration: none; font-weight: 700; transition: all 0.3s;
+}
+.next-prev .prev { color: var(--c-text2); border: 1px solid var(--c-border); }
+.next-prev .prev:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.next-prev .next {
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; box-shadow: 0 4px 15px rgba(56,189,248,0.3);
+}
+.next-prev .next:hover { transform: translateX(-3px); }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar-thumb { background: var(--c-surface2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-primary); }
+
+@media (max-width: 768px) {
+  main { padding: 5rem 1rem 2rem; }
+  .chapter-header h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.3rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">📱 أكاديمية صيانة الهواتف</a>
+  <a href="index.html" class="nav-back">← العودة للرئيسية</a>
+</nav>
+
+<main>
+
+<div class="chapter-header">
+  <div class="chapter-num">07</div>
+  <h1>مشاكل الشاشة</h1>
+  <p>Ghost Touch · تشخيص سوفتوير/هاردوير · تغيير الشاشة</p>
+</div>
+
+<h2>🖥️ أنواع الشاشات</h2>
+
+<table class="data-table">
+  <tr>
+    <th>النوع</th>
+    <th>المميزات</th>
+    <th>العيوب</th>
+    <th>الأجهزة</th>
+  </tr>
+  <tr>
+    <td><strong>LCD (IPS)</strong></td>
+    <td>رخيص، عمر طويل، لا حرق</td>
+    <td>أسود رمادي، استهلاك طاقة عالي، سماكة</td>
+    <td>iPhone 11, Xiaomi Redmi</td>
+  </tr>
+  <tr>
+    <td><strong>OLED (AMOLED)</strong></td>
+    <td>أسود عميق، ألوان غنية، رفيعة</td>
+    <td>حرق الشاشة، غالية، عمر أقصر</td>
+    <td>iPhone 14 Pro, Samsung S23</td>
+  </tr>
+  <tr>
+    <td><strong>Super AMOLED</strong></td>
+    <td>لمس مدمج، أقل استهلاك</td>
+    <td>نفس عيوب OLED</td>
+    <td>Samsung Galaxy</td>
+  </tr>
+  <tr>
+    <td><strong>LTPO OLED</strong></td>
+    <td>معدل تحديث متغير 1-120Hz</td>
+    <td>أغلى، معقدة في الإصلاح</td>
+    <td>iPhone 15 Pro, Pixel 8</td>
+  </tr>
+</table>
+
+<h2>👻 Ghost Touch (اللمس الذاتي)</h2>
+
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div><strong>Ghost Touch</strong> هو ظهور لمسات عشوائية على الشاشة بدون تدخل من المستخدم. يمكن أن يكون سببه سوفتوير أو هاردوير.</div>
+</div>
+
+<h3>أسباب Ghost Touch:</h3>
+<table class="data-table">
+  <tr>
+    <th>السبب</th>
+    <th>العرض</th>
+    <th>الحل</th>
+  </tr>
+  <tr>
+    <td><strong>شاحن رديء</strong></td>
+    <td>ظاهر فقط أثناء الشحن</td>
+    <td>استخدم شاحن أصلي (5V/2A)</td>
+  </tr>
+  <tr>
+    <td><strong>واقي شاشة رديء</strong></td>
+    <td>ظاهر دائماً</td>
+    <td>أزل الواقي أو استخدم نوع جيد</td>
+  </tr>
+  <tr>
+    <td><strong>كابل شاشة غير مثبت</strong></td>
+    <td>ظاهر بعد فتح الجهاز</td>
+    <td>أعد تركيب كابل LCD بإحكام</td>
+  </tr>
+  <tr>
+    <td><strong>Touch IC تالف</strong></td>
+    <td>ظاهر دائماً، يزداد مع الحرارة</td>
+    <td>استبدال Touch IC (متقدم)</td>
+  </tr>
+  <tr>
+    <td><strong>ماء/رطوبة</strong></td>
+    <td>ظاهر بعد تعرض للماء</td>
+    <td>تنظيف بالكحول، تجفيف</td>
+  </tr>
+  <tr>
+    <td><strong>Software Bug</strong></td>
+    <td>ظاهر بعد تحديث</td>
+    <td>Factory Reset أو Rollback</td>
+  </tr>
+</table>
+
+<h3>تشخيص Ghost Touch:</h3>
+<div class="diagram-box">
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text">افصل <strong>الشاحن</strong> — هل Ghost Touch يختفي؟</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text">أزل <strong>واقي الشاشة</strong> — هل يختفي؟</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text">ادخل <strong>Safe Mode</strong> — هل يختفي؟ (إذا نعم = تطبيق خاطئ)</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text">جرب <strong>Factory Reset</strong> — هل يختفي؟ (إذا نعم = Software)</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">5</div>
+    <div class="text">إذا بقي → مشكلة <strong>هاردوير</strong> (Touch IC أو كابل)</div>
+  </div>
+</div>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">Safe Mode — تشخيص سوفتوير</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># الدخول إلى Safe Mode</span>
+<span class="comment"># 1. اضغط Power حتى تظهر قائمة Power</span>
+<span class="comment"># 2. اضغط مطولاً على "Power Off"</span>
+<span class="comment"># 3. اضغط "OK" عند ظهور "Reboot to Safe Mode"</span>
+
+<span class="comment"># أو عبر ADB</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">shell</span> <span class="func">am</span> <span class="keyword">broadcast</span> <span class="keyword">-a</span> <span class="string">android.intent.action.BOOT_SAFE_MODE</span>
+
+<span class="comment"># في Safe Mode: كل التطبيقات الخارجية معطلة</span>
+<span class="comment"># إذا Ghost Touch يختفي → تطبيق خاطئ هو السبب</span></pre>
+</div>
+
+<h2>🔍 تشخيص سوفتوير/هاردوير</h2>
+
+<div class="flowchart">
+  <div class="flow-node start">🖥️ مشكلة في الشاشة</div>
+  <div class="flow-line">⬇</div>
+  <div class="flow-node question">هل الشاشة تظهر شيئاً؟</div>
+  <div class="flow-yesno"><span>❌ لا → ⬇</span><span>✅ نعم → ⬇</span></div>
+  <div class="flow-line">⬇</div>
+  <div class="flow-node action">❌ فحص كابل LCD، IC Display، PMIC</div>
+  <div class="flow-line">⬇</div>
+  <div class="flow-node question">✅ هل اللمس يعمل؟</div>
+  <div class="flow-yesno"><span>❌ لا → ⬇</span><span>✅ نعم → ⬇</span></div>
+  <div class="flow-line">⬇</div>
+  <div class="flow-node action">❌ فحص Touch IC، كابل Touch</div>
+  <div class="flow-line">⬇</div>
+  <div class="flow-node question">✅ هل في Safe Mode نفس المشكلة؟</div>
+  <div class="flow-yesno"><span>❌ لا → Software Bug</span><span>✅ نعم → ⬇</span></div>
+  <div class="flow-line">⬇</div>
+  <div class="flow-node action">Factory Reset → إذا بقي → استبدل الشاشة</div>
+</div>
+
+<h2>🛠️ تغيير الشاشة — خطوة بخطوة</h2>
+
+<div class="diagram-box">
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text">أطفئ الجهاز و<strong>أخرج شريحة SIM</strong> و<strong>درج SIM</strong></div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text">سخّن الحواف بـ <strong>سشوار صناعي</strong> (80-90°C) لمدة 2-3 دقائق</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text">استخدم <strong>مكشط بلاستيكي</strong> (iFixit Opening Tool) لفك الغراء</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text">ارفع الشاشة بحذر من الأسفل (حيث كابل LCD)</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">5</div>
+    <div class="text">افكّ <strong>براغي حامل الشاشة</strong> و<strong>كابلات LCD/Touch</strong></div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">6</div>
+    <div class="text">نظف الغراء القديم بـ <strong>إيزوبروبيل 99%</strong></div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">7</div>
+    <div class="text">ركّب الشاشة الجديدة → اختبر قبل الغراء النهائي!</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">8</div>
+    <div class="text">ضع <strong>غراء B7000</strong> أو <strong>3M胶带</strong> → اضغط الشاشة بمشابك لمدة 30 دقيقة</div>
+  </div>
+</div>
+
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div><strong>نصيحة ذهبية:</strong> اختبر الشاشة الجديدة <strong>قبل</strong> لصقها نهائياً! وصّل الكابلات وشغّل الجهاز للتأكد من: اللون، اللمس، السطوع، عدم وجود Dead Pixels.</div>
+</div>
+
+<h2>📋 جدول مشاكل الشاشة والحلول</h2>
+
+<table class="data-table">
+  <tr>
+    <th>المشكلة</th>
+    <th>السبب المحتمل</th>
+    <th>الحل</th>
+  </tr>
+  <tr>
+    <td>شاشة سوداء (لكن الجهاز يعمل)</td>
+    <td>كابل LCD، IC Display، Backlight</td>
+    <td>أعد تركيب الكابل، فحص IC</td>
+  </tr>
+  <tr>
+    <td>خطوط عمودية/أفقية</td>
+    <td>كابل LCD مكسور، IC Display</td>
+    <td>استبدل كابل أو الشاشة</td>
+  </tr>
+  <tr>
+    <td>بقع صفراء/زرقاء</td>
+    <td>ضغط على LCD، ماء، OLED حرق</td>
+    <td>استبدل الشاشة</td>
+  </tr>
+  <tr>
+    <td>لمس لا يستجيب في منطقة</td>
+    <td>Touch IC، كابل Touch</td>
+    <td>أعد تركيب الكابل، استبدل IC</td>
+  </tr>
+  <tr>
+    <td>سطوع منخفض جداً</td>
+    <td>Backlight IC، Ambient Sensor</td>
+    <td>فحص IC إضاءة، استبدل Sensor</td>
+  </tr>
+  <tr>
+    <td>Flickering (وميض)</td>
+    <td>كابل LCD، Software (PWM dimming)</td>
+    <td>أعد تركيب الكابل، عطل DC Dimming</td>
+  </tr>
+  <tr>
+    <td>Dead Pixels</td>
+    <td>عيب مصنعي أو ضرر فيزيائي</td>
+    <td>استبدل الشاشة (لا يُصلح)</td>
+  </tr>
+</table>
+
+<h2>🔥 سكريبت اختبار الشاشة</h2>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">screen-test.sh — اختبار شامل للشاشة</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment">#!/bin/bash</span>
+<span class="comment"># Screen Test Script - Dead pixels, touch, colors</span>
+
+<span class="func">echo</span> <span class="string">"[*] Screen Test Starting..."</span>
+
+<span class="comment"># 1. Display Info</span>
+<span class="func">echo</span> <span class="string">"[1] Display Info:"</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">dumpsys</span> <span class="keyword">display</span> <span class="keyword">|</span> <span class="func">grep</span> <span class="keyword">-E</span> <span class="string">"DisplayDeviceInfo|width|height|density"</span> <span class="keyword">|</span> <span class="func">head</span> <span class="keyword">-5</span>
+
+<span class="comment"># 2. Touch Test (open touch test app)</span>
+<span class="func">echo</span> <span class="string">"[2] Opening Touch Test App..."</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">am</span> <span class="keyword">start</span> <span class="keyword">-a</span> <span class="string">android.intent.action.VIEW</span> <span class="keyword">-d</span> <span class="string">"https://touchscreen-test.com"</span>
+
+<span class="comment"># 3. Color Test (flash colors)</span>
+<span class="func">echo</span> <span class="string">"[3] Color Test - Flashing colors..."</span>
+<span class="keyword">for</span> <span class="func">color</span> <span class="keyword">in</span> <span class="num">0xFFFF0000</span> <span class="num">0xFF00FF00</span> <span class="num">0xFF0000FF</span> <span class="num">0xFFFFFFFF</span> <span class="num">0xFF000000</span>; <span class="keyword">do</span>
+    <span class="func">adb</span> <span class="keyword">shell</span> <span class="func">am</span> <span class="keyword">start</span> <span class="keyword">-a</span> <span class="string">android.intent.action.VIEW</span> <span class="keyword">-d</span> <span class="string">"data:,$color"</span>
+    <span class="func">sleep</span> <span class="num">2</span>
+<span class="keyword">done</span>
+
+<span class="comment"># 4. Brightness Test</span>
+<span class="func">echo</span> <span class="string">"[4] Brightness Test:"</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">settings</span> <span class="keyword">put</span> <span class="keyword">system</span> <span class="string">screen_brightness</span> <span class="num">255</span>
+<span class="func">sleep</span> <span class="num">2</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">settings</span> <span class="keyword">put</span> <span class="keyword">system</span> <span class="string">screen_brightness</span> <span class="num">10</span>
+<span class="func">sleep</span> <span class="num">2</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">settings</span> <span class="keyword">put</span> <span class="keyword">system</span> <span class="string">screen_brightness</span> <span class="num">128</span>
+
+<span class="func">echo</span> <span class="string">"[✓] Screen Test Complete!"</span></pre>
+</div>
+
+<div class="next-prev">
+  <a href="chapter6.html" class="prev">← الفصل 6: مشاكل البطارية</a>
+  <a href="chapter8.html" class="next">الفصل 8: الهاردوير الأساسي →</a>
+</div>
+
+</main>
+
+</body>
+</html>'''
