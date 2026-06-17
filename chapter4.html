@@ -1,0 +1,503 @@
+# ── chapter4.html ── التفليش
+ch4 = '''<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الفصل 4: التفليش | أكاديمية صيانة الهواتف</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg: #0f172a; --c-surface: #1e293b; --c-surface2: #334155;
+  --c-primary: #38bdf8; --c-secondary: #818cf8; --c-accent: #f472b6;
+  --c-success: #34d399; --c-warning: #fbbf24; --c-danger: #f87171;
+  --c-text: #f1f5f9; --c-text2: #94a3b8; --c-border: #334155;
+  --glow: 0 0 20px rgba(56,189,248,0.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Tajawal', sans-serif; background: var(--c-bg); color: var(--c-text); line-height: 1.8; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(15,23,42,0.9); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--c-border); padding: 0.75rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { font-weight: 800; font-size: 1.2rem; color: var(--c-primary); text-decoration: none; }
+.nav-back { color: var(--c-text2); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.nav-back:hover { color: var(--c-primary); }
+
+main { max-width: 900px; margin: 0 auto; padding: 6rem 2rem 3rem; }
+
+.chapter-header {
+  text-align: center; margin-bottom: 3rem; padding: 2rem;
+  background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(129,140,248,0.1));
+  border-radius: 20px; border: 1px solid rgba(56,189,248,0.2);
+}
+.chapter-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 50px; height: 50px; background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; font-weight: 900; border-radius: 14px; font-size: 1.3rem; margin-bottom: 1rem;
+}
+.chapter-header h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.75rem; }
+.chapter-header p { color: var(--c-text2); font-size: 1.1rem; }
+
+h2 {
+  font-size: 1.6rem; font-weight: 800; margin: 2.5rem 0 1rem;
+  padding-right: 1rem; border-right: 4px solid var(--c-primary);
+  color: var(--c-text);
+}
+h3 { font-size: 1.2rem; font-weight: 700; margin: 1.5rem 0 0.75rem; color: var(--c-primary); }
+p { color: var(--c-text2); margin-bottom: 1rem; font-size: 1.05rem; }
+
+.code-block {
+  background: #0d1117; border: 1px solid #30363d; border-radius: 12px;
+  overflow: hidden; margin: 1.5rem 0; direction: ltr; text-align: left;
+}
+.code-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.6rem 1rem; background: #161b22; border-bottom: 1px solid #30363d;
+}
+.code-title { font-family: 'Fira Code', monospace; font-size: 0.8rem; color: #8b949e; }
+.code-dots { display: flex; gap: 6px; }
+.code-dot { width: 10px; height: 10px; border-radius: 50%; }
+.code-dot.r { background: #ff5f56; } .code-dot.y { background: #ffbd2e; } .code-dot.g { background: #27c93f; }
+pre {
+  padding: 1.2rem; overflow-x: auto; font-family: 'Fira Code', monospace;
+  font-size: 0.85rem; line-height: 1.7; color: #e6edf3;
+}
+pre .comment { color: #8b949e; }
+pre .keyword { color: #ff7b72; }
+pre .string { color: #a5d6ff; }
+pre .func { color: #d2a8ff; }
+pre .num { color: #79c0ff; }
+
+.terminal {
+  background: #0d1117; border: 1px solid #30363d; border-radius: 12px;
+  overflow: hidden; margin: 1.5rem 0; direction: ltr; text-align: left;
+}
+.terminal-header {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.6rem 1rem; background: #161b22; border-bottom: 1px solid #30363d;
+}
+.terminal-body {
+  padding: 1.2rem; font-family: 'Fira Code', monospace;
+  font-size: 0.85rem; line-height: 1.8; color: #e6edf3;
+}
+.terminal-body .cmd { color: #7ee787; }
+.terminal-body .output { color: #8b949e; }
+.terminal-body .prompt { color: #ff7b72; }
+
+.data-table {
+  width: 100%; border-collapse: collapse; margin: 1.5rem 0;
+  background: var(--c-surface); border-radius: 12px; overflow: hidden;
+  border: 1px solid var(--c-border);
+}
+.data-table th {
+  background: var(--c-surface2); padding: 1rem; text-align: right;
+  font-weight: 700; color: var(--c-primary); font-size: 0.9rem;
+}
+.data-table td {
+  padding: 0.9rem 1rem; border-top: 1px solid var(--c-border);
+  color: var(--c-text2); font-size: 0.9rem;
+}
+.data-table tr:hover td { background: rgba(56,189,248,0.05); }
+
+.alert {
+  padding: 1rem 1.25rem; border-radius: 12px; margin: 1.5rem 0;
+  display: flex; align-items: flex-start; gap: 0.75rem; border: 1px solid;
+}
+.alert-info { background: rgba(56,189,248,0.08); border-color: rgba(56,189,248,0.3); color: var(--c-primary); }
+.alert-warn { background: rgba(251,191,36,0.08); border-color: rgba(251,191,36,0.3); color: var(--c-warning); }
+.alert-danger { background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.3); color: var(--c-danger); }
+.alert-success { background: rgba(52,211,153,0.08); border-color: rgba(52,211,153,0.3); color: var(--c-success); }
+.alert-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+.img-wrap {
+  border-radius: 16px; overflow: hidden; margin: 1.5rem 0;
+  border: 1px solid var(--c-border); background: var(--c-surface);
+}
+.img-wrap img { width: 100%; height: auto; display: block; }
+.img-caption {
+  padding: 0.75rem 1rem; text-align: center; color: var(--c-text2);
+  font-size: 0.85rem; background: var(--c-surface); border-top: 1px solid var(--c-border);
+}
+
+.diagram-box {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 16px; padding: 2rem; margin: 1.5rem 0;
+}
+.diagram-step {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem; margin: 0.5rem 0; border-radius: 10px;
+  background: rgba(56,189,248,0.05); border: 1px solid rgba(56,189,248,0.15);
+}
+.diagram-step .num {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.9rem; flex-shrink: 0;
+}
+.diagram-step .text { font-size: 0.95rem; color: var(--c-text); }
+.diagram-arrow {
+  text-align: center; font-size: 1.5rem; color: var(--c-primary); margin: 0.25rem 0;
+}
+
+.brand-card {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 16px; padding: 2rem; margin: 1.5rem 0;
+  border-left: 4px solid var(--c-primary);
+}
+.brand-card.samsung { border-left-color: #1428a0; }
+.brand-card.xiaomi { border-left-color: #ff6900; }
+.brand-card.oneplus { border-left-color: #f50514; }
+.brand-card.huawei { border-left-color: #cf0a2c; }
+
+.next-prev {
+  display: flex; justify-content: space-between; margin-top: 3rem;
+  padding-top: 2rem; border-top: 1px solid var(--c-border);
+}
+.next-prev a {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.8rem 1.5rem; border-radius: 12px;
+  text-decoration: none; font-weight: 700; transition: all 0.3s;
+}
+.next-prev .prev { color: var(--c-text2); border: 1px solid var(--c-border); }
+.next-prev .prev:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.next-prev .next {
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; box-shadow: 0 4px 15px rgba(56,189,248,0.3);
+}
+.next-prev .next:hover { transform: translateX(-3px); }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar-thumb { background: var(--c-surface2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-primary); }
+
+@media (max-width: 768px) {
+  main { padding: 5rem 1rem 2rem; }
+  .chapter-header h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.3rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">📱 أكاديمية صيانة الهواتف</a>
+  <a href="index.html" class="nav-back">← العودة للرئيسية</a>
+</nav>
+
+<main>
+
+<div class="chapter-header">
+  <div class="chapter-num">04</div>
+  <h1>التفليش</h1>
+  <p>Samsung Odin · Xiaomi Mi Flash · OnePlus · Huawei — خطوة بخطوة مع الصور</p>
+</div>
+
+<h2>⚠️ تحذيرات قبل البدء</h2>
+
+<div class="alert alert-danger">
+  <span class="alert-icon">🚨</span>
+  <div><strong>قواعد ذهبية:</strong> 1) احفظ نسخة احتياطية من EFS قبل أي تفليش. 2) تأكد من أن البطارية > 50%. 3) استخدم كابل USB أصلي. 4) لا تفصل الجهاز أثناء التفليش!</div>
+</div>
+
+<h2>📱 Samsung — Odin</h2>
+
+<div class="brand-card samsung">
+  <h3 style="margin-top:0; color:#1428a0;">🔷 Samsung Odin</h3>
+  <p>أداة Windows خاصة بسامسونج. الملفات بصيغة <code>.tar</code> أو <code>.tar.md5</code>.</p>
+  
+  <div class="img-wrap">
+    <img src="images/10_Samsung_Odin_Official_Odin_Download.png" alt="Samsung Odin">
+    <div class="img-caption">واجهة Samsung Odin — ملاحظة أقسام BL, AP, CP, CSC</div>
+  </div>
+
+  <h4>الأقسام في Odin:</h4>
+  <table class="data-table">
+    <tr>
+      <th>القسم</th>
+      <th>الملف</th>
+      <th>الوظيفة</th>
+    </tr>
+    <tr>
+      <td><strong>BL</strong></td>
+      <td>BOOTLOADER_xxx.tar.md5</td>
+      <td>Bootloader + Recovery</td>
+    </tr>
+    <tr>
+      <td><strong>AP</strong></td>
+      <td>AP_xxx.tar.md5</td>
+      <td>System + Kernel + Recovery (الملف الأكبر)</td>
+    </tr>
+    <tr>
+      <td><strong>CP</strong></td>
+      <td>CP_xxx.tar.md5</td>
+      <td>Modem / Baseband</td>
+    </tr>
+    <tr>
+      <td><strong>CSC</strong></td>
+      <td>CSC_xxx.tar.md5</td>
+      <td>Carrier Settings + Region</td>
+    </tr>
+    <tr>
+      <td><strong>HOME_CSC</strong></td>
+      <td>HOME_CSC_xxx.tar.md5</td>
+      <td>نفس CSC لكن بدون مسح البيانات</td>
+    </tr>
+  </table>
+
+  <h4>الخطوات:</h4>
+  <div class="diagram-box" style="margin:1rem 0;">
+    <div class="diagram-step">
+      <div class="num">1</div>
+      <div class="text">أدخل <strong>Download Mode</strong>: Volume Down + Home + Power (ثم Volume Up للتأكيد)</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">2</div>
+      <div class="text">افتح Odin → وصّل الهاتف → يجب أن يظهر <strong>COM:xx</strong> بالأزرق</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">3</div>
+      <div class="text">أضف الملفات: BL → BL, AP → AP, CP → CP, CSC → CSC (أو HOME_CSC)</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">4</div>
+      <div class="text">تأكد من عدم تفعيل <strong>Re-partition</strong> إلا إذا كان لديك PIT file</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">5</div>
+      <div class="text">اضغط <strong>Start</strong> → انتظر PASS! بالأخضر</div>
+    </div>
+  </div>
+
+  <div class="alert alert-warn">
+    <span class="alert-icon">⚠️</span>
+    <div><strong>ملاحظة:</strong> إذا فشل التفليش وظهر FAIL بالأحمر: جرب منفذ USB آخر، أعد تشغيل Odin، أو استخدم إصدار أقدم من Odin.</div>
+  </div>
+</div>
+
+<h2>🔶 Xiaomi — Mi Flash</h2>
+
+<div class="brand-card xiaomi">
+  <h3 style="margin-top:0; color:#ff6900;">🔶 Xiaomi Mi Flash Tool</h3>
+  <p>يتطلب <strong>Unlock Bootloader</strong> أولاً (انتظار 168 ساعة/7 أيام). الملفات بصيغة <code>.tgz</code>.</p>
+
+  <div class="img-wrap">
+    <img src="images/5_Mi_Flash_Tool_2018_Hello_Mi_Flash.png" alt="Mi Flash Tool">
+    <div class="img-caption">واجهة Mi Flash Tool — اختر clean all أو save user data</div>
+  </div>
+
+  <h4>الخطوات:</h4>
+  <div class="diagram-box" style="margin:1rem 0;">
+    <div class="diagram-step">
+      <div class="num">1</div>
+      <div class="text">فتح Bootloader عبر <a href="https://en.miui.com/unlock/" target="_blank" style="color:var(--c-primary);">Mi Unlock</a> (انتظر 168 ساعة)</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">2</div>
+      <div class="text">حمّل ROM Fastboot من <a href="https://xiaomifirmwareupdater.com/" target="_blank" style="color:var(--c-primary);">xiaomifirmwareupdater.com</a></div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">3</div>
+      <div class="text">فك ضغط ROM → افتح Mi Flash → اضغط <strong>Select</strong> واختر مجلد ROM</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">4</div>
+      <div class="text">أدخل Fastboot: Volume Down + Power → اضغط <strong>Refresh</strong> في Mi Flash</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">5</div>
+      <div class="text">اختر <strong>clean all</strong> (مسح كامل) أو <strong>save user data</strong> → اضغط <strong>Flash</strong></div>
+    </div>
+  </div>
+
+  <h4>أوضاع التفليش:</h4>
+  <table class="data-table">
+    <tr>
+      <th>الوضع</th>
+      <th>الاستخدام</th>
+      <th>الطريقة</th>
+    </tr>
+    <tr>
+      <td><strong>Fastboot</strong></td>
+      <td>الطريقة العادية</td>
+      <td>Volume Down + Power → Mi Flash</td>
+    </tr>
+    <tr>
+      <td><strong>EDL (9008)</strong></td>
+      <td>Hard Brick / Bootloader Locked</td>
+      <td>Test Points + QPST</td>
+    </tr>
+    <tr>
+      <td><strong>Recovery</strong></td>
+      <td>تفليش ZIP</td>
+      <td>Volume Up + Power → Install ZIP</td>
+    </tr>
+  </table>
+</div>
+
+<h2>🔴 OnePlus</h2>
+
+<div class="brand-card oneplus">
+  <h3 style="margin-top:0; color:#f50514;">🔴 OnePlus</h3>
+  <p>أسهل الشركات في التفليش. Bootloader سهل الفتح وROMs متاحة بشكل رسمي.</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-title">OnePlus — Fastboot Flash</span>
+      <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+    </div>
+    <pre><span class="comment"># 1. فتح Bootloader</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">reboot</span> bootloader
+<span class="prompt">$</span> <span class="func">fastboot</span> <span class="keyword">flashing</span> unlock
+
+<span class="comment"># 2. تحميل Factory Image</span>
+<span class="comment"># https://www.oneplus.com/support/softwareupgrade</span>
+
+<span class="comment"># 3. تفليش (من مجلد Factory Image)</span>
+<span class="prompt">$</span> <span class="func">fastboot</span> <span class="keyword">flash</span> <span class="keyword">boot</span> <span class="string">boot.img</span>
+<span class="prompt">$</span> <span class="func">fastboot</span> <span class="keyword">flash</span> <span class="keyword">dtbo</span> <span class="string">dtbo.img</span>
+<span class="prompt">$</span> <span class="func">fastboot</span> <span class="keyword">flash</span> <span class="keyword">vbmeta</span> <span class="string">vbmeta.img</span>
+<span class="prompt">$</span> <span class="func">fastboot</span> <span class="keyword">flash</span> <span class="keyword">recovery</span> <span class="string">recovery.img</span>
+<span class="prompt">$</span> <span class="func">fastboot</span> <span class="keyword">flash</span> <span class="keyword">system</span> <span class="string">system.img</span>
+<span class="prompt">$</span> <span class="func">fastboot</span> <span class="keyword">flash</span> <span class="keyword">vendor</span> <span class="string">vendor.img</span>
+
+<span class="comment"># 4. أو استخدم flash-all (أسهل)</span>
+<span class="prompt">$</span> <span class="func">./flash-all.sh</span>   <span class="comment"># Linux/macOS</span>
+<span class="prompt">></span> <span class="func">flash-all.bat</span>    <span class="comment"># Windows</span>
+
+<span class="comment"># 5. إعادة التشغيل</span>
+<span class="prompt">$</span> <span class="func">fastboot</span> <span class="keyword">reboot</span></pre>
+  </div>
+</div>
+
+<h2>🔴 Huawei</h2>
+
+<div class="brand-card huawei">
+  <h3 style="margin-top:0; color:#cf0a2c;">🔴 Huawei</h3>
+  <p><strong>أصعب الشركات حالياً.</strong> Huawei أغلقت Bootloader رسمياً من 2018. الحلول محدودة.</p>
+
+  <div class="alert alert-danger">
+    <span class="alert-icon">🚨</span>
+    <div><strong>تحذير:</strong> Huawei لم تعد تقدم أكواد فتح Bootloader. أي أداة تدعي فتح Huawei قد تكون احتيالية!</div>
+  </div>
+
+  <h4>الحلول المتاحة:</h4>
+  <table class="data-table">
+    <tr>
+      <th>الحالة</th>
+      <th>الحل</th>
+      <th>الصعوبة</th>
+    </tr>
+    <tr>
+      <td>Bootloader مفتوح مسبقاً</td>
+      <td>Fastboot flash عادي</td>
+      <td>سهل</td>
+    </tr>
+    <tr>
+      <td>Bootloader مغلق + Kirin</td>
+      <td>DC-Phoenix / HCU Client (مدفوع)</td>
+      <td>صعب</td>
+    </tr>
+    <tr>
+      <td>Hard Brick</td>
+      <td>Test Points + EDL Mode</td>
+      <td>متقدم</td>
+    </tr>
+    <tr>
+      <td>FRP Lock</td>
+      <td>Huawei ID + FRP bypass tools</td>
+      <td>متوسط</td>
+    </tr>
+  </table>
+</div>
+
+<h2>🛠️ أدوات تفليش عامة</h2>
+
+<table class="data-table">
+  <tr>
+    <th>الأداة</th>
+    <th>الشركات</th>
+    <th>الملاحظات</th>
+  </tr>
+  <tr>
+    <td><strong>SP Flash Tool</strong></td>
+    <td>MediaTek (Xiaomi Redmi القديمة، Oppo، Vivo)</td>
+    <td>Scatter file ضروري. خطر Brick إذا اختيار خاطئ!</td>
+  </tr>
+  <tr>
+    <td><strong>QPST / QFIL</strong></td>
+    <td>Qualcomm (Samsung، Xiaomi، OnePlus)</td>
+    <td>EDL Mode (9008) + Programmer file</td>
+  </tr>
+  <tr>
+    <td><strong>LG Flash Tool</strong></td>
+    <td>LG</td>
+    <td>KDZ files</td>
+  </tr>
+  <tr>
+    <td><strong>RSD Lite</strong></td>
+    <td>Motorola</td>
+    <td>XML files</td>
+  </tr>
+  <tr>
+    <td><strong>Flashfire</strong></td>
+    <td>متعددة (يتطلب Root)</td>
+    <td>تطبيق Android للتفليش بدون كمبيوتر</td>
+  </tr>
+  <tr>
+    <td><strong>Heimdall</strong></td>
+    <td>Samsung</td>
+    <td>بديل مفتوح المصدر لـ Odin على Linux</td>
+  </tr>
+</table>
+
+<h2>📋 قائمة تحقق قبل التفليش</h2>
+
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(251,191,36,0.08),rgba(248,113,113,0.08)); border-color:rgba(251,191,36,0.3);">
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-warning),var(--c-danger));">✓</div>
+    <div class="text">هل حمّلت ROM <strong>الصحيح</strong> لموديل جهازك بالضبط؟ (مثلاً SM-G973F وليس SM-G973U)</div>
+  </div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-warning),var(--c-danger));">✓</div>
+    <div class="text">هل البطارية > <strong>50%</strong>؟</div>
+  </div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-warning),var(--c-danger));">✓</div>
+    <div class="text">هل حفظت نسخة احتياطية من <strong>EFS</strong>؟</div>
+  </div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-warning),var(--c-danger));">✓</div>
+    <div class="text">هل الكابل USB <strong>أصلي</strong>؟</div>
+  </div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-warning),var(--c-danger));">✓</div>
+    <div class="text">هل أغلقت برامج الحماية (Antivirus) التي قد تتعارض مع Odin؟</div>
+  </div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-warning),var(--c-danger));">✓</div>
+    <div class="text">هل فهمت الفرق بين <strong>clean all</strong> و <strong>save user data</strong>؟</div>
+  </div>
+</div>
+
+<div class="next-prev">
+  <a href="chapter3.html" class="prev">← الفصل 3: التشخيص المنطقي</a>
+  <a href="chapter5.html" class="next">الفصل 5: مشاكل الشبكة وIMEI →</a>
+</div>
+
+</main>
+
+</body>
+</html>'''
