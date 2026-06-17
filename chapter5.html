@@ -1,0 +1,416 @@
+# ── chapter5.html ── مشاكل الشبكة وIMEI
+ch5 = '''<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الفصل 5: مشاكل الشبكة وIMEI | أكاديمية صيانة الهواتف</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg: #0f172a; --c-surface: #1e293b; --c-surface2: #334155;
+  --c-primary: #38bdf8; --c-secondary: #818cf8; --c-accent: #f472b6;
+  --c-success: #34d399; --c-warning: #fbbf24; --c-danger: #f87171;
+  --c-text: #f1f5f9; --c-text2: #94a3b8; --c-border: #334155;
+  --glow: 0 0 20px rgba(56,189,248,0.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Tajawal', sans-serif; background: var(--c-bg); color: var(--c-text); line-height: 1.8; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(15,23,42,0.9); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--c-border); padding: 0.75rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { font-weight: 800; font-size: 1.2rem; color: var(--c-primary); text-decoration: none; }
+.nav-back { color: var(--c-text2); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.nav-back:hover { color: var(--c-primary); }
+
+main { max-width: 900px; margin: 0 auto; padding: 6rem 2rem 3rem; }
+
+.chapter-header {
+  text-align: center; margin-bottom: 3rem; padding: 2rem;
+  background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(129,140,248,0.1));
+  border-radius: 20px; border: 1px solid rgba(56,189,248,0.2);
+}
+.chapter-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 50px; height: 50px; background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; font-weight: 900; border-radius: 14px; font-size: 1.3rem; margin-bottom: 1rem;
+}
+.chapter-header h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.75rem; }
+.chapter-header p { color: var(--c-text2); font-size: 1.1rem; }
+
+h2 {
+  font-size: 1.6rem; font-weight: 800; margin: 2.5rem 0 1rem;
+  padding-right: 1rem; border-right: 4px solid var(--c-primary);
+  color: var(--c-text);
+}
+h3 { font-size: 1.2rem; font-weight: 700; margin: 1.5rem 0 0.75rem; color: var(--c-primary); }
+p { color: var(--c-text2); margin-bottom: 1rem; font-size: 1.05rem; }
+
+.code-block {
+  background: #0d1117; border: 1px solid #30363d; border-radius: 12px;
+  overflow: hidden; margin: 1.5rem 0; direction: ltr; text-align: left;
+}
+.code-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.6rem 1rem; background: #161b22; border-bottom: 1px solid #30363d;
+}
+.code-title { font-family: 'Fira Code', monospace; font-size: 0.8rem; color: #8b949e; }
+.code-dots { display: flex; gap: 6px; }
+.code-dot { width: 10px; height: 10px; border-radius: 50%; }
+.code-dot.r { background: #ff5f56; } .code-dot.y { background: #ffbd2e; } .code-dot.g { background: #27c93f; }
+pre {
+  padding: 1.2rem; overflow-x: auto; font-family: 'Fira Code', monospace;
+  font-size: 0.85rem; line-height: 1.7; color: #e6edf3;
+}
+pre .comment { color: #8b949e; }
+pre .keyword { color: #ff7b72; }
+pre .string { color: #a5d6ff; }
+pre .func { color: #d2a8ff; }
+pre .num { color: #79c0ff; }
+
+.terminal {
+  background: #0d1117; border: 1px solid #30363d; border-radius: 12px;
+  overflow: hidden; margin: 1.5rem 0; direction: ltr; text-align: left;
+}
+.terminal-header {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.6rem 1rem; background: #161b22; border-bottom: 1px solid #30363d;
+}
+.terminal-body {
+  padding: 1.2rem; font-family: 'Fira Code', monospace;
+  font-size: 0.85rem; line-height: 1.8; color: #e6edf3;
+}
+.terminal-body .cmd { color: #7ee787; }
+.terminal-body .output { color: #8b949e; }
+.terminal-body .prompt { color: #ff7b72; }
+
+.data-table {
+  width: 100%; border-collapse: collapse; margin: 1.5rem 0;
+  background: var(--c-surface); border-radius: 12px; overflow: hidden;
+  border: 1px solid var(--c-border);
+}
+.data-table th {
+  background: var(--c-surface2); padding: 1rem; text-align: right;
+  font-weight: 700; color: var(--c-primary); font-size: 0.9rem;
+}
+.data-table td {
+  padding: 0.9rem 1rem; border-top: 1px solid var(--c-border);
+  color: var(--c-text2); font-size: 0.9rem;
+}
+.data-table tr:hover td { background: rgba(56,189,248,0.05); }
+
+.alert {
+  padding: 1rem 1.25rem; border-radius: 12px; margin: 1.5rem 0;
+  display: flex; align-items: flex-start; gap: 0.75rem; border: 1px solid;
+}
+.alert-info { background: rgba(56,189,248,0.08); border-color: rgba(56,189,248,0.3); color: var(--c-primary); }
+.alert-warn { background: rgba(251,191,36,0.08); border-color: rgba(251,191,36,0.3); color: var(--c-warning); }
+.alert-danger { background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.3); color: var(--c-danger); }
+.alert-success { background: rgba(52,211,153,0.08); border-color: rgba(52,211,153,0.3); color: var(--c-success); }
+.alert-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+.img-wrap {
+  border-radius: 16px; overflow: hidden; margin: 1.5rem 0;
+  border: 1px solid var(--c-border); background: var(--c-surface);
+}
+.img-wrap img { width: 100%; height: auto; display: block; }
+.img-caption {
+  padding: 0.75rem 1rem; text-align: center; color: var(--c-text2);
+  font-size: 0.85rem; background: var(--c-surface); border-top: 1px solid var(--c-border);
+}
+
+.diagram-box {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 16px; padding: 2rem; margin: 1.5rem 0;
+}
+.diagram-step {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem; margin: 0.5rem 0; border-radius: 10px;
+  background: rgba(56,189,248,0.05); border: 1px solid rgba(56,189,248,0.15);
+}
+.diagram-step .num {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.9rem; flex-shrink: 0;
+}
+.diagram-step .text { font-size: 0.95rem; color: var(--c-text); }
+.diagram-arrow {
+  text-align: center; font-size: 1.5rem; color: var(--c-primary); margin: 0.25rem 0;
+}
+
+.flowchart {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 16px; padding: 2rem; margin: 1.5rem 0;
+}
+.flow-node {
+  padding: 1rem 1.5rem; border-radius: 12px; margin: 0.75rem 0;
+  text-align: center; font-weight: 600; font-size: 0.95rem;
+  border: 2px solid;
+}
+.flow-node.start { background: rgba(52,211,153,0.1); border-color: var(--c-success); color: var(--c-success); }
+.flow-node.question { background: rgba(251,191,36,0.1); border-color: var(--c-warning); color: var(--c-warning); border-radius: 50px; }
+.flow-node.action { background: rgba(56,189,248,0.1); border-color: var(--c-primary); color: var(--c-primary); }
+.flow-node.end { background: rgba(248,113,113,0.1); border-color: var(--c-danger); color: var(--c-danger); }
+.flow-node.success { background: rgba(52,211,153,0.1); border-color: var(--c-success); color: var(--c-success); }
+.flow-line {
+  text-align: center; color: var(--c-text2); font-size: 1.5rem; margin: 0.25rem 0;
+}
+.flow-yesno {
+  display: flex; justify-content: center; gap: 2rem; margin: 0.5rem 0;
+  font-size: 0.8rem; color: var(--c-text2);
+}
+
+.next-prev {
+  display: flex; justify-content: space-between; margin-top: 3rem;
+  padding-top: 2rem; border-top: 1px solid var(--c-border);
+}
+.next-prev a {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.8rem 1.5rem; border-radius: 12px;
+  text-decoration: none; font-weight: 700; transition: all 0.3s;
+}
+.next-prev .prev { color: var(--c-text2); border: 1px solid var(--c-border); }
+.next-prev .prev:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.next-prev .next {
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; box-shadow: 0 4px 15px rgba(56,189,248,0.3);
+}
+.next-prev .next:hover { transform: translateX(-3px); }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar-thumb { background: var(--c-surface2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-primary); }
+
+@media (max-width: 768px) {
+  main { padding: 5rem 1rem 2rem; }
+  .chapter-header h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.3rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">📱 أكاديمية صيانة الهواتف</a>
+  <a href="index.html" class="nav-back">← العودة للرئيسية</a>
+</nav>
+
+<main>
+
+<div class="chapter-header">
+  <div class="chapter-num">05</div>
+  <h1>مشاكل الشبكة وIMEI</h1>
+  <p>استعادة IMEI · Baseband · فتح قفل الشبكة · حلول Qualcomm وMediaTek</p>
+</div>
+
+<h2>📡 تشخيص مشاكل الشبكة</h2>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">فحص الشبكة عبر ADB</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 1. التحقق من IMEI</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">shell</span> <span class="func">service</span> <span class="keyword">call</span> <span class="num">iphonesubinfo</span> <span class="num">1</span>
+<span class="output">Result: Parcel( 0x00000000: '000000000000000' )  &lt;-- IMEI مفقود!</span>
+
+<span class="comment"># 2. التحقق من Baseband</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">shell</span> <span class="func">getprop</span> <span class="keyword">gsm.version.baseband</span>
+<span class="output">Unknown  &lt;-- Baseband مفقود!</span>
+
+<span class="comment"># 3. حالة الشبكة</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">shell</span> <span class="func">dumpsys</span> <span class="keyword">telephony.registry</span> <span class="keyword">|</span> <span class="func">grep</span> <span class="keyword">-E</span> <span class="string">"mServiceState|mSignalStrength"</span>
+
+<span class="comment"># 4. معلومات SIM</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">shell</span> <span class="func">dumpsys</span> <span class="keyword">iphonesubinfo</span>
+
+<span class="comment"># 5. APN Settings</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">shell</span> <span class="func">content</span> <span class="keyword">query</span> <span class="keyword">--uri</span> <span class="string">content://telephony/carriers</span> <span class="keyword">--projection</span> <span class="string">name,apn</span></pre>
+</div>
+
+<h2>🔧 استعادة IMEI</h2>
+
+<div class="alert alert-danger">
+  <span class="alert-icon">⚠️</span>
+  <div><strong>تنبيه قانوني:</strong> تغيير IMEI غير قانوني في معظم الدول. هذا الدليل يشرح <strong>استعادة</strong> IMEI الأصلي بعد فقدانه فقط!</div>
+</div>
+
+<h3>السبب 1: تلف EFS بعد تفليش خاطئ</h3>
+<p>الحل: استعادة نسخة احتياطية من EFS (إن وجدت)</p>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">استعادة EFS</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 1. إذا كان لديك نسخة احتياطية</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">push</span> <span class="string">efs_backup.img</span> <span class="string">/sdcard/</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">shell</span> <span class="func">su</span> <span class="keyword">-c</span> <span class="string">"dd if=/sdcard/efs_backup.img of=/dev/block/bootdevice/by-name/efs"</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">reboot</span>
+
+<span class="comment"># 2. إذا لم يكن لديك نسخة — استخدم NV Backup (Qualcomm)</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">shell</span> <span class="func">su</span> <span class="keyword">-c</span> <span class="string">"cat /persist/radio/qcril_database/qcril.db"</span> <span class="keyword">></span> <span class="string">qcril_backup.db</span></pre>
+</div>
+
+<h3>السبب 2: فقدان IMEI على Qualcomm</h3>
+<p>استخدام QPST/QFIL لكتابة NV Items:</p>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">QPST — كتابة IMEI عبر NV Items</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 1. ادخل EDL Mode (9008)</span>
+<span class="comment">#    - Qualcomm: Test Points أو adb shell "reboot edl"</span>
+
+<span class="comment"># 2. افتح QPST Software Download</span>
+<span class="comment">#    - Select Programmer: prog_emmc_firehose_xxxx.mbn</span>
+<span class="comment">#    - Load XML: rawprogram0.xml</span>
+<span class="comment">#    - Patch: patch0.xml</span>
+
+<span class="comment"># 3. أو عبر QFIL (أسهل)</span>
+<span class="comment">#    - Select Flat Build</span>
+<span class="comment">#    - Browse → Programmer → prog_emmc_firehose.mbn</span>
+<span class="comment">#    - Load XML → rawprogram0.xml + patch0.xml</span>
+<span class="comment">#    - Download</span>
+
+<span class="comment"># 4. IMEI يُكتب عبر NV Item 550 (IMEI1) و 551 (IMEI2)</span>
+<span class="comment">#    استخدم QPST NV Tool:</span>
+<span class="comment">#    - QPST → Start Clients → NV Tool</span>
+<span class="comment">#    - NV Item 550: أدخل IMEI (hex format)</span></pre>
+</div>
+
+<h3>السبب 3: فقدان IMEI على MediaTek</h3>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">MediaTek — IMEI Restore</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 1. عبر Engineering Mode (إذا كان متاحاً)</span>
+<span class="prompt">$</span> <span class="func">adb</span> <span class="keyword">shell</span> <span class="func">am</span> <span class="keyword">start</span> <span class="keyword">-n</span> <span class="string">com.mediatek.engineermode/.EngineerMode</span>
+<span class="comment">#    → CDS Information → Radio Information</span>
+
+<span class="comment"># 2. عبر AT Commands (يتطلب Root + Terminal Emulator)</span>
+<span class="prompt">$</span> <span class="func">su</span>
+<span class="prompt">#</span> <span class="func">echo</span> <span class="string">'AT+EGMR=1,7,"YOUR_IMEI_1"'</span> <span class="keyword">></span> <span class="string">/dev/radio/atci0</span>
+<span class="prompt">#</span> <span class="func">echo</span> <span class="string">'AT+EGMR=1,10,"YOUR_IMEI_2"'</span> <span class="keyword">></span> <span class="string">/dev/radio/atci0</span>
+
+<span class="comment"># 3. عبر Maui META (أداة MediaTek الرسمية)</span>
+<span class="comment">#    - يتطلب Preloader Mode</span>
+<span class="comment">#    - IMEI Download → Enter IMEI → Write</span></pre>
+</div>
+
+<h2>🔓 فتح قفل الشبكة (SIM Unlock)</h2>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div><strong>قانوني:</strong> فتح قفل الشبكة مسموح به إذا انتهى العقد مع الشركة أو دفعت الرسوم!</div>
+</div>
+
+<table class="data-table">
+  <tr>
+    <th>الطريقة</th>
+    <th>الوصف</th>
+    <th>التكلفة</th>
+  </tr>
+  <tr>
+    <td><strong>كود من الشركة</strong></td>
+    <td>اتصل بشركة الاتصالات واطلب كود فتح</td>
+    <td>مجاني (بعد العقد)</td>
+  </tr>
+  <tr>
+    <td><strong>DC-Unlocker</strong></td>
+    <td>أداة مدفوعة لـ Huawei, ZTE, Sierra</td>
+    <td>~$50 للائحة</td>
+  </tr>
+  <tr>
+    <td><strong>Chimera Tool</strong></td>
+    <td>متعددة الشركات (Samsung, Huawei, LG)</td>
+    <td>~$150/سنة</td>
+  </tr>
+  <tr>
+    <td><strong>Octoplus Box</strong></td>
+    <td>أداة هاردوير + برمجية</td>
+    <td>~$300</td>
+  </tr>
+  <tr>
+    <td><strong>Carrier Unlock (USA)</strong></td>
+    <td>AT&T, T-Mobile, Verizon portals</td>
+    <td>مجاني (بعد الشروط)</td>
+  </tr>
+</table>
+
+<h2>📊 مخطط تدفق حل مشاكل الشبكة</h2>
+
+<div class="flowchart">
+  <div class="flow-node start">📡 لا شبكة / لا IMEI</div>
+  <div class="flow-line">⬇</div>
+  <div class="flow-node question">هل IMEI = 000000000000000؟</div>
+  <div class="flow-yesno"><span>✅ نعم → EFS/IMEI مفقود</span><span>❌ لا → ⬇</span></div>
+  <div class="flow-line">⬇</div>
+  <div class="flow-node question">هل Baseband = Unknown؟</div>
+  <div class="flow-yesno"><span>✅ نعم → Modem تالف</span><span>❌ لا → ⬇</span></div>
+  <div class="flow-line">⬇</div>
+  <div class="flow-node question">هل SIM معترف بها؟</div>
+  <div class="flow-yesno"><span>❌ لا → قفل شبكة / SIM تالفة</span><span>✅ نعم → ⬇</span></div>
+  <div class="flow-line">⬇</div>
+  <div class="flow-node action">فحص APN + Network Mode + Carrier Settings</div>
+  <div class="flow-line">⬇</div>
+  <div class="flow-node success">✅ تم الحل!</div>
+</div>
+
+<h2>🔥 سكريبت إصلاح شامل</h2>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">fix-network.sh — إصلاح مشاكل الشبكة</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment">#!/bin/bash</span>
+<span class="comment"># Network Fix Script - Requires Root</span>
+
+<span class="func">echo</span> <span class="string">"[*] Network Fix Script"</span>
+<span class="func">echo</span> <span class="string">"[*] Checking device status..."</span>
+
+<span class="comment"># Check IMEI</span>
+<span class="func">IMEI</span>=<span class="string">$(adb shell service call iphonesubinfo 1 | grep -o '[0-9]*' | tr -d '\n')</span>
+<span class="func">echo</span> <span class="string">"[*] IMEI: $IMEI"</span>
+
+<span class="keyword">if</span> <span class="func">[</span> <span class="string">"$IMEI"</span> <span class="keyword">=</span> <span class="string">"000000000000000"</span> <span class="func">]</span>; <span class="keyword">then</span>
+    <span class="func">echo</span> <span class="string">"[!] IMEI is NULL! EFS may be corrupted."</span>
+    <span class="func">echo</span> <span class="string">"[!] Try restoring EFS backup or flashing stock ROM."</span>
+    <span class="func">exit</span> <span class="num">1</span>
+<span class="keyword">fi</span>
+
+<span class="comment"># Reset network settings</span>
+<span class="func">echo</span> <span class="string">"[*] Resetting network settings..."</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">settings</span> <span class="keyword">put</span> <span class="keyword">global</span> <span class="string">airplane_mode_on</span> <span class="num">1</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">am</span> <span class="keyword">broadcast</span> <span class="keyword">-a</span> <span class="string">android.intent.action.AIRPLANE_MODE</span>
+<span class="func">sleep</span> <span class="num">2</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">settings</span> <span class="keyword">put</span> <span class="keyword">global</span> <span class="string">airplane_mode_on</span> <span class="num">0</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">am</span> <span class="keyword">broadcast</span> <span class="keyword">-a</span> <span class="string">android.intent.action.AIRPLANE_MODE</span>
+
+<span class="comment"># Reset APN</span>
+<span class="func">echo</span> <span class="string">"[*] Resetting APN..."</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">content</span> <span class="keyword">delete</span> <span class="keyword">--uri</span> <span class="string">content://telephony/carriers/restore</span>
+
+<span class="func">echo</span> <span class="string">"[✓] Done! Reboot device now."</span>
+<span class="func">adb</span> <span class="keyword">reboot</span></pre>
+</div>
+
+<div class="next-prev">
+  <a href="chapter4.html" class="prev">← الفصل 4: التفليش</a>
+  <a href="chapter6.html" class="next">الفصل 6: مشاكل البطارية →</a>
+</div>
+
+</main>
+
+</body>
+</html>'''
