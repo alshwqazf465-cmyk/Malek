@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الفصل 5: مشاكل الشبكة وIMEI | أكاديمية صيانة الهواتف</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg: #0f172a; --c-surface: #1e293b; --c-surface2: #334155;
+  --c-primary: #38bdf8; --c-secondary: #818cf8; --c-accent: #f472b6;
+  --c-success: #34d399; --c-warning: #fbbf24; --c-danger: #f87171;
+  --c-text: #f1f5f9; --c-text2: #94a3b8; --c-border: #334155;
+  --glow: 0 0 20px rgba(56,189,248,0.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Tajawal', sans-serif; background: var(--c-bg); color: var(--c-text); line-height: 1.9; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(15,23,42,0.92); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--c-border); padding: 0.75rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { font-weight: 800; font-size: 1.2rem; color: var(--c-primary); text-decoration: none; }
+.nav-back { color: var(--c-text2); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.nav-back:hover { color: var(--c-primary); }
+
+main { max-width: 1000px; margin: 0 auto; padding: 6rem 2rem 3rem; }
+
+.chapter-header {
+  text-align: center; margin-bottom: 3rem; padding: 2.5rem 2rem;
+  background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(129,140,248,0.1));
+  border-radius: 20px; border: 1px solid rgba(56,189,248,0.2);
+}
+.chapter-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 55px; height: 55px; background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; font-weight: 900; border-radius: 14px; font-size: 1.4rem; margin-bottom: 1rem;
+}
+.chapter-header h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 0.75rem; }
+.chapter-header p { color: var(--c-text2); font-size: 1.1rem; }
+
+h2 {
+  font-size: 1.8rem; font-weight: 800; margin: 3.5rem 0 2rem;
+  padding-right: 1rem; border-right: 4px solid var(--c-primary);
+  color: var(--c-text);
+}
+h3 { font-size: 1.3rem; font-weight: 700; margin: 2.5rem 0 1.2rem; color: var(--c-primary); }
+h4 { font-size: 1.1rem; font-weight: 700; margin: 2rem 0 1rem; color: var(--c-warning); }
+p { color: var(--c-text2); margin-bottom: 1rem; font-size: 1.05rem; line-height: 2; }
+
+.code-block {
+  background: #0d1117; border: 1px solid #30363d; border-radius: 14px;
+  overflow: hidden; margin: 2rem 0; direction: ltr; text-align: left;
+}
+.code-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.7rem 1.2rem; background: #161b22; border-bottom: 1px solid #30363d;
+}
+.code-title { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #8b949e; }
+.code-dots { display: flex; gap: 7px; }
+.code-dot { width: 11px; height: 11px; border-radius: 50%; }
+.code-dot.r { background: #ff5f56; } .code-dot.y { background: #ffbd2e; } .code-dot.g { background: #27c93f; }
+pre {
+  padding: 1.4rem; overflow-x: auto; font-family: 'Fira Code', monospace;
+  font-size: 0.88rem; line-height: 1.9; color: #e6edf3;
+}
+pre .comment { color: #8b949e; }
+pre .keyword { color: #ff7b72; }
+pre .string { color: #a5d6ff; }
+pre .func { color: #d2a8ff; }
+pre .num { color: #79c0ff; }
+pre .cmd { color: #7ee787; }
+pre .output { color: #a5d6ff; }
+pre .err { color: #ff7b72; }
+pre .warn { color: #fbbf24; }
+
+.data-table {
+  width: 100%; border-collapse: collapse; margin: 2rem 0;
+  background: var(--c-surface); border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--c-border);
+}
+.data-table th {
+  background: var(--c-surface2); padding: 1.1rem 1.3rem; text-align: right;
+  font-weight: 700; color: var(--c-primary); font-size: 0.9rem;
+}
+.data-table td {
+  padding: 1rem 1.3rem; border-top: 1px solid var(--c-border);
+  color: var(--c-text2); font-size: 0.92rem; line-height: 1.8;
+}
+.data-table tr:hover td { background: rgba(56,189,248,0.04); }
+
+.alert {
+  padding: 1.2rem 1.5rem; border-radius: 14px; margin: 2rem 0;
+  display: flex; align-items: flex-start; gap: 0.9rem; border: 1px solid;
+  font-size: 1rem;
+}
+.alert-info { background: rgba(56,189,248,0.06); border-color: rgba(56,189,248,0.25); color: var(--c-primary); }
+.alert-warn { background: rgba(251,191,36,0.06); border-color: rgba(251,191,36,0.25); color: var(--c-warning); }
+.alert-danger { background: rgba(248,113,113,0.06); border-color: rgba(248,113,113,0.25); color: var(--c-danger); }
+.alert-success { background: rgba(52,211,153,0.06); border-color: rgba(52,211,153,0.25); color: var(--c-success); }
+.alert-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+
+.diagram-box {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 18px; padding: 2rem; margin: 2rem 0;
+}
+.diagram-step {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem 1.2rem; margin: 0.5rem 0; border-radius: 12px;
+  background: rgba(56,189,248,0.04); border: 1px solid rgba(56,189,248,0.12);
+}
+.diagram-step .num {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.95rem; flex-shrink: 0;
+}
+.diagram-step .text { font-size: 0.95rem; color: var(--c-text); line-height: 1.7; }
+.diagram-arrow { text-align: center; font-size: 1.6rem; color: var(--c-primary); margin: 0.2rem 0; }
+
+.flowchart {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 18px; padding: 2rem; margin: 2rem 0;
+}
+.flow-node {
+  padding: 1.2rem 1.5rem; border-radius: 14px; margin: 0.85rem 0;
+  text-align: center; font-weight: 700; font-size: 1rem;
+  border: 2px solid;
+}
+.flow-node.start { background: rgba(52,211,153,0.08); border-color: var(--c-success); color: var(--c-success); }
+.flow-node.question { background: rgba(251,191,36,0.08); border-color: var(--c-warning); color: var(--c-warning); border-radius: 50px; }
+.flow-node.action { background: rgba(56,189,248,0.08); border-color: var(--c-primary); color: var(--c-primary); }
+.flow-node.end { background: rgba(248,113,113,0.08); border-color: var(--c-danger); color: var(--c-danger); }
+.flow-node.success { background: rgba(52,211,153,0.08); border-color: var(--c-success); color: var(--c-success); }
+.flow-line { text-align: center; color: var(--c-text2); font-size: 1.6rem; margin: 0.3rem 0; }
+.flow-yesno {
+  display: flex; justify-content: center; gap: 3rem; margin: 0.6rem 0;
+  font-size: 0.85rem; font-weight: 600;
+}
+
+.next-prev {
+  display: flex; justify-content: space-between; margin-top: 4rem;
+  padding-top: 2.5rem; border-top: 1px solid var(--c-border);
+}
+.next-prev a {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.9rem 1.8rem; border-radius: 14px;
+  text-decoration: none; font-weight: 700; transition: all 0.3s;
+}
+.next-prev .prev { color: var(--c-text2); border: 1px solid var(--c-border); }
+.next-prev .prev:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.next-prev .next {
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; box-shadow: 0 4px 15px rgba(56,189,248,0.3);
+}
+.next-prev .next:hover { transform: translateX(-3px); }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar-thumb { background: var(--c-surface2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-primary); }
+
+@media (max-width: 768px) {
+  main { padding: 5rem 1rem 2rem; }
+  .chapter-header h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">📱 أكاديمية صيانة الهواتف</a>
+  <a href="index.html" class="nav-back">← العودة للرئيسية</a>
+</nav>
+
+<main>
+
+<div class="chapter-header">
+  <div class="chapter-num">05</div>
+  <h1>مشاكل الشبكة وIMEI</h1>
+  <p>استعادة IMEI · Baseband · فتح قفل الشبكة · حلول Qualcomm وMediaTek — شرح تفصيلي كامل</p>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١: تشخيص مشاكل الشبكة -->
+<!-- ================================================================ -->
+<h2>📡 تشخيص مشاكل الشبكة — ٥ فحوصات أساسية</h2>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>قاعدة ذهبية:</strong> مشاكل الشبكة هي الأصعب في التشخيص. ابدأ دائماً من السوفتوير قبل أن تلمس الهاردوير. ٧٠٪ من مشاكل الشبكة سببها برمجي (EFS، Modem، إعدادات).
+  </div>
+</div>
+
+<p><strong>الفحوصات الخمسة الأساسية</strong> التي يجب أن تجريها على أي هاتف يعاني من مشكلة شبكة:</p>
+
+<!-- فحص ١ -->
+<h3>الفحص ١: التحقق من IMEI</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">التحقق من IMEI — هل هو موجود؟</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># الطريقة ١: عبر كود سري (أسهل)</span>
+<span class="comment"># افتح تطبيق الهاتف واطلب: *#06#</span>
+<span class="comment"># يجب أن يظهر IMEI1 و IMEI2 (إذا كان ثنائي الشريحة)</span>
+
+<span class="comment"># الطريقة ٢: عبر ADB (أدق)</span>
+<span class="cmd">adb shell service call</span> iphonesubinfo 1
+<span class="output">Result: Parcel(0x00000000: '123456789012345')</span>   <span class="comment">← IMEI موجود ✅</span>
+<span class="output">Result: Parcel(0x00000000: '000000000000000')</span>   <span class="comment">← IMEI مفقود ❌</span>
+
+<span class="comment"># الطريقة ٣: للإعدادات</span>
+<span class="comment"># الإعدادات > حول الهاتف > حالة > معلومات IMEI</span></pre>
+</div>
+
+<p><strong>ماذا تعني النتائج؟</strong></p>
+<table class="data-table">
+  <tr><th>النتيجة</th><th>المعنى</th><th>الإجراء</th></tr>
+  <tr>
+    <td>IMEI يظهر رقماً طبيعياً (15 رقم)</td>
+    <td>EFS سليم ✅</td>
+    <td>المشكلة ليست في IMEI. انتقل للفحص ٢.</td>
+  </tr>
+  <tr>
+    <td>IMEI = 0 أو 000000000000000</td>
+    <td>EFS تالف أو فارغ ❌</td>
+    <td>تحتاج استعادة EFS أو كتابة IMEI</td>
+  </tr>
+  <tr>
+    <td>IMEI = null (لا يظهر شيء)</td>
+    <td>EFS مفقود بالكامل ❌</td>
+    <td>تحتاج تفليش ROM أو استعادة EFS</td>
+  </tr>
+  <tr>
+    <td>IMEI يظهر لكن مختلف عن الملصق</td>
+    <td>تم تغييره سابقاً ⚠️</td>
+    <td>الهاتف قد يكون مسروقاً أو تم العبث به</td>
+  </tr>
+</table>
+
+<!-- فحص ٢ -->
+<h3>الفحص ٢: التحقق من Baseband</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">التحقق من Baseband — هل المودم حي؟</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># الطريقة ١: عبر ADB</span>
+<span class="cmd">adb shell getprop</span> gsm.version.baseband
+<span class="output">M8992_20210.05.05.21R</span>   <span class="comment">← Baseband موجود ✅</span>
+<span class="output">Unknown</span>                   <span class="comment">← Baseband مفقود ❌</span>
+
+<span class="comment"># الطريقة ٢: عبر الإعدادات</span>
+<span class="comment"># الإعدادات > حول الهاتف > إصدار القاعدة (Baseband version)
+# إذا ظهر "غير متوفر" أو "Unknown" = Baseband مفقود</span>
+
+<span class="comment"># الطريقة ٣: فحص إضافي</span>
+<span class="cmd">adb shell getprop</span> | grep <span class="string">"baseband\|modem\|radio"</span></pre>
+</div>
+
+<p><strong>الفرق بين IMEI و Baseband:</strong></p>
+<ul style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+  <li><strong>IMEI:</strong> رقم هوية الجهاز. يُخزن في EFS.</li>
+  <li><strong>Baseband:</strong> برنامج تشغيل المودم. يُخزن في قسم modem.</li>
+  <li>قد يكون IMEI موجوداً لكن Baseband مفقوداً = الهاتف لن يلتقط شبكة</li>
+  <li>قد يكون Baseband موجوداً لكن IMEI مفقوداً = الهاتف لن يلتقط شبكة</li>
+  <li><strong>كلاهما ضروري لعمل الشبكة.</strong></li>
+</ul>
+
+<!-- فحص ٣ -->
+<h3>الفحص ٣: حالة الشبكة والإشارة</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">فحص حالة الشبكة وقوة الإشارة</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># فحص حالة الخدمة وقوة الإشارة</span>
+<span class="cmd">adb shell dumpsys</span> telephony.registry | grep <span class="string">"mServiceState\|mSignalStrength"</span>
+
+<span class="comment"># mServiceState: 0 = في الخدمة ✅ | 1 = خارج الخدمة ❌ | 3 = مغلق</span>
+<span class="comment"># mSignalStrength: -85 dBm = قوي | -110 dBm = ضعيف جداً</span>
+
+<span class="comment"># فحص معلومات SIM</span>
+<span class="cmd">adb shell dumpsys</span> iphonesubinfo
+
+<span class="comment"># فحص APN</span>
+<span class="cmd">adb shell content query</span> --uri <span class="string">content://telephony/carriers</span> --projection <span class="string">name,apn</span></pre>
+</div>
+
+<!-- فحص ٤ -->
+<h3>الفحص ٤: البحث اليدوي عن الشبكات</h3>
+<div class="diagram-box">
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text">اذهب إلى: <strong>الإعدادات > الشبكات > شبكة الهاتف > البحث عن شبكات</strong></div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>إذا ظهرت قائمة شبكات:</strong> المشكلة في التسجيل (EFS/شهادة). انتقل للفحص ٥.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>إذا لم تظهر أي شبكة:</strong> المشكلة في الأنتين أو IC الشبكة (هاردوير).</div>
+  </div>
+</div>
+
+<!-- فحص ٥ -->
+<h3>الفحص ٥: اختبار SIM وشريحة أخرى</h3>
+<ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+  <li><strong>جرب شريحة من شركة أخرى.</strong> إذا اشتغلت = الهاتف مقفول على شبكة (SIM Lock)</li>
+  <li><strong>جرب شريحتك في هاتف آخر.</strong> إذا لم تشتغل = المشكلة في الشريحة نفسها</li>
+  <li><strong>نظف الشريحة ودرج SIM.</strong> استخدم ممحاة قلم رصاص لتنظيف نقاط التلامس الذهبية</li>
+</ol>
+
+<!-- ================================================================ -->
+<!-- القسم ٢: مسار الشبكة في الهاتف -->
+<!-- ================================================================ -->
+<h2>🗺️ مسار الشبكة في الهاتف — فهم الأجزاء</h2>
+
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(56,189,248,0.04),rgba(129,140,248,0.04)); border-color:rgba(56,189,248,0.2);">
+  <h3 style="margin-top:0; color:var(--c-primary);">كيف تصل الإشارة من برج الاتصالات إلى شاشة هاتفك؟</h3>
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>برج الاتصالات</strong> — يرسل إشارة راديو. هذه خارج الهاتف.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>الأنتين (Antenna)</strong> — قطعة معدنية داخل الهاتف تلتقط الإشارة. إذا كانت مفصولة أو تالفة = لا إشارة.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>IC الشبكة (Modem IC / Transceiver)</strong> — الشريحة المسؤولة عن تحويل إشارة الراديو إلى بيانات رقمية. إذا تلفت = لا شبكة.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text"><strong>قسم Modem (Baseband)</strong> — برنامج تشغيل IC الشبكة. إذا كان مفقوداً = IC الشبكة لا تعمل.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">5</div>
+    <div class="text"><strong>EFS / NVRAM</strong> — يحتوي على IMEI ومعايرة الشبكة وشهادات الأمان. إذا تلف = الشبكة لا تسجل.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">6</div>
+    <div class="text"><strong>نظام أندرويد</strong> — يعرض الأبراج واسم الشبكة على الشاشة. هذه آخر خطوة.</div>
+  </div>
+</div>
+
+<p><strong>أين تحدث المشكلة عادة؟</strong></p>
+<ul style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+  <li><strong>EFS تالف:</strong> ٤٠٪ من مشاكل الشبكة. يحدث بعد تفليش خاطئ.</li>
+  <li><strong>Modem مفقود:</strong> ٢٥٪. يحدث بعد تفليش ROM بدون ملف CP.</li>
+  <li><strong>IC شبكة تالف:</strong> ٢٠٪. يحدث بعد سقوط أو ماء.</li>
+  <li><strong>قفل شبكة:</strong> ١٠٪. الهاتف مقفول على شركة معينة.</li>
+  <li><strong>أنتين مفصول:</strong> ٥٪. يحدث بعد فتح الهاتف ونسيان توصيل الأنتين.</li>
+</ul>
+
+<!-- ================================================================ -->
+<!-- القسم ٣: مخطط تدفق تشخيص الشبكة -->
+<!-- ================================================================ -->
+<h2>📊 مخطط تدفق تشخيص مشاكل الشبكة</h2>
+
+<div class="flowchart">
+  <div class="flow-node start">📡 العميل: "ما فيه شبكة"</div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">السؤال ١: هل IMEI موجود؟ (اطلب *#06#)</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ IMEI موجود (١٥ رقم)</span>
+    <span style="color:var(--c-danger);">❌ IMEI = 0 أو null</span>
+  </div>
+  <div style="display:flex; gap:1rem; margin:1rem 0;">
+    <div style="flex:1; background:rgba(52,211,153,0.06); border:1px solid rgba(52,211,153,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-success);">✅ IMEI سليم</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">انتقل للسؤال ٢</p>
+    </div>
+    <div style="flex:1; background:rgba(248,113,113,0.06); border:1px solid rgba(248,113,113,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-danger);">❌ IMEI مفقود</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">• استعد نسخة EFS الاحتياطية<br>• فلّش ROM كامل<br>• استخدم QPST (Qualcomm)<br>• استخدم Maui META (MediaTek)</p>
+    </div>
+  </div>
+
+  <div class="flow-line">⬇</div>
+  <div class="flow-node question">السؤال ٢: هل Baseband موجود؟ (الإعدادات > حول الهاتف)</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ Baseband يظهر برقم إصدار</span>
+    <span style="color:var(--c-danger);">❌ Baseband = Unknown</span>
+  </div>
+  <div style="display:flex; gap:1rem; margin:1rem 0;">
+    <div style="flex:1; background:rgba(52,211,153,0.06); border:1px solid rgba(52,211,153,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-success);">✅ Baseband سليم</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">انتقل للسؤال ٣</p>
+    </div>
+    <div style="flex:1; background:rgba(248,113,113,0.06); border:1px solid rgba(248,113,113,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-danger);">❌ Baseband مفقود</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">• فلّش قسم CP/Modem<br>• فلّش ROM كامل<br>• تأكد من ROM الصحيح للموديل</p>
+    </div>
+  </div>
+
+  <div class="flow-line">⬇</div>
+  <div class="flow-node question">السؤال ٣: هل الشريحة مقروءة؟ (يظهر اسم الشبكة؟)</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ الشريحة مقروءة</span>
+    <span style="color:var(--c-danger);">❌ "لا توجد شريحة"</span>
+  </div>
+  <div style="display:flex; gap:1rem; margin:1rem 0;">
+    <div style="flex:1; background:rgba(52,211,153,0.06); border:1px solid rgba(52,211,153,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-success);">✅ SIM مقروءة</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">انتقل للسؤال ٤</p>
+    </div>
+    <div style="flex:1; background:rgba(248,113,113,0.06); border:1px solid rgba(248,113,113,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-danger);">❌ SIM غير مقروءة</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">• نظف الشريحة ودرج SIM<br>• جرب شريحة أخرى<br>• افحص قارئ SIM على البوردة</p>
+    </div>
+  </div>
+
+  <div class="flow-line">⬇</div>
+  <div class="flow-node question">السؤال ٤: هل يجد شبكات عند البحث اليدوي؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ يجد شبكات</span>
+    <span style="color:var(--c-danger);">❌ لا يجد أي شبكة</span>
+  </div>
+  <div style="display:flex; gap:1rem; margin:1rem 0;">
+    <div style="flex:1; background:rgba(52,211,153,0.06); border:1px solid rgba(52,211,153,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-success);">✅ يجد شبكات</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">• المشكلة في التسجيل<br>• EFS/شهادة تالفة<br>• أو الهاتف مقفول على شبكة</p>
+    </div>
+    <div style="flex:1; background:rgba(248,113,113,0.06); border:1px solid rgba(248,113,113,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-danger);">❌ لا يجد شبكات</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">• مشكلة أنتين أو IC شبكة<br>• هاردوير — يحتاج فتح الهاتف</p>
+    </div>
+  </div>
+
+  <div class="flow-line">⬇</div>
+  <div class="flow-node success">✅ تم التشخيص! اتبع الحل المناسب</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٤: استعادة IMEI -->
+<!-- ================================================================ -->
+<h2>🔧 استعادة IMEI المفقود</h2>
+
+<div class="alert alert-danger">
+  <span class="alert-icon">🚨</span>
+  <div>
+    <strong>تنبيه قانوني مهم:</strong> تغيير IMEI إلى رقم غير الأصلي <strong>غير قانوني</strong> في معظم دول العالم. هذا الدليل يشرح <strong>استعادة IMEI الأصلي</strong> بعد فقدانه بسبب تلف EFS أو تفليش خاطئ فقط. تأكد من استخدام IMEI الأصلي الموجود على ملصق الهاتف أو علبته.
+  </div>
+</div>
+
+<!-- طريقة ١ -->
+<h3>الطريقة ١: استعادة نسخة EFS احتياطية (أفضل طريقة)</h3>
+
+<div class="diagram-box">
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>تأكد من وجود نسخة EFS احتياطية.</strong> إذا كنت قد أخذت نسخة قبل التفليش (كما ننصح دائماً)، فهذا هو وقت استخدامها. ابحث عن ملف <code>efs.img</code> أو <code>efs_backup.img</code> في جهازك.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>ارفع الملف للهاتف:</strong> <code>adb push efs_backup.img /sdcard/</code></div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>اكتب الملف على قسم EFS:</strong> <code>adb shell su -c "dd if=/sdcard/efs_backup.img of=/dev/block/bootdevice/by-name/efs"</code></div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text"><strong>أعد التشغيل:</strong> <code>adb reboot</code>. بعد الإقلاع، تحقق من IMEI بـ <code>*#06#</code>.</div>
+  </div>
+</div>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">أوامر استعادة EFS كاملة</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># الخطوة ١: ارفع النسخة الاحتياطية للهاتف</span>
+<span class="cmd">adb push</span> efs_backup.img <span class="output">/sdcard/</span>
+
+<span class="comment"># الخطوة ٢: اكتبها على قسم EFS (يتطلب Root)</span>
+<span class="cmd">adb shell</span> su -c <span class="string">"dd if=/sdcard/efs_backup.img of=/dev/block/bootdevice/by-name/efs"</span>
+
+<span class="comment"># الخطوة ٣: أعد التشغيل</span>
+<span class="cmd">adb reboot</span>
+
+<span class="comment"># ⚠️ إذا لم تعرف مسار EFS الصحيح لجهازك، ابحث عنه:</span>
+<span class="cmd">adb shell</span> ls /dev/block/bootdevice/by-name/ | grep <span class="string">"efs\|modemst1\|modemst2\|fsg"</span>
+
+<span class="comment"># مسارات EFS الشائعة:
+# Samsung: /dev/block/platform/155a0000.ufs/by-name/EFS
+# Qualcomm: /dev/block/bootdevice/by-name/efs
+# MediaTek: /dev/block/platform/mtk-msdc.0/by-name/nvram</span></pre>
+</div>
+
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div><strong>إذا لم يكن لديك نسخة احتياطية:</strong> لا تيأس. انتقل للطرق التالية. في معظم الحالات، يمكن استعادة IMEI عبر تفليش ROM كامل أو استخدام أدوات خاصة.</div>
+</div>
+
+<!-- طريقة ٢ -->
+<h3>الطريقة ٢: استعادة IMEI على أجهزة Qualcomm</h3>
+<p>أجهزة Qualcomm تخزن IMEI في <strong>NV Items</strong> (Non-Volatile Memory). يمكن كتابتها عبر أداة QPST.</p>
+
+<h4>📥 المتطلبات:</h4>
+<ul style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+  <li><strong>QPST Tool:</strong> من <a href="https://qpstool.com/" target="_blank" style="color:var(--c-primary);">qpstool.com</a></li>
+  <li><strong>Qualcomm HS-USB QDLoader 9008 Driver:</strong> تعريف EDL Mode</li>
+  <li><strong>IMEI الأصلي:</strong> موجود على ملصق خلف الهاتف أو على علبته</li>
+</ul>
+
+<h4>🚀 خطوات استعادة IMEI عبر QPST:</h4>
+<div class="diagram-box">
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>ادخل EDL Mode.</strong> أطفئ الهاتف. استخدم EDL Cable أو Test Points للدخول إلى EDL (منفذ COM 9008). ستسمع صوت اتصال USB في الكمبيوتر.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>افتح QPST Configuration.</strong> اضغط Ports > Add New Port. اختر المنفذ الذي يظهر عليه الهاتف (غالباً COM3 أو COM4). يجب أن يظهر "Phone in Download Mode".</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>افتح QPST Software Download.</strong> اختر Backup > Phone Image. هذا يأخذ نسخة احتياطية من كل شيء (للأمان).</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text"><strong>استخدم QPST NV Tool.</strong> من قائمة Start > All Programs > QPST > NV Items Manager. اختر المنفذ الصحيح.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">5</div>
+    <div class="text"><strong>اقرأ NV Item 550 (IMEI1).</strong> هذا هو IMEI الأول. إذا كان 0، فأنت بحاجة لكتابته. نفس الشيء لـ NV Item 551 (IMEI2).</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">6</div>
+    <div class="text"><strong>اكتب IMEI.</strong> اختر NV Item 550 > Write > أدخل IMEI بصيغة Hex. أعد التشغيل.</div>
+  </div>
+</div>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">كتابة IMEI عبر QPST NV Tool</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># IMEI بصيغة Hex:
+# IMEI الأصلي: 123456789012345
+# تحويله لـ Hex: 0x12 0x34 0x56 0x78 0x90 0x12 0x34 0x50
+# (لاحظ: آخر رقم يكون 0x50 وليس 0x05 بسبب ترتيب البايتات)
+
+# NV Items المهمة:
+# 550 = IMEI1
+# 551 = IMEI2 (للثنائي شريحة)
+# 467 = MEID (لأجهزة CDMA)</span></pre>
+</div>
+
+<!-- طريقة ٣ -->
+<h3>الطريقة ٣: استعادة IMEI على أجهزة MediaTek</h3>
+<p>أجهزة MediaTek تخزن IMEI في NVRAM. يمكن استعادته بعدة طرق:</p>
+
+<h4>🚀 الطريقة ٣-أ: عبر Engineering Mode</h4>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">MediaTek — Engineering Mode</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># افتح Engineering Mode (إذا كان متاحاً)</span>
+<span class="cmd">adb shell am start</span> -n <span class="string">com.mediatek.engineermode/.EngineerMode</span>
+
+<span class="comment"># في القائمة:
+# ١. CDS Information > Radio Information
+# ٢. Phone 1 (للشريحة الأولى)
+# ٣. في حقل AT+، اكتب: AT+EGMR=1,7,"IMEI1"
+# ٤. اضغط SEND AT COMMAND
+# ٥. Phone 2 (للشريحة الثانية): AT+EGMR=1,10,"IMEI2"
+# ٦. أعد التشغيل</span></pre>
+</div>
+
+<h4>🚀 الطريقة ٣-ب: عبر AT Commands (Root + Terminal)</h4>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">MediaTek — AT Commands (يتطلب Root)</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># افتح Terminal Emulator على الهاتف أو adb shell</span>
+<span class="cmd">adb shell</span>
+<span class="cmd">su</span>
+
+<span class="comment"># كتابة IMEI1 (الشريحة الأولى)</span>
+<span class="cmd">echo</span> <span class="string">'AT+EGMR=1,7,"123456789012345"'</span> > <span class="output">/dev/radio/pttycmd1</span>
+<span class="comment"># أو حسب جهازك: /dev/radio/atci0, /dev/ttyC0</span>
+
+<span class="comment"># كتابة IMEI2 (الشريحة الثانية)</span>
+<span class="cmd">echo</span> <span class="string">'AT+EGMR=1,10,"123456789012346"'</span> > <span class="output">/dev/radio/pttycmd1</span>
+
+<span class="comment"># أعد التشغيل</span>
+<span class="cmd">reboot</span></pre>
+</div>
+
+<h4>🚀 الطريقة ٣-ج: عبر Maui META (أداة MediaTek الرسمية)</h4>
+<div class="diagram-box">
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>حمّل Maui META</strong> من موقع MediaTek الرسمي أو XDA Developers.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>ادخل Preloader Mode:</strong> أطفئ الهاتف. وصله بالكمبيوتر وهو مطفأ. سيتعرف عليه كـ "MediaTek PreLoader USB VCOM Port".</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>افتح Maui META > IMEI Download.</strong> أدخل IMEI1 و IMEI2 في الحقول المخصصة. اضغط Write.</div>
+  </div>
+</div>
+
+<!-- طريقة ٤ -->
+<h3>الطريقة ٤: استعادة IMEI عبر تفليش ROM كامل</h3>
+<p>في كثير من الأحيان، <strong>تفليش ROM كامل مع ملف CP/Modem</strong> يحل مشكلة IMEI المفقود. هذه هي الطريقة الأسهل:</p>
+
+<ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+  <li><strong>لـ Samsung:</strong> فلّش ROM كامل مع CP (مودم) عبر Odin</li>
+  <li><strong>لـ Xiaomi:</strong> فلّش Fastboot ROM كامل عبر Mi Flash (اختر clean all)</li>
+  <li><strong>لـ OnePlus:</strong> فلّش Factory Image كامل عبر Fastboot</li>
+  <li><strong>لـ Qualcomm:</strong> فلّش عبر QFIL مع rawprogram.xml كامل</li>
+  <li><strong>لـ MediaTek:</strong> فلّش عبر SP Flash Tool (اختر Firmware Upgrade)</li>
+</ol>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div><strong>نصيحة:</strong> قبل تجربة أي من الطرق المعقدة أعلاه، جرب تفليش ROM كامل أولاً. هذه الطريقة تحل ٥٠٪ من مشاكل IMEI المفقود.</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٥: Baseband مفقود -->
+<!-- ================================================================ -->
+<h2>📡 إصلاح مشكلة Baseband = Unknown</h2>
+
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div>
+    <strong>الفرق بين IMEI و Baseband:</strong>
+    <ul style="margin-top:0.5rem; padding-right:1.2rem;">
+      <li><strong>IMEI مفقود:</strong> IMEI = 0. Baseband قد يكون موجوداً. المشكلة في EFS.</li>
+      <li><strong>Baseband مفقود:</strong> Baseband = Unknown. IMEI قد يكون موجوداً. المشكلة في قسم modem.</li>
+      <li><strong>كلاهما مفقود:</strong> تحتاج تفليش ROM كامل.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>حلول Baseband المفقود:</h3>
+<table class="data-table">
+  <tr>
+    <th>الحل</th>
+    <th>الشركة</th>
+    <th>الخطوات</th>
+  </tr>
+  <tr>
+    <td><strong>تفليش CP فقط</strong></td>
+    <td>Samsung</td>
+    <td>في Odin: ضع ملف CP في حقل CP فقط. لا تلمس BL, AP, CSC.</td>
+  </tr>
+  <tr>
+    <td><strong>تفليش ROM كامل</strong></td>
+    <td>كل الشركات</td>
+    <td>فلّش ROM كامل مع ملف المودم. هذه الطريقة تحل ٩٠٪ من المشاكل.</td>
+  </tr>
+  <tr>
+    <td><strong>تفليش modem.img</strong></td>
+    <td>Qualcomm</td>
+    <td>في Fastboot: <code>fastboot flash modem modem.img</code></td>
+  </tr>
+  <tr>
+    <td><strong>استعادة QCN</strong></td>
+    <td>Qualcomm</td>
+    <td>إذا كان لديك نسخة QCN احتياطية، استعدها عبر QPST.</td>
+  </tr>
+  <tr>
+    <td><strong>تفليش NVRAM</strong></td>
+    <td>MediaTek</td>
+    <td>عبر SP Flash Tool: اختر nvram.bin و nvdata.img فقط.</td>
+  </tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- القسم ٦: فتح قفل الشبكة -->
+<!-- ================================================================ -->
+<h2>🔓 فتح قفل الشبكة (SIM Unlock / Carrier Unlock)</h2>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div><strong>قانوني:</strong> فتح قفل الشبكة مسموح به في معظم الدول إذا انتهى العقد مع شركة الاتصالات أو دفعت رسوم الفتح. بعض الدول تمنعه — تأكد من قوانين بلدك.</div>
+</div>
+
+<p><strong>كيف تعرف أن الهاتف مقفول على شبكة؟</strong></p>
+<ul style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+  <li>ضع شريحة من شركة أخرى. إذا ظهرت رسالة "SIM Network Unlock PIN" أو "Invalid SIM" = الهاتف مقفول.</li>
+  <li>إذا اشتغلت الشريحة الأخرى = الهاتف مفتوح ✅.</li>
+</ul>
+
+<h3>طرق فتح قفل الشبكة:</h3>
+<table class="data-table">
+  <tr>
+    <th>الطريقة</th>
+    <th>الشركات</th>
+    <th>التكلفة</th>
+    <th>الموثوقية</th>
+  </tr>
+  <tr>
+    <td><strong>كود من الشركة</strong></td>
+    <td>معظم الشركات</td>
+    <td>مجاني (بعد العقد)</td>
+    <td>١٠٠٪ ✅</td>
+  </tr>
+  <tr>
+    <td><strong>DC-Unlocker</strong></td>
+    <td>Huawei, ZTE, Sierra</td>
+    <td>~$50</td>
+    <td>عالية ✅</td>
+  </tr>
+  <tr>
+    <td><strong>Chimera Tool</strong></td>
+    <td>Samsung, Huawei, LG</td>
+    <td>~$150/سنة</td>
+    <td>عالية ✅</td>
+  </tr>
+  <tr>
+    <td><strong>Octoplus Box</strong></td>
+    <td>Samsung, LG, Motorola</td>
+    <td>~$300</td>
+    <td>عالية جداً ✅</td>
+  </tr>
+  <tr>
+    <td><strong>متجر التطبيقات</strong></td>
+    <td>متعددة</td>
+    <td>مجاني - $30</td>
+    <td>منخفضة ❌ (غالباً احتيال)</td>
+  </tr>
+</table>
+
+<h3>طريقة فتح Samsung عبر كود:</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">Samsung SIM Unlock</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># ١. احصل على كود الفتح من شركة الاتصالات</span>
+<span class="comment"># ٢. أدخل شريحة من شركة أخرى</span>
+<span class="comment"># ٣. سيطلب الهاتف "SIM Network Unlock PIN"</span>
+<span class="comment"># ٤. أدخل الكود</span>
+<span class="comment"># ٥. الهاتف مفتوح الآن ✅</span>
+
+<span class="comment"># بعض الأكواد السرية لسامسونج:
+# *#7465625# = عرض حالة قفل الشبكة
+# *#0011# = معلومات الشبكة</span></pre>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٧: أدوات إصلاح الشبكة -->
+<!-- ================================================================ -->
+<h2>🛠️ أدوات إصلاح مشاكل الشبكة والـ IMEI</h2>
+
+<table class="data-table">
+  <tr>
+    <th>الأداة</th>
+    <th>الاستخدام</th>
+    <th>المنصات المدعومة</th>
+    <th>التكلفة</th>
+  </tr>
+  <tr>
+    <td><strong>QPST / QFIL</strong></td>
+    <td>كتابة NV Items، تفليش عبر EDL، استعادة QCN</td>
+    <td>Qualcomm</td>
+    <td>مجاني</td>
+  </tr>
+  <tr>
+    <td><strong>Maui META</strong></td>
+    <td>كتابة IMEI، إصلاح NVRAM، معايرة الشبكة</td>
+    <td>MediaTek</td>
+    <td>مجاني</td>
+  </tr>
+  <tr>
+    <td><strong>SP Flash Tool</strong></td>
+    <td>تفليش NVRAM، استعادة IMEI عبر Scatter</td>
+    <td>MediaTek</td>
+    <td>مجاني</td>
+  </tr>
+  <tr>
+    <td><strong>DC-Unlocker</strong></td>
+    <td>فتح قفل الشبكة، قراءة كود فتح Bootloader</td>
+    <td>Huawei, ZTE, Sierra</td>
+    <td>مدفوع</td>
+  </tr>
+  <tr>
+    <td><strong>Chimera Tool</strong></td>
+    <td>إصلاح IMEI، فتح شبكة، إصلاح Baseband</td>
+    <td>متعددة</td>
+    <td>اشتراك سنوي</td>
+  </tr>
+  <tr>
+    <td><strong>Octoplus Box</strong></td>
+    <td>كتابة IMEI، فتح شبكة، إصلاح EFS</td>
+    <td>Samsung, LG, Motorola</td>
+    <td>شراء الجهاز</td>
+  </tr>
+  <tr>
+    <td><strong>SN Writer Tool</strong></td>
+    <td>كتابة IMEI و SN و WiFi MAC على MediaTek</td>
+    <td>MediaTek</td>
+    <td>مجاني</td>
+  </tr>
+  <tr>
+    <td><strong>EFS Professional</strong></td>
+    <td>نسخ احتياطي واستعادة EFS على Samsung و LG</td>
+    <td>Samsung, LG, Qualcomm</td>
+    <td>مجاني</td>
+  </tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- القسم ٨: سكريبتات جاهزة -->
+<!-- ================================================================ -->
+<h2>🔥 سكريبتات إصلاح الشبكة</h2>
+
+<!-- سكريبت ١ -->
+<h3>سكريبت ١: فحص شامل للشبكة</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">network-diagnose.sh — فحص شبكة شامل</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment">#!/bin/bash</span>
+<span class="comment"># Network Diagnostic Script</span>
+
+<span class="func">echo</span> <span class="string">"========================================"</span>
+<span class="func">echo</span> <span class="string">"  📡 Network Diagnostic Report"</span>
+<span class="func">echo</span> <span class="string">"========================================"</span>
+<span class="func">echo</span> <span class="string">""</span>
+
+<span class="comment"># 1. IMEI Check</span>
+<span class="func">echo</span> <span class="string">"[1] IMEI Status:"</span>
+<span class="func">IMEI1</span>=<span class="string">$(adb shell service call iphonesubinfo 1 | grep -o '[0-9]\{15\}')</span>
+<span class="func">echo</span> <span class="string">"   IMEI1: ${IMEI1:-NULL}"</span>
+
+<span class="comment"># 2. Baseband Check</span>
+<span class="func">echo</span> <span class="string">""</span>
+<span class="func">echo</span> <span class="string">"[2] Baseband Version:"</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">getprop</span> <span class="keyword">gsm.version.baseband</span>
+
+<span class="comment"># 3. Service State</span>
+<span class="func">echo</span> <span class="string">""</span>
+<span class="func">echo</span> <span class="string">"[3] Service State:"</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">dumpsys</span> <span class="keyword">telephony.registry</span> <span class="keyword">|</span> <span class="func">grep</span> <span class="keyword">-E</span> <span class="string">"mServiceState|mSignalStrength|mDataState"</span> <span class="keyword">|</span> <span class="func">head</span> <span class="keyword">-5</span>
+
+<span class="comment"># 4. SIM Status</span>
+<span class="func">echo</span> <span class="string">""</span>
+<span class="func">echo</span> <span class="string">"[4] SIM Status:"</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">dumpsys</span> <span class="keyword">iphonesubinfo</span> <span class="keyword">|</span> <span class="func">grep</span> <span class="keyword">-E</span> <span class="string">"PhoneId|IccId|SubscriberId"</span>
+
+<span class="comment"># 5. APN Check</span>
+<span class="func">echo</span> <span class="string">""</span>
+<span class="func">echo</span> <span class="string">"[5] APN Settings:"</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">content</span> <span class="keyword">query</span> <span class="keyword">--uri</span> <span class="string">content://telephony/carriers</span> <span class="keyword">--projection</span> <span class="string">name,apn,mcc,mnc</span> <span class="keyword">2</span>><span class="keyword">/dev/null</span> <span class="keyword">|</span> <span class="func">head</span> <span class="keyword">-10</span>
+
+<span class="func">echo</span> <span class="string">""</span>
+<span class="func">echo</span> <span class="string">"[✓] Diagnostic Complete!"</span></pre>
+</div>
+
+<!-- سكريبت ٢ -->
+<h3>سكريبت ٢: إصلاح سريع للشبكة</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">fix-network.sh — إصلاح مشاكل الشبكة (يتطلب Root)</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment">#!/bin/bash</span>
+<span class="comment"># Network Fix Script - Requires Root</span>
+
+<span class="func">echo</span> <span class="string">"[*] Network Fix Script"</span>
+<span class="func">echo</span> <span class="string">"[*] Checking device status..."</span>
+
+<span class="comment"># Check IMEI</span>
+<span class="func">IMEI</span>=<span class="string">$(adb shell service call iphonesubinfo 1 | grep -o '[0-9]*' | tr -d '\n')</span>
+<span class="func">echo</span> <span class="string">"[*] IMEI: $IMEI"</span>
+
+<span class="keyword">if</span> <span class="func">[</span> <span class="string">"$IMEI"</span> <span class="keyword">=</span> <span class="string">"000000000000000"</span> <span class="func">]</span>; <span class="keyword">then</span>
+    <span class="func">echo</span> <span class="string">"[!] IMEI is NULL! EFS may be corrupted."</span>
+    <span class="func">echo</span> <span class="string">"[!] Try restoring EFS backup or flashing stock ROM."</span>
+    <span class="func">exit</span> <span class="num">1</span>
+<span class="keyword">fi</span>
+
+<span class="comment"># Check Baseband</span>
+<span class="func">BASEBAND</span>=<span class="string">$(adb shell getprop gsm.version.baseband | tr -d '\r')</span>
+<span class="func">echo</span> <span class="string">"[*] Baseband: $BASEBAND"</span>
+
+<span class="keyword">if</span> <span class="func">[</span> <span class="string">"$BASEBAND"</span> <span class="keyword">=</span> <span class="string">"Unknown"</span> <span class="func">]</span>; <span class="keyword">then</span>
+    <span class="func">echo</span> <span class="string">"[!] Baseband is Unknown! Modem may be corrupted."</span>
+    <span class="func">echo</span> <span class="string">"[!] Try flashing CP/Modem partition."</span>
+    <span class="func">exit</span> <span class="num">1</span>
+<span class="keyword">fi</span>
+
+<span class="comment"># Reset network settings</span>
+<span class="func">echo</span> <span class="string">"[*] Resetting network settings..."</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">settings</span> <span class="keyword">put</span> <span class="keyword">global</span> <span class="string">airplane_mode_on</span> <span class="num">1</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">am</span> <span class="keyword">broadcast</span> <span class="keyword">-a</span> <span class="string">android.intent.action.AIRPLANE_MODE</span>
+<span class="func">sleep</span> <span class="num">3</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">settings</span> <span class="keyword">put</span> <span class="keyword">global</span> <span class="string">airplane_mode_on</span> <span class="num">0</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">am</span> <span class="keyword">broadcast</span> <span class="keyword">-a</span> <span class="string">android.intent.action.AIRPLANE_MODE</span>
+
+<span class="comment"># Reset APN to default</span>
+<span class="func">echo</span> <span class="string">"[*] Resetting APN to default..."</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">content</span> <span class="keyword">delete</span> <span class="keyword">--uri</span> <span class="string">content://telephony/carriers/restore</span>
+
+<span class="comment"># Reset network preferences</span>
+<span class="func">echo</span> <span class="string">"[*] Resetting network preferences..."</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">settings</span> <span class="keyword">put</span> <span class="keyword">global</span> <span class="string">preferred_network_mode</span> <span class="num">9</span>
+
+<span class="func">echo</span> <span class="string">"[✓] Done! Rebooting device..."</span>
+<span class="func">adb</span> <span class="keyword">reboot</span></pre>
+</div>
+
+<!-- سكريبت ٣ -->
+<h3>سكريبت ٣: نسخ EFS احتياطي (لجميع المنصات)</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">backup-efs-universal.sh — نسخ EFS من أي جهاز</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment">#!/bin/bash</span>
+<span class="comment"># Universal EFS Backup Script - Requires Root</span>
+
+<span class="func">DATE</span>=<span class="string">$(date +%Y%m%d_%H%M%S)</span>
+<span class="func">DEVICE</span>=<span class="string">$(adb shell getprop ro.product.model | tr -d '\r')</span>
+<span class="func">BACKUP_DIR</span>=<span class="string">"EFS_Backup_${DEVICE}_${DATE}"</span>
+
+<span class="func">mkdir</span> <span class="keyword">-p</span> <span class="string">"$BACKUP_DIR"</span>
+<span class="func">echo</span> <span class="string">"[*] Backing up EFS for $DEVICE..."</span>
+
+<span class="comment"># البحث عن قسم EFS</span>
+<span class="func">echo</span> <span class="string">"[*] Searching for EFS partition..."</span>
+<span class="func">EFS_PATH</span>=<span class="string">$(adb shell su -c "ls /dev/block/bootdevice/by-name/ | grep -i efs")</span>
+
+<span class="keyword">if</span> <span class="func">[</span> <span class="keyword">-z</span> <span class="string">"$EFS_PATH"</span> <span class="func">]</span>; <span class="keyword">then</span>
+    <span class="comment"># جرب مسارات بديلة</span>
+    <span class="func">EFS_PATH</span>=<span class="string">$(adb shell su -c "ls /dev/block/platform/*/by-name/ | grep -i efs")</span>
+<span class="keyword">fi</span>
+
+<span class="keyword">if</span> <span class="func">[</span> <span class="keyword">-z</span> <span class="string">"$EFS_PATH"</span> <span class="func">]</span>; <span class="keyword">then</span>
+    <span class="func">echo</span> <span class="string">"[!] EFS partition not found. Trying common paths..."</span>
+    <span class="comment"># قائمة مسارات EFS الشائعة</span>
+    <span class="func">PATHS</span>=(<span class="string">"/dev/block/bootdevice/by-name/efs"</span>
+            <span class="string">"/dev/block/platform/155a0000.ufs/by-name/EFS"</span>
+            <span class="string">"/dev/block/platform/mtk-msdc.0/by-name/nvram"</span>
+            <span class="string">"/dev/block/platform/soc/1d84000.ufshc/by-name/efs"</span>)
+    
+    <span class="keyword">for</span> <span class="func">p</span> <span class="keyword">in</span> <span class="string">"${PATHS[@]}"</span>; <span class="keyword">do</span>
+        <span class="func">echo</span> <span class="string">"[*] Trying: $p"</span>
+        <span class="keyword">if</span> <span class="func">adb</span> <span class="keyword">shell</span> <span class="func">su</span> <span class="keyword">-c</span> <span class="string">"[ -e $p ] && echo EXISTS"</span> <span class="keyword">|</span> <span class="func">grep</span> <span class="keyword">-q</span> <span class="string">EXISTS</span>; <span class="keyword">then</span>
+            <span class="func">FULL_PATH</span>=<span class="string">$p</span>
+            <span class="func">echo</span> <span class="string">"[✓] Found EFS at: $FULL_PATH"</span>
+            <span class="keyword">break</span>
+        <span class="keyword">fi</span>
+    <span class="keyword">done</span>
+<span class="keyword">else</span>
+    <span class="func">FULL_PATH</span>=<span class="string">"/dev/block/bootdevice/by-name/$EFS_PATH"</span>
+    <span class="func">echo</span> <span class="string">"[✓] Found EFS at: $FULL_PATH"</span>
+<span class="keyword">fi</span>
+
+<span class="keyword">if</span> <span class="func">[</span> <span class="keyword">-n</span> <span class="string">"$FULL_PATH"</span> <span class="func">]</span>; <span class="keyword">then</span>
+    <span class="func">echo</span> <span class="string">"[*] Dumping EFS partition..."</span>
+    <span class="func">adb</span> <span class="keyword">shell</span> <span class="func">su</span> <span class="keyword">-c</span> <span class="string">"dd if=$FULL_PATH of=/sdcard/efs_backup.img"</span>
+    <span class="func">echo</span> <span class="string">"[*] Pulling backup to computer..."</span>
+    <span class="func">adb</span> <span class="keyword">pull</span> <span class="string">/sdcard/efs_backup.img</span> <span class="string">"$BACKUP_DIR/efs_backup.img"</span>
+    <span class="func">adb</span> <span class="keyword">shell</span> <span class="func">rm</span> <span class="string">/sdcard/efs_backup.img</span>
+    <span class="func">echo</span> <span class="string">"[✓] EFS backup saved to: $BACKUP_DIR/efs_backup.img"</span>
+<span class="keyword">else</span>
+    <span class="func">echo</span> <span class="string">"[!] Could not find EFS partition. Manual backup required."</span>
+<span class="keyword">fi</span></pre>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٩: نصائح ذهبية -->
+<!-- ================================================================ -->
+<h2>💎 نصائح ذهبية لإصلاح مشاكل الشبكة</h2>
+
+<div class="alert alert-success">
+  <span class="alert-icon">✅</span>
+  <div>
+    <strong>قواعد لا تنساها:</strong>
+    <ol style="margin-top:0.5rem; padding-right:1.2rem; line-height:2.2;">
+      <li><strong>انسخ EFS قبل أي تفليش.</strong> هذه القاعدة لا تكرر بما فيه الكفاية. EFS هو كل شيء.</li>
+      <li><strong>إذا كان IMEI موجوداً و Baseband موجوداً:</strong> جرب إعادة ضبط إعدادات الشبكة قبل أي شيء آخر. الإعدادات > النظام > إعادة ضبط > إعادة ضبط إعدادات الشبكة.</li>
+      <li><strong>لا تفلش ROM بدون ملف CP/Modem.</strong> إذا فلشت AP فقط بدون CP، قد تفقد Baseband.</li>
+      <li><strong>تأكد من ROM الصحيح لمنطقتك.</strong> بعض ROMs لا تحتوي على ملفات الشبكة الصحيحة لمنطقتك.</li>
+      <li><strong>إذا غيرت IMEI، احفظ IMEI الأصلي.</strong> قد تحتاجه للرجوع أو للضمان.</li>
+      <li><strong>لا تستخدم أدوات "Write IMEI" مجهولة المصدر.</strong> الكثير منها يحتوي على برمجيات خبيثة أو تدمر EFS بشكل دائم.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١٠: سيناريوهات واقعية -->
+<!-- ================================================================ -->
+<h2>🎬 سيناريوهات واقعية</h2>
+
+<h3>السيناريو ١: اختفى IMEI بعد تفليش Samsung</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(248,113,113,0.04),rgba(251,191,36,0.04)); border-color:rgba(248,113,113,0.2);">
+  <h4 style="margin-top:0; color:var(--c-danger);">🧊 الموقف:</h4>
+  <p>فلشت Samsung Galaxy S10 عبر Odin. استخدمت AP فقط بدون CP (لأنك كنت مستعجلاً). الآن IMEI = 000000000000000 ولا توجد شبكة.</p>
+
+  <h4 style="color:var(--c-warning);">🤔 الحل:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>لا تقلق!</strong> هذه مشكلة شائعة جداً. EFS لم يتلف — ما حدث أن ROM الجديد لا يحتوي على ملف CP.</li>
+    <li><strong>حمل ROM كامل</strong> يحتوي على BL + AP + CP + CSC.</li>
+    <li><strong>فلش كل الملفات الأربعة</strong> في Odin معاً.</li>
+    <li>بعد التفليش، IMEI سيعود تلقائياً.</li>
+    <li><strong>إذا لم يعد:</strong> هذه المرة EFS تلف فعلاً. تحتاج استعادة نسخة احتياطية أو استخدام Chimera Tool.</li>
+  </ol>
+</div>
+
+<h3>السيناريو ٢: هاتف مقفول على شبكة</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(251,191,36,0.04),rgba(56,189,248,0.04)); border-color:rgba(251,191,36,0.2);">
+  <h4 style="margin-top:0; color:var(--c-warning);">📡 الموقف:</h4>
+  <p>العميل: "الشريحة ما تشتغل. تظهر رسالة SIM Network Unlock PIN."</p>
+
+  <h4 style="color:var(--c-warning);">🤔 التشخيص:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li>هذا <strong>قفل شبكة (Carrier Lock).</strong> الهاتف مقفول على شركة معينة.</li>
+    <li>اطلب من العميل الاتصال بشركته الأصلية لطلب كود فتح.</li>
+    <li>إذا انتهى عقده، الكود مجاني في معظم الدول.</li>
+    <li>إذا لم يستطع الحصول على الكود: استخدم خدمة فتح مدفوعة (DC-Unlocker، Chimera Tool).</li>
+    <li><strong>لا تجرب أكواد عشوائية!</strong> بعد ٥ محاولات خاطئة، الهاتف يقفل للأبد.</li>
+  </ol>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١١: خلاصة -->
+<!-- ================================================================ -->
+<h2>🎯 خلاصة مشاكل الشبكة والـ IMEI</h2>
+
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(52,211,153,0.06),rgba(56,189,248,0.06)); border-color:rgba(52,211,153,0.3);">
+  <h3 style="margin-top:0; color:var(--c-success);">القواعد الذهبية للشبكة</h3>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">1</div>
+    <div class="text"><strong>افحص IMEI أولاً.</strong> *#06#. إذا كان 0 = مشكلة EFS.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">2</div>
+    <div class="text"><strong>افحص Baseband.</strong> إذا كان Unknown = مشكلة Modem.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">3</div>
+    <div class="text"><strong>افحص SIM.</strong> جرب شريحة أخرى. إذا اشتغلت = قفل شبكة.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">4</div>
+    <div class="text"><strong>ابحث يدوياً عن شبكات.</strong> إذا لم يجد = هاردوير (أنتين/IC).</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">5</div>
+    <div class="text"><strong>استخدم الأداة المناسبة.</strong> QPST لـ Qualcomm. Maui META لـ MediaTek. Chimera للمشاكل المعقدة.</div>
+  </div>
+</div>
+
+<div class="alert alert-info">
+  <span class="alert-icon">📚</span>
+  <div><strong>في الفصل القادم (الفصل ٦: مشاكل البطارية):</strong> سنتعلم كيف نشخص و نصلح مشاكل البطارية، معايرة، شحن مباشر، وفحص IC الشحن.</div>
+</div>
+
+<div class="next-prev">
+  <a href="chapter4.html" class="prev">← الفصل 4: التفليش</a>
+  <a href="chapter6.html" class="next">الفصل 6: مشاكل البطارية →</a>
+</div>
+
+</main>
+
+</body>
+</html>

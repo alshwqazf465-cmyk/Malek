@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الفصل 3: التشخيص المنطقي | أكاديمية صيانة الهواتف</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg: #0f172a; --c-surface: #1e293b; --c-surface2: #334155;
+  --c-primary: #38bdf8; --c-secondary: #818cf8; --c-accent: #f472b6;
+  --c-success: #34d399; --c-warning: #fbbf24; --c-danger: #f87171;
+  --c-text: #f1f5f9; --c-text2: #94a3b8; --c-border: #334155;
+  --glow: 0 0 20px rgba(56,189,248,0.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Tajawal', sans-serif; background: var(--c-bg); color: var(--c-text); line-height: 1.9; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(15,23,42,0.92); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--c-border); padding: 0.75rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { font-weight: 800; font-size: 1.2rem; color: var(--c-primary); text-decoration: none; }
+.nav-back { color: var(--c-text2); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.nav-back:hover { color: var(--c-primary); }
+
+main { max-width: 1000px; margin: 0 auto; padding: 6rem 2rem 3rem; }
+
+.chapter-header {
+  text-align: center; margin-bottom: 3rem; padding: 2.5rem 2rem;
+  background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(129,140,248,0.1));
+  border-radius: 20px; border: 1px solid rgba(56,189,248,0.2);
+}
+.chapter-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 55px; height: 55px; background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; font-weight: 900; border-radius: 14px; font-size: 1.4rem; margin-bottom: 1rem;
+}
+.chapter-header h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 0.75rem; }
+.chapter-header p { color: var(--c-text2); font-size: 1.1rem; }
+
+h2 {
+  font-size: 1.8rem; font-weight: 800; margin: 3.5rem 0 2rem;
+  padding-right: 1rem; border-right: 4px solid var(--c-primary);
+  color: var(--c-text);
+}
+h3 { font-size: 1.3rem; font-weight: 700; margin: 2.5rem 0 1.2rem; color: var(--c-primary); }
+h4 { font-size: 1.1rem; font-weight: 700; margin: 2rem 0 1rem; color: var(--c-warning); }
+p { color: var(--c-text2); margin-bottom: 1rem; font-size: 1.05rem; line-height: 2; }
+
+.code-block {
+  background: #0d1117; border: 1px solid #30363d; border-radius: 14px;
+  overflow: hidden; margin: 2rem 0; direction: ltr; text-align: left;
+}
+.code-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.7rem 1.2rem; background: #161b22; border-bottom: 1px solid #30363d;
+}
+.code-title { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #8b949e; }
+.code-dots { display: flex; gap: 7px; }
+.code-dot { width: 11px; height: 11px; border-radius: 50%; }
+.code-dot.r { background: #ff5f56; } .code-dot.y { background: #ffbd2e; } .code-dot.g { background: #27c93f; }
+pre {
+  padding: 1.4rem; overflow-x: auto; font-family: 'Fira Code', monospace;
+  font-size: 0.88rem; line-height: 1.9; color: #e6edf3;
+}
+pre .comment { color: #8b949e; }
+pre .keyword { color: #ff7b72; }
+pre .string { color: #a5d6ff; }
+pre .func { color: #d2a8ff; }
+pre .num { color: #79c0ff; }
+pre .cmd { color: #7ee787; }
+pre .output { color: #a5d6ff; }
+pre .err { color: #ff7b72; }
+pre .warn { color: #fbbf24; }
+
+.data-table {
+  width: 100%; border-collapse: collapse; margin: 2rem 0;
+  background: var(--c-surface); border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--c-border);
+}
+.data-table th {
+  background: var(--c-surface2); padding: 1.1rem 1.3rem; text-align: right;
+  font-weight: 700; color: var(--c-primary); font-size: 0.9rem;
+}
+.data-table td {
+  padding: 1rem 1.3rem; border-top: 1px solid var(--c-border);
+  color: var(--c-text2); font-size: 0.92rem; line-height: 1.8;
+}
+.data-table tr:hover td { background: rgba(56,189,248,0.04); }
+
+.alert {
+  padding: 1.2rem 1.5rem; border-radius: 14px; margin: 2rem 0;
+  display: flex; align-items: flex-start; gap: 0.9rem; border: 1px solid;
+  font-size: 1rem;
+}
+.alert-info { background: rgba(56,189,248,0.06); border-color: rgba(56,189,248,0.25); color: var(--c-primary); }
+.alert-warn { background: rgba(251,191,36,0.06); border-color: rgba(251,191,36,0.25); color: var(--c-warning); }
+.alert-danger { background: rgba(248,113,113,0.06); border-color: rgba(248,113,113,0.25); color: var(--c-danger); }
+.alert-success { background: rgba(52,211,153,0.06); border-color: rgba(52,211,153,0.25); color: var(--c-success); }
+.alert-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+
+.diagram-box {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 18px; padding: 2rem; margin: 2rem 0;
+}
+.diagram-step {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem 1.2rem; margin: 0.5rem 0; border-radius: 12px;
+  background: rgba(56,189,248,0.04); border: 1px solid rgba(56,189,248,0.12);
+}
+.diagram-step .num {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.95rem; flex-shrink: 0;
+}
+.diagram-step .text { font-size: 0.95rem; color: var(--c-text); line-height: 1.7; }
+.diagram-arrow { text-align: center; font-size: 1.6rem; color: var(--c-primary); margin: 0.2rem 0; }
+
+.flowchart {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 18px; padding: 2rem; margin: 2rem 0;
+}
+.flow-node {
+  padding: 1.2rem 1.5rem; border-radius: 14px; margin: 0.85rem 0;
+  text-align: center; font-weight: 700; font-size: 1rem;
+  border: 2px solid;
+}
+.flow-node.start { background: rgba(52,211,153,0.08); border-color: var(--c-success); color: var(--c-success); }
+.flow-node.question { background: rgba(251,191,36,0.08); border-color: var(--c-warning); color: var(--c-warning); border-radius: 50px; }
+.flow-node.action { background: rgba(56,189,248,0.08); border-color: var(--c-primary); color: var(--c-primary); }
+.flow-node.end { background: rgba(248,113,113,0.08); border-color: var(--c-danger); color: var(--c-danger); }
+.flow-node.success { background: rgba(52,211,153,0.08); border-color: var(--c-success); color: var(--c-success); }
+.flow-line { text-align: center; color: var(--c-text2); font-size: 1.6rem; margin: 0.3rem 0; }
+.flow-yesno {
+  display: flex; justify-content: center; gap: 3rem; margin: 0.6rem 0;
+  font-size: 0.85rem; font-weight: 600;
+}
+
+.next-prev {
+  display: flex; justify-content: space-between; margin-top: 4rem;
+  padding-top: 2.5rem; border-top: 1px solid var(--c-border);
+}
+.next-prev a {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.9rem 1.8rem; border-radius: 14px;
+  text-decoration: none; font-weight: 700; transition: all 0.3s;
+}
+.next-prev .prev { color: var(--c-text2); border: 1px solid var(--c-border); }
+.next-prev .prev:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.next-prev .next {
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; box-shadow: 0 4px 15px rgba(56,189,248,0.3);
+}
+.next-prev .next:hover { transform: translateX(-3px); }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar-thumb { background: var(--c-surface2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-primary); }
+
+@media (max-width: 768px) {
+  main { padding: 5rem 1rem 2rem; }
+  .chapter-header h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.4rem; }
+  .flow-yesno { flex-direction: column; gap: 0.5rem; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">📱 أكاديمية صيانة الهواتف</a>
+  <a href="index.html" class="nav-back">← العودة للرئيسية</a>
+</nav>
+
+<main>
+
+<div class="chapter-header">
+  <div class="chapter-num">03</div>
+  <h1>التشخيص المنطقي</h1>
+  <p>مخططات تدفق، أسئلة ذهبية، فحص وظيفي، سيناريوهات واقعية — كيف تفكر كفني محترف</p>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١: عقلية الفني المحترف -->
+<!-- ================================================================ -->
+<h2>🧠 عقلية الفني المحترف</h2>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>القاعدة الأولى في الصيانة:</strong> "لا تفتح الهاتف قبل أن تستنفد كل الحلول البرمجية." ٧٠٪ من المشاكل تحل بدون مفك. التشخيص الصحيح يوفر ساعات من العمل الضائع.
+  </div>
+</div>
+
+<p>الفني المحترف لا يخمن، بل <strong>يتبع منهجاً علمياً</strong> في التشخيص. هذا المنهج يتكون من ٥ خطوات:</p>
+
+<div class="diagram-box">
+  <h3 style="margin-top:0; color:var(--c-success);">منهج التشخيص العلمي (٥ خطوات)</h3>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">1</div>
+    <div class="text"><strong>جمع المعلومات:</strong> اسأل العميل الأسئلة الذهبية. متى؟ كيف؟ لماذا؟ هل حدث شيء قبل المشكلة؟</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">2</div>
+    <div class="text"><strong>الفحص البصري:</strong> تفحص الهاتف خارجياً. هل فيه كسور؟ انتفاخ؟ أثر ماء؟ مؤشر الرطوبة أحمر؟</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">3</div>
+    <div class="text"><strong>الفحص الوظيفي:</strong> جرب كل وظائف الهاتف. شاشة، لمس، أزرار، صوت، كاميرات، شبكة، WiFi، Bluetooth.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">4</div>
+    <div class="text"><strong>تقسيم الاحتمالات:</strong> حدد إذا كانت المشكلة سوفتوير أم هاردوير. جرب حلول برمجية أولاً.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">5</div>
+    <div class="text"><strong>الإصلاح والاختبار:</strong> نفذ الحل، ثم اختبر الهاتف بالكامل للتأكد أن كل شيء يعمل.</div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٢: الأسئلة الذهبية -->
+<!-- ================================================================ -->
+<h2>🗣️ الأسئلة الذهبية العشرة</h2>
+
+<p>قبل فتح أي جهاز أو تشغيل أي أداة، اسأل العميل هذه الأسئلة. <strong>٥٠٪ من التشخيص يأتي من الإجابات.</strong> كل سؤال له هدف تشخيصي محدد:</p>
+
+<table class="data-table">
+  <tr>
+    <th>#</th>
+    <th>السؤال</th>
+    <th>الهدف التشخيصي</th>
+    <th>ماذا تستنتج من الإجابة؟</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td><strong>ما المشكلة بالضبط؟</strong></td>
+    <td>تحديد العطل الأساسي</td>
+    <td>لا تقبل "الهاتف خربان". أصر على وصف دقيق: "الشاشة سوداء"، "ما يشحن"، "ما فيه شبكة"</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td><strong>متى بدأت المشكلة؟</strong></td>
+    <td>تحديد طبيعة العطل</td>
+    <td>فجأة = سقوط/شورت/تحديث فاشل. تدريجياً = تآكل بطارية/زر/بورت</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td><strong>ماذا كنت تفعل عندما حدثت؟</strong></td>
+    <td>معرفة السياق</td>
+    <td>تحديث؟ لعبة؟ شحن؟ سقوط؟ ماء؟ كل سيناريو له مسار تشخيص مختلف</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td><strong>هل تعرض لسقوط قوي؟</strong></td>
+    <td>اشتباه هاردوير</td>
+    <td>سقوط = Cold Solder (لحام بارد) تحت المعالج أو الرام أو IC</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td><strong>هل تعرض لماء أو رطوبة؟</strong></td>
+    <td>اشتباه شورت/تآكل</td>
+    <td>ماء = تآكل في البوردة. لا تشحن الهاتف! افتح ونظف فوراً</td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td><strong>هل تم تغيير أي قطعة سابقاً؟</strong></td>
+    <td>اكتشاف إصلاحات سابقة</td>
+    <td>شاشة/بطارية/بورت تم تغييره = قد يكون قطع تجاري رديء أو تركيب خاطئ</td>
+  </tr>
+  <tr>
+    <td>7</td>
+    <td><strong>هل حاولت إصلاحه بنفسك أو عند فني آخر؟</strong></td>
+    <td>اكتشاف عبث داخلي</td>
+    <td>براغي ناقصة، فيصلات مقطوعة، لحام رديء، بصمات على البوردة</td>
+  </tr>
+  <tr>
+    <td>8</td>
+    <td><strong>هل ظهرت رسائل خطأ؟</strong></td>
+    <td>تحديد رسائل محددة</td>
+    <td>"الشبكة غير متوفرة"، "حرارة زائدة"، "تطبيق توقف" = تشخيص محدد</td>
+  </tr>
+  <tr>
+    <td>9</td>
+    <td><strong>هل تسخن منطقة معينة؟</strong></td>
+    <td>تحديد IC التالف</td>
+    <td>أعلى الكاميرا = شبكة. أسفل = شحن. وسط = معالج. يمين = باور</td>
+  </tr>
+  <tr>
+    <td>10</td>
+    <td><strong>هل تمانع مسح البيانات؟</strong></td>
+    <td>أخذ إذن</td>
+    <td>خذ إذناً قبل أي Wipe. أنت مسؤول عن البيانات</td>
+  </tr>
+</table>
+
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div>
+    <strong>نصيحة مهمة:</strong> اطبع هذه الأسئلة وعلقها في ورشتك. استخدمها مع كل عميل. ستوفر عليك ساعات من التشخيص الخاطئ.
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٣: مخطط تدفق التشخيص الرئيسي -->
+<!-- ================================================================ -->
+<h2>📊 مخطط تدفق التشخيص الرئيسي</h2>
+
+<p>هذا المخطط يغطي <strong>٨٠٪ من حالات "الهاتف لا يعمل"</strong>. اتبعه خطوة بخطوة:</p>
+
+<div class="flowchart">
+  <div class="flow-node start">🚀 البداية: العميل يقول "الهاتف لا يعمل"</div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">السؤال ١: هل يظهر شيء على الشاشة عند توصيل الشاحن؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ نعم يظهر شعار البطارية أو LED يضيء</span>
+    <span style="color:var(--c-danger);">❌ لا شيء تماماً، شاشة سوداء</span>
+  </div>
+
+  <div style="display:flex; gap:1rem; margin:1rem 0;">
+    <div style="flex:1; background:rgba(52,211,153,0.06); border:1px solid rgba(52,211,153,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-success);">✅ المسار A: الهاتف يستجيب للشاحن</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">• اتركه يشحن ٣٠ دقيقة<br>• إذا لم يشتعل: مشكلة بطارية أو IC شحن<br>• إذا اشتعل: أكمل للمسار التالي</p>
+    </div>
+    <div style="flex:1; background:rgba(248,113,113,0.06); border:1px solid rgba(248,113,113,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-danger);">❌ المسار B: الهاتف ميت تماماً</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">• جرب شاحن وكابل آخر<br>• نظف بورت الشحن<br>• قس البطارية بالملتيميتر<br>• إذا 0V: بطارية تالفة<br>• إذا 3.7V+: مشكلة بوردة</p>
+    </div>
+  </div>
+
+  <div class="flow-line">⬇</div>
+  <div class="flow-node question">السؤال ٢: هل يدخل الهاتف وضع Fastboot؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ نعم (يظهر Fastboot Mode على الشاشة)</span>
+    <span style="color:var(--c-danger);">❌ لا (شاشة سوداء أو شعار متكرر)</span>
+  </div>
+
+  <div style="display:flex; gap:1rem; margin:1rem 0;">
+    <div style="flex:1; background:rgba(52,211,153,0.06); border:1px solid rgba(52,211,153,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-success);">✅ يدخل Fastboot</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">• المشكلة سوفتوير غالباً<br>• جرب تفليش boot.img<br>• جرب تفليش روم كامل<br>• Bootloader سليم ✅</p>
+    </div>
+    <div style="flex:1; background:rgba(248,113,113,0.06); border:1px solid rgba(248,113,113,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-danger);">❌ لا يدخل Fastboot</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">• Hard Brick محتمل<br>• يحتاج EDL Mode أو Test Point<br>• مشكلة في Bootloader<br>•可能需要 JTAG</p>
+    </div>
+  </div>
+
+  <div class="flow-line">⬇</div>
+  <div class="flow-node question">السؤال ٣: هل يدخل الهاتف وضع Recovery؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ نعم (يظهر قائمة Recovery)</span>
+    <span style="color:var(--c-danger);">❌ لا (يعيد التشغيل أو شاشة سوداء)</span>
+  </div>
+
+  <div style="display:flex; gap:1rem; margin:1rem 0;">
+    <div style="flex:1; background:rgba(52,211,153,0.06); border:1px solid rgba(52,211,153,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-success);">✅ يدخل Recovery</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">• جرب Wipe Cache أولاً<br>• جرب Wipe Data/Factory Reset<br>• جرب تفليش روم عبر sideload</p>
+    </div>
+    <div style="flex:1; background:rgba(248,113,113,0.06); border:1px solid rgba(248,113,113,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-danger);">❌ لا يدخل Recovery</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">• قسم recovery تالف<br>• جرب تفليش recovery.img جديد<br>• عبر Fastboot: fastboot flash recovery twrp.img</p>
+    </div>
+  </div>
+
+  <div class="flow-line">⬇</div>
+  <div class="flow-node question">السؤال ٤: هل يقلع النظام بشكل كامل؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ نعم (يوصل للشاشة الرئيسية)</span>
+    <span style="color:var(--c-warning);">⚠️ يعلق على الشعار (Bootloop)</span>
+  </div>
+
+  <div style="display:flex; gap:1rem; margin:1rem 0;">
+    <div style="flex:1; background:rgba(52,211,153,0.06); border:1px solid rgba(52,211,153,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-success);">✅ يقلع بالكامل</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">• المشكلة في تطبيق/إعدادات<br>• جرب إزالة آخر تطبيق مثبت<br>• جرب إعادة ضبط المصنع<br>• جرب تفليش روم نظيف</p>
+    </div>
+    <div style="flex:1; background:rgba(251,191,36,0.06); border:1px solid rgba(251,191,36,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-warning);">⚠️ Bootloop</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">• اضغط مطولاً على باور لإطفائه<br>• ادخل Recovery<br>• Wipe Cache + Wipe Data<br>• إذا استمر: فلّش روم كامل</p>
+    </div>
+  </div>
+
+  <div class="flow-line">⬇</div>
+  <div class="flow-node success">✅ تم التشخيص! انتقل للإصلاح المناسب</div>
+</div>
+
+<div class="alert alert-success">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>تذكر:</strong> هذا المخطط يغطي ٨٠٪ من الحالات. الـ ٢٠٪ الباقية تحتاج أدوات متقدمة (ملتيميتر، باور سبلاي، EDL Cable). لكن ابدأ دائماً بهذا المخطط أولاً.
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٤: مخططات تشخيص حسب المشكلة -->
+<!-- ================================================================ -->
+<h2>🎯 مخططات تشخيص حسب المشكلة</h2>
+
+<!-- مشكلة الشحن -->
+<h3>🔋 المشكلة: الهاتف لا يشحن</h3>
+
+<div class="flowchart">
+  <div class="flow-node start">🔋 العميل: "الهاتف لا يشحن"</div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">الخطوة ١: هل الكابل والشاحن يعملان مع هاتف آخر؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-danger);">❌ لا يعمل → غيّر الكابل/الشاحن أولاً!</span>
+    <span style="color:var(--c-success);">✅ يعمل → انتقل للخطوة ٢</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">الخطوة ٢: هل منفذ USB نظيف وخالٍ من الغبار؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-warning);">❌ متسخ → نظف بفرشاة ناعمة + كحول أيزوبروبيل</span>
+    <span style="color:var(--c-success);">✅ نظيف → انتقل للخطوة ٣</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">الخطوة ٣: هل يظهر مؤشر الشحن على الشاشة؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ يظهر لكن لا يشحن → مشكلة IC شحن أو بطارية</span>
+    <span style="color:var(--c-danger);">❌ لا يظهر شيء → انتقل للخطوة ٤</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">الخطوة ٤: جرب الشحن اللاسلكي (إذا كان مدعوماً)</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ يشحن لاسلكياً → بورت الشحن تالف، غيّره</span>
+    <span style="color:var(--c-danger);">❌ لا يشحن أبداً → انتقل للخطوة ٥</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node action">الخطوة ٥: افتح الهاتف وافصل البطارية</div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">قس البطارية بالملتيميتر. هل الفولت بين 3.7V و 4.2V؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-danger);">❌ أقل من 3.3V → اشحن البطارية خارجياً أو استبدلها</span>
+    <span style="color:var(--c-success);">✅ الجهد طبيعي → المشكلة في البوردة</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node action">الخطوة ٦: افحص IC الشحن والـ PMIC بالملتيميتر (باحثاً عن شورت)</div>
+  <div class="flow-line">⬇</div>
+  <div class="flow-node success">✅ تم التشخيص!</div>
+</div>
+
+<!-- مشكلة الشبكة -->
+<h3>📡 المشكلة: لا توجد شبكة / IMEI مفقود</h3>
+
+<div class="flowchart">
+  <div class="flow-node start">📡 العميل: "ما فيه شبكة"</div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">الخطوة ١: هل الشريحة مقروءة؟ (يظهر اسم الشبكة؟)</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-danger);">❌ لا تقرأ الشريحة → نظف الشريحة، جرب شريحة أخرى، افحص درج SIM</span>
+    <span style="color:var(--c-success);">✅ تقرأ الشريحة لكن لا شبكة → انتقل للخطوة ٢</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">الخطوة ٢: اطلب *#06#. هل يظهر IMEI؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-danger);">❌ IMEI = null أو 0 → EFS تالف! استعد النسخة الاحتياطية</span>
+    <span style="color:var(--c-success);">✅ IMEI موجود → انتقل للخطوة ٣</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">الخطوة ٣: اذهب للإعدادات > حول الهاتف. هل Baseband موجود؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-danger);">❌ Baseband = "غير متوفر" → فلّش مودم/روم رسمي</span>
+    <span style="color:var(--c-success);">✅ Baseband موجود → انتقل للخطوة ٤</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">الخطوة ٤: ابحث يدوياً عن الشبكات. هل يجد شبكات؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-danger);">❌ لا يجد أي شبكة → مشكلة أنتين أو IC شبكة (هاردوير)</span>
+    <span style="color:var(--c-success);">✅ يجد شبكات لكن لا يسجل → انتقل للخطوة ٥</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node action">الخطوة ٥: المشكلة في EFS/شهادة. استعد نسخة EFS أو QCN</div>
+  <div class="flow-line">⬇</div>
+  <div class="flow-node success">✅ تم التشخيص!</div>
+</div>
+
+<!-- مشكلة الشاشة -->
+<h3>🖤 المشكلة: شاشة سوداء / لا تعمل</h3>
+
+<div class="flowchart">
+  <div class="flow-node start">🖤 العميل: "الشاشة سوداء"</div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">الخطوة ١: هل الهاتف يهتز أو يصدر صوت إشعارات؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ يهتز/يصدر صوت → الشاشة أو فيصل الشاشة تالف</span>
+    <span style="color:var(--c-danger);">❌ لا يستجيب أبداً → انتقل للخطوة ٢</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">الخطوة ٢: هل يضيء LED الإشعارات أو ضوء خلفي خافت؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ يوجد ضوء خافت → مشكلة في LCD تحديداً</span>
+    <span style="color:var(--c-danger);">❌ لا شيء → انتقل للخطوة ٣</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">الخطوة ٣: وصل الهاتف بالكمبيوتر. هل يتعرف عليه adb devices؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ يظهر في adb → المشكلة شاشة فقط. استبدلها.</span>
+    <span style="color:var(--c-danger);">❌ لا يظهر → انتقل للخطوة ٤</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">الخطوة ٤: هل يدخل Fastboot؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ يدخل Fastboot → مشكلة Software/System</span>
+    <span style="color:var(--c-danger);">❌ لا يدخل → مشكلة PMIC أو هاردوير عميق</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node action">إذا دخل Fastboot: فلّش boot.img + system.img</div>
+  <div class="flow-line">⬇</div>
+  <div class="flow-node success">✅ تم التشخيص!</div>
+</div>
+
+<!-- مشكلة الصوت -->
+<h3>🔊 المشكلة: الصوت لا يعمل</h3>
+
+<div class="flowchart">
+  <div class="flow-node start">🔊 العميل: "ما فيه صوت"</div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">الخطوة ١: أي صوت بالتحديد؟ سماعة الأذن أم السماعة الخارجية؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-warning);">⚠️ سماعة الأذن فقط → نظف شبكة السماعة الأمامية</span>
+    <span style="color:var(--c-warning);">⚠️ السماعة الخارجية فقط → انتقل للخطوة ٢</span>
+    <span style="color:var(--c-danger);">❌ كلاهما لا يعمل → انتقل للخطوة ٣</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">الخطوة ٢: هل الصوت يعمل مع سماعات Bluetooth؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ يعمل مع Bluetooth → السماعة الخارجية تالفة</span>
+    <span style="color:var(--c-danger);">❌ لا يعمل → انتقل للخطوة ٣</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node action">الخطوة ٣: المشكلة في IC Audio أو إعدادات النظام</div>
+  <div class="flow-line">⬇</div>
+  <div class="flow-node success">✅ جرب إعادة ضبط المصنع. إذا استمر: IC Audio يحتاج تغيير</div>
+</div>
+
+<!-- مشكلة الكاميرا -->
+<h3>📸 المشكلة: الكاميرا لا تعمل</h3>
+
+<div class="flowchart">
+  <div class="flow-node start">📸 العميل: "الكاميرا سوداء"</div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">الخطوة ١: هل الكاميرا الأمامية والخلفية كلاهما لا يعمل؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-warning);">⚠️ واحدة فقط → الكاميرا التالفة أو فيصلها مفصول</span>
+    <span style="color:var(--c-danger);">❌ كلاهما → انتقل للخطوة ٢</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">الخطوة ٢: هل تطبيق الكاميرا يعطي رسالة خطأ؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ "Camera failed" أو "Cannot connect to camera"</span>
+    <span style="color:var(--c-danger);">❌ شاشة سوداء بدون رسالة</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node action">الخطوة ٣: امسح بيانات تطبيق الكاميرا. إذا استمر: فلّش روم</div>
+  <div class="flow-line">⬇</div>
+  <div class="flow-node success">✅ إذا استمر بعد التفليش: مشكلة IC ISP أو كاميرا تالفة</div>
+</div>
+
+<!-- مشكلة اللمس -->
+<h3>👆 المشكلة: اللمس لا يستجيب</h3>
+
+<div class="flowchart">
+  <div class="flow-node start">👆 العميل: "اللمس ما يشتغل"</div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">الخطوة ١: هل اللمس لا يعمل في منطقة معينة أم كله؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-warning);">⚠️ منطقة معينة → كسر في الديجتايزر</span>
+    <span style="color:var(--c-danger);">❌ كله لا يعمل → انتقل للخطوة ٢</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">الخطوة ٢: هل يوجد Ghost Touch (يضغط وحده)؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-danger);">❌ Ghost Touch → شاشة تجارية رديئة أو فيصل تالف</span>
+    <span style="color:var(--c-success);">✅ لا يوجد → انتقل للخطوة ٣</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">الخطوة ٣: هل اللمس يتوقف عند توصيل شاحن معين؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ مع شاحن معين → الشاحن يرسل تياراً متذبذباً</span>
+    <span style="color:var(--c-danger);">❌ مع كل الشواحن → انتقل للخطوة ٤</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node action">الخطوة ٤: أعد توصيل فيصل الشاشة. إذا استمر: استبدل الشاشة</div>
+  <div class="flow-line">⬇</div>
+  <div class="flow-node success">✅ تم التشخيص!</div>
+</div>
+
+<!-- مشكلة WiFi/Bluetooth -->
+<h3>📶 المشكلة: WiFi أو Bluetooth لا يعمل</h3>
+
+<div class="flowchart">
+  <div class="flow-node start">📶 العميل: "الواي فاي ما يشتغل"</div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">الخطوة ١: هل الزر يتفعل أم يظل رمادياً؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-danger);">❌ يظل رمادياً → MAC Address مفقود (EFS/Persist تالف)</span>
+    <span style="color:var(--c-success);">✅ يتفعل لكن لا يجد شبكات → انتقل للخطوة ٢</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node action">الخطوة ٢: امسح بيانات WiFi. جرب شبكة أخرى.</div>
+  <div class="flow-line">⬇</div>
+  <div class="flow-node success">✅ إذا استمر: استعد persist.img أو فلّش روم</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٥: جدول الأعراض والحلول -->
+<!-- ================================================================ -->
+<h2>📋 جدول الأعراض الشائعة والحلول التفصيلية</h2>
+
+<table class="data-table">
+  <tr>
+    <th>العرض</th>
+    <th>السبب المحتمل</th>
+    <th>كيف تتأكد؟</th>
+    <th>الحل خطوة بخطوة</th>
+  </tr>
+  <tr>
+    <td><strong>Bootloop</strong> (يعيد الإقلاع باستمرار)</td>
+    <td>ROM تالف، Boot تالف، Magisk module خاطئ، تطبيق خبيث</td>
+    <td>ادخل Recovery. إذا دخلت = المشكلة سوفتوير</td>
+    <td>١. ادخل Recovery<br>٢. Wipe Cache Partition<br>٣. إذا استمر: Wipe Data/Factory Reset<br>٤. إذا استمر: فلّش ROM كامل</td>
+  </tr>
+  <tr>
+    <td><strong>شاشة زرقاء</strong> (Blue Screen / Kernel Panic)</td>
+    <td>Kernel panic، هاردوير ذاكرة RAM تالف، تعريف خاطئ</td>
+    <td>تظهر شاشة زرقاء مع نص أبيض للحظة ثم يعيد التشغيل</td>
+    <td>١. فلّش boot.img أصلي<br>٢. فلّش ROM كامل<br>٣. إذا استمر: RAM تالف (يحتاج تغيير)</td>
+  </tr>
+  <tr>
+    <td><strong>بطء شديد / تعليق</strong></td>
+    <td>ذاكرة ممتلئة، تطبيق يستهلك CPU، thermal throttling</td>
+    <td>استخدم adb shell top لمعرفة التطبيق المستهلك</td>
+    <td>١. امسح cache<br>٢. احذف التطبيقات غير المستخدمة<br>٣. افحص درجة الحرارة<br>٤. جرب Wipe Data</td>
+  </tr>
+  <tr>
+    <td><strong>سخونة مفرطة</strong></td>
+    <td>تطبيق يستهلك CPU، IC شحن تالف، بطارية منتفخة</td>
+    <td>المس الهاتف. إذا السخونة في الأسفل = شحن، في الوسط = CPU</td>
+    <td>١. اغلق التطبيقات الثقيلة<br>٢. أعد التشغيل<br>٣. افحص IC الشحن بالملتيميتر<br>٤. افحص البطارية</td>
+  </tr>
+  <tr>
+    <td><strong>صوت لا يعمل</strong></td>
+    <td>Speaker تالف، IC Audio، إعدادات صامت، وسخ في الشبكة</td>
+    <td>جرب سماعة Bluetooth. إذا اشتغلت = السماعة الداخلية تالفة</td>
+    <td>١. نظف شبكات السماعات<br>٢. تأكد من الإعدادات<br>٣. Wipe Data<br>٤. فلّش ROM<br>٥. استبدل IC Audio</td>
+  </tr>
+  <tr>
+    <td><strong>كاميرا سوداء</strong></td>
+    <td>Camera HAL تالف، كابل كاميرا مفصول، IC ISP تالف</td>
+    <td>جرب كاميرا أمامية وخلفية. إذا كلاهما = مشكلة IC</td>
+    <td>١. امسح بيانات تطبيق الكاميرا<br>٢. أعد توصيل فيصل الكاميرا<br>٣. فلّش ROM<br>٤. استبدل IC ISP</td>
+  </tr>
+  <tr>
+    <td><strong>لمس لا يستجيب</strong></td>
+    <td>Touch IC، واقي شاشة رديء، شاحن تيار متذبذب، فيصل</td>
+    <td>جرب بدون واقي شاشة. جرب بدون شاحن.</td>
+    <td>١. أزل واقي الشاشة<br>٢. جرب شاحن آخر<br>٣. أعد توصيل فيصل الشاشة<br>٤. استبدل الشاشة</td>
+  </tr>
+  <tr>
+    <td><strong>WiFi/Bluetooth لا يعمل</strong></td>
+    <td>MAC Address مفقود، Firmware WiFi تالف، IC WiFi تالف</td>
+    <td>الزر يظل رمادياً = MAC مفقود. الزر يتفعل = Firmware</td>
+    <td>١. افحص MAC Address في الإعدادات<br>٢. استعد persist.img<br>٣. فلّش WiFi firmware<br>٤. استبدل IC WiFi</td>
+  </tr>
+  <tr>
+    <td><strong>بصمة لا تعمل</strong></td>
+    <td>سنسور بصمة تالف، فيصل مفصول، إعدادات</td>
+    <td>جرب تسجيل بصمة جديدة. إذا فشل = سنسور تالف</td>
+    <td>١. امسح Data تطبيق البصمة<br>٢. أعد توصيل فيصل البصمة<br>٣. استبدل سنسور البصمة</td>
+  </tr>
+  <tr>
+    <td><strong>بطارية تخلص بسرعة</strong></td>
+    <td>بطارية قديمة، تطبيقات خلفية، Wakelocks، IC شحن</td>
+    <td>استخدم adb shell dumpsys battery لفحص صحة البطارية</td>
+    <td>١. افحص cycle_count<br>٢. افحص Wakelocks في الإعدادات<br>٣. امسح cache<br>٤. استبدل البطارية</td>
+  </tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- القسم ٦: أوامر ADB المستخدمة في التشخيص -->
+<!-- ================================================================ -->
+<h2>🔧 أدوات التشخيص عبر ADB</h2>
+
+<p>هذه الأوامر هي <strong>أهم ما يستخدمه الفني المحترف</strong> يومياً. احفظها عن ظهر قلب:</p>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">أوامر ADB الأساسية للتشخيص</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># ١. معلومات الجهاز الأساسية</span>
+<span class="cmd">adb shell getprop</span> ro.product.model              <span class="comment"># اسم الموديل</span>
+<span class="cmd">adb shell getprop</span> ro.build.version.release     <span class="comment"># إصدار أندرويد</span>
+<span class="cmd">adb shell getprop</span> ro.build.version.security_patch  <span class="comment"># آخر تحديث أمني</span>
+
+<span class="comment"># ٢. فحص البطارية</span>
+<span class="cmd">adb shell dumpsys</span> battery
+<span class="comment"># انظر إلى: health (2=سليمة), level, temperature (350=35°C)</span>
+
+<span class="comment"># ٣. فحص الشبكة</span>
+<span class="cmd">adb shell getprop</span> gsm.version.baseband          <span class="comment"># Baseband موجود؟</span>
+<span class="cmd">adb shell service call</span> iphonesubinfo 1          <span class="comment"># IMEI موجود؟</span>
+<span class="cmd">adb shell dumpsys</span> telephony.registry            <span class="comment"># قوة الإشارة</span>
+
+<span class="comment"># ٤. فحص الذاكرة</span>
+<span class="cmd">adb shell df</span> -h /data                           <span class="comment"># مساحة التخزين</span>
+<span class="cmd">adb shell cat</span> /proc/meminfo                    <span class="comment"># الرام</span>
+
+<span class="comment"># ٥. فحص المعالج والحرارة</span>
+<span class="cmd">adb shell cat</span> /sys/class/thermal/thermal_zone*/temp  <span class="comment"># حرارة المعالج</span>
+<span class="cmd">adb shell top</span> -n 1 -m 5                        <span class="comment"># أكثر ٥ تطبيقات استهلاكاً</span>
+
+<span class="comment"># ٦. فحص الأخطاء</span>
+<span class="cmd">adb logcat</span> -d *:E                               <span class="comment"># الأخطاء فقط</span>
+<span class="cmd">adb logcat</span> -d | grep -i <span class="string">"fatal\|crash\|panic"</span>  <span class="comment"># أخطاء قاتلة</span>
+
+<span class="comment"># ٧. فحص حالة Bootloader</span>
+<span class="cmd">adb shell getprop</span> ro.boot.flash.locked          <span class="comment"># 1=مقفول, 0=مفتوح</span>
+<span class="cmd">adb shell getprop</span> ro.boot.bootreason            <span class="comment"># سبب آخر إقلاع</span></pre>
+</div>
+
+<!-- سكريبت التشخيص الشامل -->
+<h3>🔥 سكريبت التشخيص الشامل</h3>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">diagnostic.sh — فحص شامل عبر ADB</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment">#!/bin/bash</span>
+<span class="comment"># Phone Diagnostic Script - Comprehensive Check</span>
+
+<span class="func">echo</span> <span class="string">"========================================"</span>
+<span class="func">echo</span> <span class="string">"  📱 Phone Diagnostic Report"</span>
+<span class="func">echo</span> <span class="string">"========================================"</span>
+<span class="func">echo</span> <span class="string">""</span>
+
+<span class="comment"># 1. Device Info</span>
+<span class="func">echo</span> <span class="string">"[1] Device Information:"</span>
+<span class="func">echo</span> <span class="string">"   Model: $(adb shell getprop ro.product.model | tr -d '\r')"</span>
+<span class="func">echo</span> <span class="string">"   Android: $(adb shell getprop ro.build.version.release | tr -d '\r')"</span>
+<span class="func">echo</span> <span class="string">"   Security Patch: $(adb shell getprop ro.build.version.security_patch | tr -d '\r')"</span>
+<span class="func">echo</span> <span class="string">""</span>
+
+<span class="comment"># 2. Battery Status</span>
+<span class="func">echo</span> <span class="string">"[2] Battery Status:"</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">dumpsys</span> <span class="keyword">battery</span> <span class="keyword">|</span> <span class="func">grep</span> <span class="keyword">-E</span> <span class="string">"level|status|health|temp|voltage"</span> <span class="keyword">|</span> <span class="func">sed</span> <span class="string">'s/^/   /'</span>
+<span class="func">echo</span> <span class="string">""</span>
+
+<span class="comment"># 3. Storage</span>
+<span class="func">echo</span> <span class="string">"[3] Storage Status:"</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">df</span> <span class="keyword">-h</span> <span class="keyword">/data</span> <span class="keyword">|</span> <span class="func">tail</span> <span class="keyword">-1</span> <span class="keyword">|</span> <span class="func">awk</span> <span class="string">'{print "   Total: " $2, "Used: " $3, "Free: " $4, "Usage: " $5}'</span>
+<span class="func">echo</span> <span class="string">""</span>
+
+<span class="comment"># 4. Network</span>
+<span class="func">echo</span> <span class="string">"[4] Network Status:"</span>
+<span class="func">echo</span> <span class="string">"   Baseband: $(adb shell getprop gsm.version.baseband | tr -d '\r')"</span>
+<span class="func">echo</span> <span class="string">"   IMEI: $(adb shell service call iphonesubinfo 1 | grep -o '[0-9]*' | tr -d '\n')"</span>
+<span class="func">echo</span> <span class="string">""</span>
+
+<span class="comment"># 5. Boot Status</span>
+<span class="func">echo</span> <span class="string">"[5] Boot Status:"</span>
+<span class="func">echo</span> <span class="string">"   Bootloader: $(adb shell getprop ro.bootloader | tr -d '\r')"</span>
+<span class="func">echo</span> <span class="string">"   Boot Reason: $(adb shell getprop ro.boot.bootreason | tr -d '\r')"</span>
+<span class="func">echo</span> <span class="string">"   Verified Boot: $(adb shell getprop ro.boot.verifiedbootstate | tr -d '\r')"</span>
+<span class="func">echo</span> <span class="string">""</span>
+
+<span class="func">echo</span> <span class="string">"[✓] Diagnostic Complete!"</span></pre>
+</div>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>كيف تستخدم هذا السكريبت:</strong><br>
+    ١. انسخ الكود واحفظه في ملف <code>diagnose.sh</code><br>
+    ٢. في Terminal: <code>chmod +x diagnose.sh && ./diagnose.sh</code><br>
+    ٣. سيظهر تقرير كامل عن حالة الهاتف في ثوانٍ
+  </div>
+</div>
+
+<!-- سكريبت تصفية الأخطاء -->
+<h3>🔍 سكريبت تصفية أخطاء محددة</h3>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">logcat-filter.sh — تصفية الأخطاء المهمة فقط</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment">#!/bin/bash</span>
+<span class="comment"># Filter logcat for specific errors</span>
+
+<span class="func">echo</span> <span class="string">"[*] Starting filtered logcat..."</span>
+<span class="func">echo</span> <span class="string">"[*] Looking for FATAL, CRASH, PANIC, and ERROR"</span>
+<span class="func">echo</span> <span class="string">"[*] Press Ctrl+C to stop"</span>
+<span class="func">echo</span> <span class="string">""</span>
+
+<span class="comment"># تصفية الأخطاء القاتلة فقط</span>
+<span class="func">adb</span> <span class="keyword">logcat</span> <span class="keyword">-v</span> <span class="string">color</span> <span class="keyword">*</span>:<span class="num">E</span> <span class="keyword">AndroidRuntime</span>:<span class="num">E</span> <span class="keyword">*</span>:<span class="num">S</span>
+
+<span class="comment"># خيارات بديلة (أزل # للتجربة):
+# تصفية تطبيق معين:
+# adb logcat -v color | grep "com.whatsapp"
+
+# تصفية Kernel messages:
+# adb shell dmesg | grep -i "error\|fail\|panic"
+
+# حفظ السجل في ملف:
+# adb logcat -d > full_log.txt</span></pre>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٧: سيناريوهات واقعية -->
+<!-- ================================================================ -->
+<h2>🎬 سيناريوهات واقعية من ورشة الصيانة</h2>
+
+<!-- سيناريو ١ -->
+<h3>السيناريو ١: هاتف سقط في الماء</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(248,113,113,0.04),rgba(251,191,36,0.04)); border-color:rgba(248,113,113,0.2);">
+  <h4 style="margin-top:0; color:var(--c-danger);">🧊 الموقف:</h4>
+  <p>جاءك عميل ومعه هاتف سقط في حوض ماء. الهاتف كان شغالاً ثم أطفأ فجأة. الآن لا يستجيب أبداً.</p>
+
+  <h4 style="color:var(--c-warning);">🤔 التشخيص:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>لا تشحن الهاتف أبداً!</strong> الماء + كهرباء = شورت يدمر البوردة</li>
+    <li><strong>افتح الهاتف فوراً.</strong> لا تنتظر "يجف" — الصدأ يبدأ خلال ساعات</li>
+    <li><strong>افصل فيصل البطارية</strong> أول شيء</li>
+    <li><strong>انزع البوردة</strong> بالكامل</li>
+    <li><strong>نظفها بفرشاة ناعمة + كحول أيزوبروبيل 99%</strong> (وليس 70%)</li>
+    <li><strong>جففها جيداً</strong> — استخدم هواء مضغوط أو مجفف شعر على بارد</li>
+    <li><strong>افحص تحت الميكروسكوب</strong> — ابحث عن:
+      <ul>
+        <li>نقاط خضراء/بيضاء = تآكل</li>
+        <li>أرجل IC محروقة</li>
+        <li>مكثفات منتفخة</li>
+      </ul>
+    </li>
+    <li><strong>إذا وجدت تآكلاً:</strong> نظف بفرشاة أسنان ناعمة + كحول. قد تحتاج لإعادة لحام</li>
+    <li><strong>أعد تركيب البوردة</strong> وجرب التشغيل</li>
+    <li><strong>إذا لم يشتغل:</strong> قس نقاط الشحن بالملتيميتر. ٩٠٪ يكون IC الشحن تالف</li>
+  </ol>
+
+  <h4 style="color:var(--c-success);">✅ النتيجة المتوقعة:</h4>
+  <p>إذا تصرفت بسرعة (خلال ٢٤ ساعة)، فرصة الإصلاح ٨٠٪. إذا انتظرت أسبوعاً، تقل لـ ٢٠٪ بسبب التآكل.</p>
+</div>
+
+<!-- سيناريو ٢ -->
+<h3>السيناريو ٢: هاتف مات بعد تحديث</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(56,189,248,0.04),rgba(129,140,248,0.04)); border-color:rgba(56,189,248,0.2);">
+  <h4 style="margin-top:0; color:var(--c-primary);">🔄 الموقف:</h4>
+  <p>العميل: "حدثت الهاتف، وأثناء التحديث أطفأ، والآن لا يشتغل أبداً. شاشة سوداء."</p>
+
+  <h4 style="color:var(--c-warning);">🤔 التشخيص:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>هذا على الأغلب Hard Brick.</strong> التحديث الفاشل أتلف Bootloader</li>
+    <li><strong>جرب الدخول لـ Fastboot:</strong> اضغط زر خفض الصوت + باور ١٥ ثانية</li>
+    <li><strong>إذا لم يدخل Fastboot:</strong> جرب EDL Mode (Emergency Download Mode)
+      <ul>
+        <li>لأجهزة Qualcomm: تحتاج EDL Cable أو Test Point</li>
+        <li>لأجهزة MediaTek: تحتاج MTK Tool + ROM</li>
+      </ul>
+    </li>
+    <li><strong>إذا دخل EDL:</strong> استخدم QFIL أو MSM Download Tool لتفليش ROM المصنع</li>
+    <li><strong>إذا لم يدخل حتى EDL:</strong> المشكلة قد تكون هاردوير (eMMC/UFS تالف)</li>
+  </ol>
+
+  <h4 style="color:var(--c-success);">✅ الحل النموذجي:</h4>
+  <p>في ٧٠٪ من الحالات، EDL + تفليش ROM المصنع يحل المشكلة. في ٣٠٪ تحتاج تغيير eMMC.</p>
+</div>
+
+<!-- سيناريو ٣ -->
+<h3>السيناريو ٣: هاتف يشتغل لكن بدون شبكة</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(251,191,36,0.04),rgba(248,113,113,0.04)); border-color:rgba(251,191,36,0.2);">
+  <h4 style="margin-top:0; color:var(--c-warning);">📡 الموقف:</h4>
+  <p>العميل: "بعد ما رجعت من السفر، الهاتف ما يمسك شبكة. قبل السفر كان شغال."</p>
+
+  <h4 style="color:var(--c-warning);">🤔 التشخيص:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>اطلب *#06#.</strong> هل IMEI موجود؟</li>
+    <li><strong>إذا IMEI = null:</strong> EFS تالف. استعد النسخة الاحتياطية</li>
+    <li><strong>إذا IMEI موجود:</strong> تحقق من Baseband في الإعدادات</li>
+    <li><strong>إذا Baseband = غير متوفر:</strong> فلّش مودم مناسب للمنطقة</li>
+    <li><strong>إذا Baseband موجود:</strong> قد يكون الهاتف مقفول على شبكة معينة (Carrier Lock)</li>
+    <li><strong>جرب شريحة من شركة أخرى.</strong> إذا اشتغلت = الهاتف مقفول</li>
+  </ol>
+
+  <h4 style="color:var(--c-success);">✅ الحل:</h4>
+  <p>للغاء قفل الشبكة: تحتاج لتفليش ROM مفتوح أو استخدام أداة إلغاء القفل (حسب الموديل).</p>
+</div>
+
+<!-- سيناريو ٤ -->
+<h3>السيناريو ٤: شاشة سوداء بعد سقوط</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(52,211,153,0.04),rgba(56,189,248,0.04)); border-color:rgba(52,211,153,0.2);">
+  <h4 style="margin-top:0; color:var(--c-success);">📱 الموقف:</h4>
+  <p>العميل: "وقع مني الهاتف، الشاشة ما عادت تشتغل. بس لما يجيه اتصال يرن."</p>
+
+  <h4 style="color:var(--c-warning);">🤔 التشخيص:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>الهاتف يشتغل</strong> (لأنه يرن) — إذاً المشكلة في الشاشة فقط</li>
+    <li><strong>لا يوجد كسر ظاهر</strong> على الزجاج — إذاً الضرر داخلي</li>
+    <li><strong>قد يكون فيصل الشاشة انفصل</strong> من الصدمة</li>
+    <li><strong>أو الـ LCD نفسه تالف</strong> من الضغط</li>
+  </ol>
+
+  <h4 style="color:var(--c-success);">✅ الحل:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li>افتح الهاتف</li>
+    <li>أعد توصيل فيصل الشاشة (افصله ونظفه ثم ركبه)</li>
+    <li>إذا لم يشتغل: جرب شاشة معروفة</li>
+    <li>إذا اشتغلت الشاشة المعروفة: استبدل الشاشة</li>
+  </ol>
+</div>
+
+<!-- سيناريو ٥ -->
+<h3>السيناريو ٥: بطارية تخلص في ساعتين</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(129,140,248,0.04),rgba(244,114,182,0.04)); border-color:rgba(129,140,248,0.2);">
+  <h4 style="margin-top:0; color:var(--c-secondary);">🔋 الموقف:</h4>
+  <p>العميل: "البطارية كانت تعمر يوم كامل، صارت تخلص في ساعتين. ما غيرت شيء."</p>
+
+  <h4 style="color:var(--c-warning);">🤔 التشخيص:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>افحص صحة البطارية:</strong> <code>adb shell dumpsys battery</code>
+      <ul>
+        <li>health: 4 = تالفة</li>
+        <li>health: 2 = سليمة (المشكلة ليست البطارية)</li>
+      </ul>
+    </li>
+    <li><strong>افحص عدد دورات الشحن:</strong> <code>adb shell cat /sys/class/power_supply/battery/cycle_count</code>
+      <ul>
+        <li>أكثر من ٥٠٠ = البطارية انتهى عمرها</li>
+      </ul>
+    </li>
+    <li><strong>إذا البطارية سليمة:</strong> ابحث عن Wakelocks
+      <ul>
+        <li>الإعدادات > البطارية > استهلاك التطبيقات</li>
+        <li>أو <code>adb shell dumpsys batterystats</code></li>
+        <li>ابحث عن تطبيق يمنع الهاتف من النوم العميق</li>
+      </ul>
+    </li>
+    <li><strong>افحص IC الشحن:</strong> إذا الهاتف يسخن حتى وهو مطفأ = IC شحن تالف</li>
+  </ol>
+
+  <h4 style="color:var(--c-success);">✅ الحل:</h4>
+  <p>في ٦٠٪ = بطارية تحتاج استبدال. ٢٥٪ = تطبيق Wakelock (احذفه). ١٥٪ = IC شحن تالف.</p>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٨: نصائح وتنبيهات -->
+<!-- ================================================================ -->
+<h2>⚠️ تنبيهات مهمة قبل التفكيك</h2>
+
+<div class="alert alert-danger">
+  <span class="alert-icon">🚨</span>
+  <div>
+    <strong>أخطاء قاتلة يرتكبها المبتدئون:</strong>
+    <ol style="margin-top:0.5rem; padding-right:1.2rem; line-height:2.2;">
+      <li><strong>فتح الهاتف قبل استنفاد الحلول البرمجية</strong> — ٧٠٪ من المشاكل تحل بدون مفك</li>
+      <li><strong>نزع البطارية دون فصلها أولاً</strong> — قد تسبب شورت في البوردة</li>
+      <li><strong>استخدام أدوات معدنية</strong> — استخدم أدوات بلاستيكية لتجنب الخدوش والشورت</li>
+      <li><strong>خلط البراغي</strong> — كل برغي له مكانه. استخدم Magnetic Mat أو كؤوس مرتبة</li>
+      <li><strong>نسيان فصل البطارية</strong> — قبل نزع أي فيصل، افصل البطارية أولاً</li>
+      <li><strong>تفليش ROM لطراز مختلف</strong> — قد يدمر IC الشبكة بشكل دائم</li>
+      <li><strong>عدم أخذ نسخة EFS</strong> — قبل أي تفليش، انسخ EFS. بدونها قد تفقد IMEI للأبد</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٩: أدوات الفني المحترف -->
+<!-- ================================================================ -->
+<h2>🧰 أدوات الفني المحترف للتشخيص</h2>
+
+<table class="data-table">
+  <tr>
+    <th>الأداة</th>
+    <th>الاستخدام</th>
+    <th>لماذا هي ضرورية؟</th>
+  </tr>
+  <tr>
+    <td><strong>ملتيميتر (Multimeter)</strong></td>
+    <td>قياس الفولت، فحص الشورت، فحص المكثفات والمقاومات</td>
+    <td>بدون ملتيميتر، أنت أعمى. لا يمكنك تشخيص ٥٠٪ من المشاكل</td>
+  </tr>
+  <tr>
+    <td><strong>باور سبلاي (Power Supply)</strong></td>
+    <td>تشغيل الهاتف بدون بطارية، قياس استهلاك التيار</td>
+    <td>سحب عالي = شورت. سحب صفر = دائرة مفتوحة. سحب طبيعي = البطارية تالفة</td>
+  </tr>
+  <tr>
+    <td><strong>ميكروسكوب (Microscope)</strong></td>
+    <td>فحص البوردة، اكتشاف Cold Solder، فحص IC</td>
+    <td>العين المجردة لا ترى ٨٠٪ من مشاكل البوردة</td>
+  </tr>
+  <tr>
+    <td><strong>EDL Cable / Test Point</strong></td>
+    <td>الدخول إلى Emergency Download Mode</td>
+    <td>الحل الوحيد لـ Hard Brick في أجهزة Qualcomm</td>
+  </tr>
+  <tr>
+    <td><strong>USB Current Meter</strong></td>
+    <td>قياس التيار الداخل للهاتف أثناء الشحن</td>
+    <td>يعرفك إذا الهاتف يسحب تيار (شغال) أم لا (ميت)</td>
+  </tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- القسم ١٠: الخلاصة -->
+<!-- ================================================================ -->
+<h2>🎯 خلاصة التشخيص المنطقي</h2>
+
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(52,211,153,0.06),rgba(56,189,248,0.06)); border-color:rgba(52,211,153,0.3);">
+  <h3 style="margin-top:0; color:var(--c-success);">القواعد الذهبية للتشخيص</h3>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">1</div>
+    <div class="text"><strong>اسمع العميل أولاً.</strong> ٥٠٪ من التشخيص يأتي من كلامه. لا تقاطعه.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">2</div>
+    <div class="text"><strong>تفحص خارجياً.</strong> كسور، انتفاخ، أثر ماء، مؤشر رطوبة، نظافة البورت.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">3</div>
+    <div class="text"><strong>جرب حلول برمجية أولاً.</strong> Wipe Cache، إعادة ضبط، تفليش ROM. لا تكلف شيئاً.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">4</div>
+    <div class="text"><strong>قسم الاحتمالات.</strong> سوفتوير أم هاردوير؟ بطارية أم بوردة؟ شاشة أم فيصل؟</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">5</div>
+    <div class="text"><strong>استخدم أدواتك.</strong> ملتيميتر، باور سبلاي، ADB، Fastboot. لا تخمن.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">6</div>
+    <div class="text"><strong>اختبر بعد الإصلاح.</strong> تأكد أن كل شيء يعمل قبل تسليم الهاتف للعميل.</div>
+  </div>
+</div>
+
+<div class="alert alert-success">
+  <span class="alert-icon">✅</span>
+  <div>
+    <strong>تذكر:</strong> الفني الناجح ليس من يصلح كل شيء، بل من <strong>يعرف أين يبحث عن المشكلة</strong> ولا يخمن. المنهج العلمي هو سر الاحتراف.
+  </div>
+</div>
+
+<div class="alert alert-info">
+  <span class="alert-icon">📚</span>
+  <div><strong>في الفصل القادم (الفصل ٤: التفليش):</strong> سنتعلم كيف نفلش ROM على Samsung و Xiaomi و OnePlus و Huawei خطوة بخطوة مع الصور.</div>
+</div>
+
+<div class="next-prev">
+  <a href="chapter2.html" class="prev">← الفصل 2: تثبيت ADB/Fastboot</a>
+  <a href="chapter4.html" class="next">الفصل 4: التفليش →</a>
+</div>
+
+</main>
+
+</body>
+</html>

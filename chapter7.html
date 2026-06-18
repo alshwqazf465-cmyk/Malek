@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الفصل 7: مشاكل الشاشة | أكاديمية صيانة الهواتف</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg: #0f172a; --c-surface: #1e293b; --c-surface2: #334155;
+  --c-primary: #38bdf8; --c-secondary: #818cf8; --c-accent: #f472b6;
+  --c-success: #34d399; --c-warning: #fbbf24; --c-danger: #f87171;
+  --c-text: #f1f5f9; --c-text2: #94a3b8; --c-border: #334155;
+  --glow: 0 0 20px rgba(56,189,248,0.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Tajawal', sans-serif; background: var(--c-bg); color: var(--c-text); line-height: 1.9; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(15,23,42,0.92); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--c-border); padding: 0.75rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { font-weight: 800; font-size: 1.2rem; color: var(--c-primary); text-decoration: none; }
+.nav-back { color: var(--c-text2); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.nav-back:hover { color: var(--c-primary); }
+
+main { max-width: 1000px; margin: 0 auto; padding: 6rem 2rem 3rem; }
+
+.chapter-header {
+  text-align: center; margin-bottom: 3rem; padding: 2.5rem 2rem;
+  background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(129,140,248,0.1));
+  border-radius: 20px; border: 1px solid rgba(56,189,248,0.2);
+}
+.chapter-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 55px; height: 55px; background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; font-weight: 900; border-radius: 14px; font-size: 1.4rem; margin-bottom: 1rem;
+}
+.chapter-header h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 0.75rem; }
+.chapter-header p { color: var(--c-text2); font-size: 1.1rem; }
+
+h2 {
+  font-size: 1.8rem; font-weight: 800; margin: 3.5rem 0 2rem;
+  padding-right: 1rem; border-right: 4px solid var(--c-primary);
+  color: var(--c-text);
+}
+h3 { font-size: 1.3rem; font-weight: 700; margin: 2.5rem 0 1.2rem; color: var(--c-primary); }
+h4 { font-size: 1.1rem; font-weight: 700; margin: 2rem 0 1rem; color: var(--c-warning); }
+p { color: var(--c-text2); margin-bottom: 1rem; font-size: 1.05rem; line-height: 2; }
+
+.code-block {
+  background: #0d1117; border: 1px solid #30363d; border-radius: 14px;
+  overflow: hidden; margin: 2rem 0; direction: ltr; text-align: left;
+}
+.code-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.7rem 1.2rem; background: #161b22; border-bottom: 1px solid #30363d;
+}
+.code-title { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #8b949e; }
+.code-dots { display: flex; gap: 7px; }
+.code-dot { width: 11px; height: 11px; border-radius: 50%; }
+.code-dot.r { background: #ff5f56; } .code-dot.y { background: #ffbd2e; } .code-dot.g { background: #27c93f; }
+pre {
+  padding: 1.4rem; overflow-x: auto; font-family: 'Fira Code', monospace;
+  font-size: 0.88rem; line-height: 1.9; color: #e6edf3;
+}
+pre .comment { color: #8b949e; }
+pre .keyword { color: #ff7b72; }
+pre .string { color: #a5d6ff; }
+pre .func { color: #d2a8ff; }
+pre .num { color: #79c0ff; }
+pre .cmd { color: #7ee787; }
+pre .output { color: #a5d6ff; }
+pre .err { color: #ff7b72; }
+pre .warn { color: #fbbf24; }
+
+.data-table {
+  width: 100%; border-collapse: collapse; margin: 2rem 0;
+  background: var(--c-surface); border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--c-border);
+}
+.data-table th {
+  background: var(--c-surface2); padding: 1.1rem 1.3rem; text-align: right;
+  font-weight: 700; color: var(--c-primary); font-size: 0.9rem;
+}
+.data-table td {
+  padding: 1rem 1.3rem; border-top: 1px solid var(--c-border);
+  color: var(--c-text2); font-size: 0.92rem; line-height: 1.8;
+}
+.data-table tr:hover td { background: rgba(56,189,248,0.04); }
+
+.alert {
+  padding: 1.2rem 1.5rem; border-radius: 14px; margin: 2rem 0;
+  display: flex; align-items: flex-start; gap: 0.9rem; border: 1px solid;
+  font-size: 1rem;
+}
+.alert-info { background: rgba(56,189,248,0.06); border-color: rgba(56,189,248,0.25); color: var(--c-primary); }
+.alert-warn { background: rgba(251,191,36,0.06); border-color: rgba(251,191,36,0.25); color: var(--c-warning); }
+.alert-danger { background: rgba(248,113,113,0.06); border-color: rgba(248,113,113,0.25); color: var(--c-danger); }
+.alert-success { background: rgba(52,211,153,0.06); border-color: rgba(52,211,153,0.25); color: var(--c-success); }
+.alert-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+
+.diagram-box {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 18px; padding: 2rem; margin: 2rem 0;
+}
+.diagram-step {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem 1.2rem; margin: 0.5rem 0; border-radius: 12px;
+  background: rgba(56,189,248,0.04); border: 1px solid rgba(56,189,248,0.12);
+}
+.diagram-step .num {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.95rem; flex-shrink: 0;
+}
+.diagram-step .text { font-size: 0.95rem; color: var(--c-text); line-height: 1.7; }
+.diagram-arrow { text-align: center; font-size: 1.6rem; color: var(--c-primary); margin: 0.2rem 0; }
+
+.flowchart {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 18px; padding: 2rem; margin: 2rem 0;
+}
+.flow-node {
+  padding: 1.2rem 1.5rem; border-radius: 14px; margin: 0.85rem 0;
+  text-align: center; font-weight: 700; font-size: 1rem;
+  border: 2px solid;
+}
+.flow-node.start { background: rgba(52,211,153,0.08); border-color: var(--c-success); color: var(--c-success); }
+.flow-node.question { background: rgba(251,191,36,0.08); border-color: var(--c-warning); color: var(--c-warning); border-radius: 50px; }
+.flow-node.action { background: rgba(56,189,248,0.08); border-color: var(--c-primary); color: var(--c-primary); }
+.flow-node.end { background: rgba(248,113,113,0.08); border-color: var(--c-danger); color: var(--c-danger); }
+.flow-node.success { background: rgba(52,211,153,0.08); border-color: var(--c-success); color: var(--c-success); }
+.flow-line { text-align: center; color: var(--c-text2); font-size: 1.6rem; margin: 0.3rem 0; }
+.flow-yesno {
+  display: flex; justify-content: center; gap: 3rem; margin: 0.6rem 0;
+  font-size: 0.85rem; font-weight: 600;
+}
+
+.img-wrap {
+  border-radius: 16px; overflow: hidden; margin: 2rem 0;
+  border: 1px solid var(--c-border); background: var(--c-surface);
+}
+.img-wrap img { width: 100%; height: auto; display: block; }
+.img-caption {
+  padding: 0.85rem 1.2rem; text-align: center; color: var(--c-text2);
+  font-size: 0.88rem; background: var(--c-surface); border-top: 1px solid var(--c-border);
+}
+
+.next-prev {
+  display: flex; justify-content: space-between; margin-top: 4rem;
+  padding-top: 2.5rem; border-top: 1px solid var(--c-border);
+}
+.next-prev a {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.9rem 1.8rem; border-radius: 14px;
+  text-decoration: none; font-weight: 700; transition: all 0.3s;
+}
+.next-prev .prev { color: var(--c-text2); border: 1px solid var(--c-border); }
+.next-prev .prev:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.next-prev .next {
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; box-shadow: 0 4px 15px rgba(56,189,248,0.3);
+}
+.next-prev .next:hover { transform: translateX(-3px); }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar-thumb { background: var(--c-surface2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-primary); }
+
+@media (max-width: 768px) {
+  main { padding: 5rem 1rem 2rem; }
+  .chapter-header h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">📱 أكاديمية صيانة الهواتف</a>
+  <a href="index.html" class="nav-back">← العودة للرئيسية</a>
+</nav>
+
+<main>
+
+<div class="chapter-header">
+  <div class="chapter-num">07</div>
+  <h1>مشاكل الشاشة</h1>
+  <p>أنواع الشاشات · Ghost Touch · تشخيص سوفتوير/هاردوير · تغيير الشاشة — شرح تفصيلي كامل</p>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١: أنواع الشاشات -->
+<!-- ================================================================ -->
+<h2>🖥️ أنواع شاشات الهواتف — فهم الفروقات</h2>
+
+<p>معرفة نوع الشاشة هو <strong>أول خطوة في التشخيص</strong>. كل نوع له أعطاله الخاصة وطريقة إصلاحه المختلفة:</p>
+
+<table class="data-table">
+  <tr>
+    <th>النوع</th>
+    <th>كيف تعمل؟</th>
+    <th>المميزات</th>
+    <th>العيوب والأعطال الشائعة</th>
+    <th>أمثلة</th>
+  </tr>
+  <tr>
+    <td><strong>LCD (IPS/TFT)</strong></td>
+    <td>طبقة كريستال سائل + إضاءة خلفية منفصلة (Backlight). الضوء يأتي من خلف الشاشة.</td>
+    <td>رخيص الثمن، عمر طويل، لا يعاني من حرق الشاشة، استهلاك طاقة موحد</td>
+    <td>أسود رمادي وليس عميق، سماكة أكبر، زاوية رؤية أقل، Backlight قد يحترق أو يضعف</td>
+    <td>iPhone 11, Xiaomi Redmi Note, Samsung A系列</td>
+  </tr>
+  <tr>
+    <td><strong>OLED / AMOLED</strong></td>
+    <td>كل بكسل يضيء بنفسه (لا يوجد Backlight). الأسود = البكسل مطفأ تماماً.</td>
+    <td>أسود عميق (لانهائي)، ألوان غنية، نحيفة جداً، زوايا رؤية ممتازة</td>
+    <td>حرق الشاشة (Burn-in)، أغلى ثمناً، عمر أقصر، البكسلات الزرقاء تموت أسرع</td>
+    <td>iPhone X/11 Pro/12/13/14/15 Pro, Samsung S/Note/Z</td>
+  </tr>
+  <tr>
+    <td><strong>Super AMOLED</strong></td>
+    <td>نفس OLED لكن طبقة اللمس مدمجة في الشاشة نفسها (وليس طبقة منفصلة).</td>
+    <td>أقل استهلاك، أنحف، أفضل في ضوء الشمس</td>
+    <td>نفس عيوب OLED. إذا تلف اللمس = تغيير الشاشة كاملة (لا يمكن فصل اللمس)</td>
+    <td>Samsung Galaxy S/Note (معظمها)</td>
+  </tr>
+  <tr>
+    <td><strong>LTPO OLED</strong></td>
+    <td>OLED متطور يمكنه تغيير معدل التحديث ديناميكياً من 1Hz إلى 120Hz.</td>
+    <td>توفير طاقة كبير، معدل تحديث متغير، أفضل شاشات حالياً</td>
+    <td>الأغلى على الإطلاق، معقدة جداً في التصنيع، صعبة الإصلاح</td>
+    <td>iPhone 15 Pro, Pixel 8 Pro, Samsung S24 Ultra</td>
+  </tr>
+</table>
+
+<h3>🔍 كيف تعرف نوع شاشة هاتفك؟</h3>
+<ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+  <li><strong>ابحث في الإنترنت:</strong> اكتب "جهازك + display type" في GSMarena</li>
+  <li><strong>اختبار الأسود:</strong> افتح صورة سوداء كاملة في غرفة مظلمة. إذا رأيت إضاءة خافتة = LCD. إذا كان أسود تماماً = OLED.</li>
+  <li><strong>زاوية الرؤية:</strong> انظر للشاشة من زاوية حادة. إذا تلاشت الألوان = LCD. إذا بقيت واضحة = OLED.</li>
+</ol>
+
+<!-- ================================================================ -->
+<!-- القسم ٢: Ghost Touch -->
+<!-- ================================================================ -->
+<h2>👻 Ghost Touch — اللمس الذاتي (اللمس الشبح)</h2>
+
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div>
+    <strong>ما هو Ghost Touch؟</strong> هو ظاهرة ظهور <strong>لمسات عشوائية</strong> على الشاشة بدون أن يلمسها أحد. الهاتف يفتح تطبيقات، يكتب حروفاً، يضغط أزراراً — وكأن شبحاً يستخدمه. هذه المشكلة من أكثر مشاكل الشاشة إزعاجاً.
+  </div>
+</div>
+
+<h3>📋 الأسباب الستة لـ Ghost Touch:</h3>
+<table class="data-table">
+  <tr>
+    <th>السبب</th>
+    <th>كيف تكتشفه؟</th>
+    <th>لماذا يحدث؟</th>
+    <th>الحل</th>
+  </tr>
+  <tr>
+    <td><strong>١. شاحن رديء أو تيار متذبذب</strong></td>
+    <td>Ghost Touch يظهر <strong>فقط أثناء الشحن</strong>. عند فصل الشاحن يختفي تماماً.</td>
+    <td>الشاحن الرديء يرسل تياراً غير مستقر. هذا التيار المتذبذب يتداخل مع إشارات اللمس في الشاشة.</td>
+    <td>استخدم <strong>الشاحن والكابل الأصليين</strong>. جرب شاحناً آخر معروف الجودة (5V/2A على الأقل).</td>
+  </tr>
+  <tr>
+    <td><strong>٢. واقي شاشة رديء</strong></td>
+    <td>Ghost Touch يظهر <strong>طوال الوقت</strong> حتى بدون شاحن. يختفي عند إزالة الواقي.</td>
+    <td>الواقي الرديء أو السميك جداً أو الذي يحتوي على فقاعات هواء يعطل الإشارات الكهربائية بين إصبعك والشاشة.</td>
+    <td>أزل الواقي. استخدم واقياً زجاجياً رفيعاً (0.2-0.3mm) من ماركة معروفة.</td>
+  </tr>
+  <tr>
+    <td><strong>٣. كابل شاشة غير مثبت جيداً</strong></td>
+    <td>Ghost Touch يظهر <strong>بعد فتح الجهاز</strong> أو بعد سقوط.</td>
+    <td>كابل Flex الذي يصل الشاشة بالبوردة أصبح مفصولاً جزئياً. الإشارات تتسرب بين الدبابيس.</td>
+    <td>افتح الجهاز. <strong>افصل الكابل ونظفه بالكحول</strong>. أعد تركيبه بإحكام. تأكد من سماع "طقة" القفل.</td>
+  </tr>
+  <tr>
+    <td><strong>٤. Touch IC تالف</strong></td>
+    <td>Ghost Touch يظهر <strong>دائماً</strong>، و<strong>يزداد مع الحرارة</strong>. اللمس يضغط في منطقة واحدة.</td>
+    <td>شريحة Touch IC على البوردة تالفة جزئياً. الحرارة توسع المعدن وتزيد التسريب الكهربائي.</td>
+    <td>استبدال Touch IC (يحتاج محطة هواء ساخن ومهارة لحام متقدمة). أو استبدال البوردة.</td>
+  </tr>
+  <tr>
+    <td><strong>٥. ماء أو رطوبة</strong></td>
+    <td>Ghost Touch يظهر <strong>بعد تعرض للماء</strong> أو الرطوبة. قد يظهر بعد أيام من الحادثة.</td>
+    <td>الماء يوصل الكهرباء بين دبابيس كابل الشاشة أو تحت Touch IC. يسبب توصيلات غير مقصودة.</td>
+    <td>افتح الجهاز فوراً. <strong>نظف البوردة والكابلات بكحول أيزوبروبيل 99%</strong>. جفف جيداً قبل إعادة التشغيل.</td>
+  </tr>
+  <tr>
+    <td><strong>٦. مشكلة برمجية (Software Bug)</strong></td>
+    <td>Ghost Touch يظهر <strong>بعد تحديث نظام</strong>. يختفي في Safe Mode.</td>
+    <td>تحديث النظام أو تطبيق جديد يسبب تعارضاً في تعريفات اللمس.</td>
+    <td>ادخل Safe Mode للتأكد. إذا اختفى = احذف آخر تطبيقات ثبتتها. جرب Factory Reset.</td>
+  </tr>
+</table>
+
+<h3>🧪 تشخيص Ghost Touch خطوة بخطوة:</h3>
+<div class="diagram-box">
+  <h4 style="margin-top:0; color:var(--c-warning);">🔍 سلم تشخيص Ghost Touch (من الأسهل للأصعب)</h4>
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>افصل الشاحن.</strong> هل Ghost Touch يختفي فوراً؟ <span style="color:var(--c-success);">✅ نعم → المشكلة في الشاحن/الكابل.</span> <span style="color:var(--c-danger);">❌ لا → تابع.</span></div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>أزل واقي الشاشة.</strong> هل يختفي؟ <span style="color:var(--c-success);">✅ نعم → المشكلة في الواقي.</span> <span style="color:var(--c-danger);">❌ لا → تابع.</span></div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>ادخل Safe Mode.</strong> هل يختفي؟ <span style="color:var(--c-success);">✅ نعم → المشكلة برمجية (تطبيق/تحديث).</span> <span style="color:var(--c-danger);">❌ لا → تابع.</span></div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text"><strong>جرب Factory Reset.</strong> هل يختفي؟ <span style="color:var(--c-success);">✅ نعم → Software Bug تم حله.</span> <span style="color:var(--c-danger);">❌ لا → تابع.</span></div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">5</div>
+    <div class="text"><strong>المشكلة هاردوير.</strong> افتح الجهاز. أعد تركيب كابل الشاشة. نظف البوردة. إذا استمر = Touch IC تالف.</div>
+  </div>
+</div>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">أوامر ADB لتشخيص اللمس</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 إظهار نقاط اللمس على الشاشة (لرؤية Ghost Touch)</span>
+<span class="cmd">adb shell settings put system</span> show_touches 1
+
+<span class="comment"># 📌 إظهار إحداثيات اللمس</span>
+<span class="cmd">adb shell settings put system</span> pointer_location 1
+
+<span class="comment"># 📌 الدخول إلى Safe Mode عبر ADB</span>
+<span class="cmd">adb shell am broadcast</span> -a <span class="string">android.intent.action.BOOT_SAFE_MODE</span>
+
+<span class="comment"># 📌 إيقاف إظهار نقاط اللمس</span>
+<span class="cmd">adb shell settings put system</span> show_touches 0
+<span class="cmd">adb shell settings put system</span> pointer_location 0
+
+<span class="comment"># 📌 عرض معلومات الشاشة واللمس</span>
+<span class="cmd">adb shell dumpsys</span> display
+<span class="cmd">adb shell dumpsys</span> input_method</pre>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٣: تشخيص سوفتوير/هاردوير -->
+<!-- ================================================================ -->
+<h2>🔍 تشخيص الشاشة — سوفتوير أم هاردوير؟</h2>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>القاعدة الذهبية:</strong> قبل أن تطلب شاشة جديدة، تأكد أن المشكلة ليست برمجية. ٢٠٪ من مشاكل الشاشة سببها سوفتوير ويتم حلها بـ Factory Reset أو تفليش ROM.
+  </div>
+</div>
+
+<div class="flowchart">
+  <div class="flow-node start">🖥️ العميل: "الشاشة فيها مشكلة"</div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">السؤال ١: هل الشاشة تظهر أي شيء؟ (ولو ضوء خافت)</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ تظهر صورة (ولو مشوشة)</span>
+    <span style="color:var(--c-danger);">❌ شاشة سوداء تماماً</span>
+  </div>
+  <div style="display:flex; gap:1rem; margin:1rem 0;">
+    <div style="flex:1; background:rgba(52,211,153,0.06); border:1px solid rgba(52,211,153,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-success);">✅ توجد صورة</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">المشكلة في المحتوى وليس الإضاءة. انتقل للسؤال ٢.</p>
+    </div>
+    <div style="flex:1; background:rgba(248,113,113,0.06); border:1px solid rgba(248,113,113,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-danger);">❌ شاشة سوداء</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">• هل الهاتف يهتز/يصدر صوت؟<br>• إذا نعم = الشاشة أو فيصلها تالف<br>• إذا لا = مشكلة بوردة (PMIC/CPU)</p>
+    </div>
+  </div>
+
+  <div class="flow-line">⬇</div>
+  <div class="flow-node question">السؤال ٢: هل اللمس يعمل؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ اللمس يعمل</span>
+    <span style="color:var(--c-danger);">❌ اللمس لا يعمل أو Ghost Touch</span>
+  </div>
+  <div style="display:flex; gap:1rem; margin:1rem 0;">
+    <div style="flex:1; background:rgba(52,211,153,0.06); border:1px solid rgba(52,211,153,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-success);">✅ اللمس سليم</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">المشكلة في الصورة فقط (LCD/OLED).</p>
+    </div>
+    <div style="flex:1; background:rgba(248,113,113,0.06); border:1px solid rgba(248,113,113,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-danger);">❌ مشكلة لمس</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">• جرب بدون شاحن/واقي<br>• ادخل Safe Mode<br>• أعد تركيب كابل الشاشة<br>• Touch IC تالف</p>
+    </div>
+  </div>
+
+  <div class="flow-line">⬇</div>
+  <div class="flow-node question">السؤال ٣: هل في Safe Mode نفس المشكلة؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ المشكلة تختفي في Safe Mode</span>
+    <span style="color:var(--c-danger);">❌ المشكلة باقية</span>
+  </div>
+  <div style="display:flex; gap:1rem; margin:1rem 0;">
+    <div style="flex:1; background:rgba(52,211,153,0.06); border:1px solid rgba(52,211,153,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-success);">✅ سوفتوير</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">• تطبيق خبيث<br>• احذف آخر التطبيقات<br>• جرب Factory Reset</p>
+    </div>
+    <div style="flex:1; background:rgba(248,113,113,0.06); border:1px solid rgba(248,113,113,0.2); border-radius:12px; padding:1rem;">
+      <strong style="color:var(--c-danger);">❌ هاردوير</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">• كابل شاشة<br>• Touch IC<br>• LCD/OLED تالف<br>• استبدل الشاشة</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٤: تغيير الشاشة -->
+<!-- ================================================================ -->
+<h2>🛠️ تغيير الشاشة — الدليل الكامل خطوة بخطوة</h2>
+
+<div class="alert alert-danger">
+  <span class="alert-icon">🚨</span>
+  <div>
+    <strong>تحذيرات قبل البدء:</strong>
+    <ul style="margin-top:0.5rem; padding-right:1.2rem;">
+      <li><strong>افصل البطارية أولاً</strong> قبل نزع أي كابل. هذه القاعدة لا تُكسر أبداً.</li>
+      <li><strong>استخدم أدوات بلاستيكية</strong> وليس معدنية — المعدن يخدش الهيكل وقد يسبب شورت.</li>
+      <li><strong>لا تلمس الكابلات بأصابع متسخة.</strong> الزيت يمنع التوصيل الجيد.</li>
+      <li><strong>صور كل خطوة.</strong> خاصة أماكن البراغي — بعضها أطول من بعض.</li>
+    </ul>
+  </div>
+</div>
+
+<h3>🧰 الأدوات المطلوبة:</h3>
+<table class="data-table">
+  <tr><th>الأداة</th><th>الاستخدام</th><th>ملاحظة</th></tr>
+  <tr><td><strong>سشوار صناعي (Heat Gun)</strong> أو <strong>iOpener</strong></td><td>تسخين الغراء حول الشاشة</td><td>اضبط الحرارة على 80-90°C. لا تستخدم سشوار شعر عادي!</td></tr>
+  <tr><td><strong>مكشط بلاستيكي (Spudger)</strong></td><td>فك الغراء وفتح الشاشة</td><td>لا تستخدم مفك معدني — سيخدش الهيكل</td></tr>
+  <tr><td><strong>كوب شفط (Suction Cup)</strong></td><td>رفع الشاشة من الهيكل</td><td>ضروري للشاشات الملتصقة بقوة</td></tr>
+  <tr><td><strong>مفكات دقيقة (Precision Screwdrivers)</strong></td><td>فك براغي حامل الشاشة</td><td>Phillips #00 أو Pentalobe (حسب الجهاز)</td></tr>
+  <tr><td><strong>ملقط (Tweezers)</strong></td><td>التعامل مع الكابلات والبراغي الصغيرة</td><td>استخدم ملقط بلاستيكي أو مطاطي للكابلات</td></tr>
+  <tr><td><strong>كحول أيزوبروبيل 99%</strong></td><td>تنظيف الغراء القديم</td><td>لا تستخدم أسيتون — يأكل البلاستيك</td></tr>
+  <tr><td><strong>غراء B7000 أو شريط Tesa</strong></td><td>لصق الشاشة الجديدة</td><td>B7000 سائل وشفاف. Tesa شريط لاصق جاهز</td></tr>
+  <tr><td><strong>مشابك (Clamps)</strong></td><td>تثبيت الشاشة بعد اللصق</td><td>اتركها 30-60 دقيقة</td></tr>
+</table>
+
+<h3>🚀 خطوات تغيير الشاشة (٨ خطوات):</h3>
+<div class="diagram-box">
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>أطفئ الهاتف تماماً.</strong> أخرج درج SIM وبطاقة الذاكرة. لا تتركهما أثناء الفتح — قد ينكسران.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>سخّن الحواف.</strong> استخدم سشواراً صناعياً على 80-90°C. حركه بشكل دائري على طول الحواف لمدة <strong>٢-٣ دقائق</strong>. لا تركز الحرارة على نقطة واحدة — قد تحرق الشاشة أو البطارية. الغراء يلين عند ~80°C.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>افتح الشاشة.</strong> الصق كوب الشفط في أسفل الشاشة (حيث زر Home). اسحب برفق لتكوين فجوة صغيرة. أدخل المكشط البلاستيكي في الفجوة وحركه بحذر على طول الحواف. <strong>لا تدخل المكشط عميقاً</strong> — قد تقطع كابلات داخلية.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text"><strong>ارفع الشاشة بحذر.</strong> ارفعها من الأسفل مثل كتاب. <strong>لا ترفعها بالكامل!</strong> هناك كابلات موصولة بين الشاشة والبوردة. إذا قاومت = هناك براغي لم تفكها بعد.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">5</div>
+    <div class="text"><strong>افصل البطارية أولاً!</strong> قبل أن تلمس أي كابل، افصل فيصل البطارية عن البوردة. هذا يمنع أي شورت أثناء العمل.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">6</div>
+    <div class="text"><strong>فك كابلات الشاشة.</strong> فك البراغي التي تثبت حامل الكابلات (Bracket). استخدم الملقط لرفع الكابلات برفق من موصلاتها. <strong>لا تسحب الكابل نفسه</strong> — ارفع الموصل.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">7</div>
+    <div class="text"><strong>نظف الإطار.</strong> أزل كل بقايا الغراء القديم من إطار الهاتف باستخدام كحول أيزوبروبيل 99% وقطعة قماش. نظف أيضاً الكاميرا الأمامية والسماعة من الغبار.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">8</div>
+    <div class="text"><strong>اختبر الشاشة الجديدة قبل اللصق!</strong> وصّل كابلات الشاشة الجديدة. وصّل البطارية. شغّل الهاتف. اختبر: الألوان، اللمس في كل الزوايا، السطوع، الكاميرا الأمامية، السماعة. إذا كل شيء تمام: أطفئ الهاتف، افصل البطارية، أعد تركيب الحوامل والبراغي، ضع الغراء الجديد، الصق الشاشة، ثبتها بالمشابك ٣٠-٦٠ دقيقة.</div>
+  </div>
+</div>
+
+<div class="alert alert-success">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>نصيحة المحترفين:</strong> اختبر الشاشة الجديدة <strong>قبل</strong> لصقها! ١٠٪ من الشاشات الجديدة تأتي معيبة (Dead Pixels، Ghost Touch، إضاءة غير متساوية). إذا لصقتها ثم اكتشفت العيب = لا يمكنك إرجاعها.
+  </div>
+</div>
+
+<h3>⚠️ أخطاء شائعة أثناء تغيير الشاشة:</h3>
+<table class="data-table">
+  <tr><th>الخطأ</th><th>النتيجة</th><th>كيف تتجنبه؟</th></tr>
+  <tr>
+    <td>نسيان فصل البطارية قبل نزع الكابلات</td>
+    <td>شورت في البوردة — قد يحرق IC الإضاءة أو Touch IC</td>
+    <td><strong>دائماً افصل البطارية أولاً.</strong> اجعلها عادة.</td>
+  </tr>
+  <tr>
+    <td>إدخال المكشط عميقاً جداً</td>
+    <td>قطع كابلات داخلية (كابل الشاشة نفسه، كابل البصمة)</td>
+    <td>أدخل المكشط 2-3mm فقط. لا أكثر.</td>
+  </tr>
+  <tr>
+    <td>استخدام حرارة عالية جداً</td>
+    <td>حرق الشاشة القديمة أو البطارية (خطر انفجار!)</td>
+    <td>لا تتجاوز 90°C. استخدم مقياس حرارة إن أمكن.</td>
+  </tr>
+  <tr>
+    <td>نسيان نقل القطع من الشاشة القديمة</td>
+    <td>الكاميرا الأمامية، السماعة، شبكة المايك لا تعمل</td>
+    <td>تأكد من نقل كل القطع الصغيرة: كاميرا أمامية، سماعة، Sensor، شبكات.</td>
+  </tr>
+  <tr>
+    <td>خلط البراغي (وضع برغي طويل في مكان قصير)</td>
+    <td>ثقب في الشاشة أو تلف في البوردة</td>
+    <td>استخدم Magnetic Mat. ضع كل برغي في مكانه.</td>
+  </tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- القسم ٥: جدول مشاكل الشاشة -->
+<!-- ================================================================ -->
+<h2>📋 جدول مشاكل الشاشة الشائعة — تشخيص وحلول</h2>
+
+<table class="data-table">
+  <tr>
+    <th>المشكلة</th>
+    <th>الوصف</th>
+    <th>السبب المحتمل</th>
+    <th>كيف تتأكد؟</th>
+    <th>الحل</th>
+  </tr>
+  <tr>
+    <td><strong>شاشة سوداء (لكن الهاتف يعمل)</strong></td>
+    <td>الهاتف يرن ويصدر إشعارات لكن الشاشة سوداء</td>
+    <td>كابل LCD مفصول، IC Display تالف، Backlight محترق (LCD)، أو الشاشة نفسها مكسورة</td>
+    <td>وصّل الهاتف بالكمبيوتر. إذا ظهر في <code>adb devices</code> = الشاشة تالفة. سلط كشافاً على الشاشة — إذا رأيت صورة خافتة جداً = Backlight تالف.</td>
+    <td>١. أعد توصيل كابل الشاشة<br>٢. جرب شاشة معروفة<br>٣. إذا اشتغلت = استبدل الشاشة<br>٤. إذا لم تشتغل = IC Display تالف</td>
+  </tr>
+  <tr>
+    <td><strong>خطوط عمودية/أفقية</strong></td>
+    <td>خطوط ملونة أو سوداء ثابتة على الشاشة</td>
+    <td>كابل LCD مكسور جزئياً، ضغط على الشاشة، IC Display</td>
+    <td>الخطوط ثابتة لا تتغير = كابل أو LCD. الخطوط تتحرك = IC Display.</td>
+    <td>إذا الكابل = أعد تركيبه. إذا استمر = استبدل الشاشة. إذا IC = استبدل IC.</td>
+  </tr>
+  <tr>
+    <td><strong>بقع صفراء/بنفسجية/زرقاء</strong></td>
+    <td>بقعة دائمة على الشاشة</td>
+    <td>ضغط على LCD (مثل الجلوس عليه)، ماء بين الطبقات، OLED Burn-in، حرارة زائدة</td>
+    <td>بقعة صفراء = ضغط. بقعة بنفسجية = ماء. بقعة زرقاء = حرارة.</td>
+    <td>لا يمكن إصلاحها. <strong>استبدل الشاشة.</strong></td>
+  </tr>
+  <tr>
+    <td><strong>لمس لا يستجيب في منطقة</strong></td>
+    <td>اللمس يعمل في كل الشاشة إلا منطقة معينة</td>
+    <td>كسر في طبقة Digitizer (اللمس)، كابل Touch تالف، Touch IC</td>
+    <td>فعّل <code>show_touches</code> في خيارات المطور. المس المنطقة — إذا لم تظهر نقطة = Digitizer تالف.</td>
+    <td>استبدل الشاشة. في بعض الأجهزة يمكن استبدال Digitizer فقط (لكنه صعب).</td>
+  </tr>
+  <tr>
+    <td><strong>سطوع منخفض جداً</strong></td>
+    <td>الشاشة مظلمة حتى على أعلى سطوع</td>
+    <td>Backlight IC تالف (في LCD)، Ambient Light Sensor معطل، إعدادات</td>
+    <td>أطفئ السطوع التلقائي. إذا استمر = مشكلة هاردوير.</td>
+    <td>افحص Ambient Sensor. إذا سليم = IC Backlight تالف.</td>
+  </tr>
+  <tr>
+    <td><strong>وميض (Flickering)</strong></td>
+    <td>الشاشة تومض بسرعة، خاصة على سطوع منخفض</td>
+    <td>كابل LCD غير مثبت، PWM Dimming (في OLED)، IC Display</td>
+    <td>إذا الوميض على سطوع منخفض فقط = PWM طبيعي. إذا على كل السطوع = مشكلة.</td>
+    <td>جرب تفعيل DC Dimming (في الإعدادات). أعد تركيب الكابل. إذا استمر = IC Display.</td>
+  </tr>
+  <tr>
+    <td><strong>ألوان باهتة/محروقة (Burn-in)</strong></td>
+    <td>ظلال دائمة من أيقونات أو كتابة على الشاشة</td>
+    <td>شاشة OLED/AMOLED أنهت عمرها. البكسلات الزرقاء تموت أسرع.</td>
+    <td>افتح صورة بيضاء كاملة. إذا رأيت ظلالاً = Burn-in.</td>
+    <td>لا يمكن إصلاحه. <strong>استبدل الشاشة.</strong></td>
+  </tr>
+  <tr>
+    <td><strong>Dead Pixels (بكسلات ميتة)</strong></td>
+    <td>نقطة سوداء صغيرة لا تضيء أبداً</td>
+    <td>عيب مصنعي أو ضرر فيزيائي (ضغط، سقوط)</td>
+    <td>افتح صوراً حمراء، خضراء، زرقاء، بيضاء. إذا النقطة لا تتغير = Dead Pixel.</td>
+    <td>لا يمكن إصلاحها. <strong>استبدل الشاشة.</strong></td>
+  </tr>
+  <tr>
+    <td><strong>Stuck Pixels (بكسل عالق)</strong></td>
+    <td>نقطة ملونة (أحمر/أخضر/أزرق) ثابتة</td>
+    <td>البكسل علق في حالة تشغيل</td>
+    <td>افتح صورة سوداء. إذا النقطة ما زالت ملونة = Stuck Pixel.</td>
+    <td>جرب تطبيقات إصلاح Stuck Pixels (تومض ألواناً). أحياناً يشتغل.</td>
+  </tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- القسم ٦: أوامر ADB للشاشة -->
+<!-- ================================================================ -->
+<h2>📱 أوامر ADB لتشخيص الشاشة واللمس</h2>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">أوامر تشخيص الشاشة عبر ADB</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 عرض معلومات الشاشة (الدقة، الكثافة، معدل التحديث)</span>
+<span class="cmd">adb shell dumpsys</span> display | grep <span class="string">"DisplayDeviceInfo\|mBaseDisplayInfo"</span>
+
+<span class="comment"># 📌 عرض الدقة الحالية</span>
+<span class="cmd">adb shell wm</span> size
+
+<span class="comment"># 📌 عرض الكثافة</span>
+<span class="cmd">adb shell wm</span> density
+
+<span class="comment"># 📌 تغيير الدقة (للتشخيص)</span>
+<span class="cmd">adb shell wm size</span> 720x1280   <span class="comment"># دقة منخفضة للتجربة</span>
+<span class="cmd">adb shell wm size</span> reset       <span class="comment"># إعادة الدقة الأصلية</span>
+
+<span class="comment"># 📌 إظهار نقاط اللمس</span>
+<span class="cmd">adb shell settings put system</span> show_touches 1
+
+<span class="comment"># 📌 إظهار إحداثيات المؤشر</span>
+<span class="cmd">adb shell settings put system</span> pointer_location 1
+
+<span class="comment"># 📌 إظهار حدود العناصر (للتأكد من استجابة اللمس)</span>
+<span class="cmd">adb shell settings put global</span> debug_layout 1
+
+<span class="comment"># 📌 فحص معدل تحديث الشاشة</span>
+<span class="cmd">adb shell dumpsys</span> display | grep <span class="string">"mRefreshRate"</span>
+
+<span class="comment"># 📌 إعادة كل إعدادات المطور</span>
+<span class="cmd">adb shell settings delete global</span> development_settings_enabled</pre>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٧: سيناريوهات واقعية -->
+<!-- ================================================================ -->
+<h2>🎬 سيناريوهات واقعية</h2>
+
+<h3>السيناريو ١: شاشة سوداء بعد سقوط</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(248,113,113,0.04),rgba(251,191,36,0.04)); border-color:rgba(248,113,113,0.2);">
+  <h4 style="margin-top:0; color:var(--c-danger);">🧊 الموقف:</h4>
+  <p>العميل: "وقع الهاتف مني. الشاشة سوداء بس الهاتف شغال — يرن لما أتصل عليه."</p>
+
+  <h4 style="color:var(--c-warning);">🤔 التشخيص:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>الهاتف يشتغل</strong> (يرن) = المشكلة في الشاشة فقط.</li>
+    <li><strong>لا يوجد كسر ظاهر</strong> على الزجاج — الضرر داخلي.</li>
+    <li>قد يكون <strong>كابل الشاشة انفصل</strong> من الصدمة.</li>
+    <li>أو الـ <strong>LCD/OLED نفسه تالف</strong> من الضغط.</li>
+  </ol>
+
+  <h4 style="color:var(--c-success);">✅ الحل:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li>افتح الهاتف (الزجاج قد يكون مكسوراً — كن حذراً)</li>
+    <li>أعد توصيل كابل الشاشة (افصله ونظفه ثم ركبه)</li>
+    <li>إذا لم يشتغل: جرب شاشة معروفة</li>
+    <li>إذا اشتغلت الشاشة المعروفة: استبدل الشاشة</li>
+  </ol>
+</div>
+
+<h3>السيناريو ٢: Ghost Touch بعد تغيير شاشة</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(251,191,36,0.04),rgba(56,189,248,0.04)); border-color:rgba(251,191,36,0.2);">
+  <h4 style="margin-top:0; color:var(--c-warning);">📡 الموقف:</h4>
+  <p>غيرت شاشة هاتف. بعد التركيب، ظهر Ghost Touch (اللمس يضغط وحده).</p>
+
+  <h4 style="color:var(--c-warning);">🤔 التشخيص:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>الشاشة الجديدة قد تكون معيبة</strong> (Touch IC في الشاشة تالف).</li>
+    <li><strong>كابل الشاشة لم يركب جيداً.</strong> دبابيس الكابل قد تكون معوجة.</li>
+    <li><strong>الشاشة الجديدة ليست أصلية</strong> — شاشات تجارية رديئة تسبب Ghost Touch.</li>
+    <li><strong>برغي طويل في مكان قصير</strong> يضغط على الشاشة من الخلف.</li>
+  </ol>
+
+  <h4 style="color:var(--c-success);">✅ الحل:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li>افتح الهاتف مرة أخرى</li>
+    <li>تأكد من الكابل — افصله ونظفه وأعد تركيبه</li>
+    <li>تأكد من البراغي — كل برغي في مكانه الصحيح</li>
+    <li>إذا استمر Ghost Touch = الشاشة معيبة. استبدلها بواحدة أصلية.</li>
+  </ol>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٨: سكريبت اختبار الشاشة -->
+<!-- ================================================================ -->
+<h2>🔥 سكريبتات اختبار الشاشة</h2>
+
+<!-- سكريبت ١ -->
+<h3>سكريبت ١: اختبار شامل للشاشة</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">screen-test.sh — اختبار البكسلات، الألوان، اللمس، السطوع</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment">#!/bin/bash</span>
+<span class="comment"># Screen Test Script - Dead pixels, touch, colors, brightness</span>
+
+<span class="func">echo</span> <span class="string">"========================================"</span>
+<span class="func">echo</span> <span class="string">"  🖥️ Screen Test Tool"</span>
+<span class="func">echo</span> <span class="string">"========================================"</span>
+<span class="func">echo</span> <span class="string">""</span>
+
+<span class="comment"># 1. عرض معلومات الشاشة</span>
+<span class="func">echo</span> <span class="string">"[1] Display Information:"</span>
+<span class="func">echo</span> <span class="string">"   Size: $(adb shell wm size | awk '{print $3}')"</span>
+<span class="func">echo</span> <span class="string">"   Density: $(adb shell wm density | awk '{print $2}')"</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">dumpsys</span> <span class="keyword">display</span> <span class="keyword">|</span> <span class="func">grep</span> <span class="keyword">-E</span> <span class="string">"DisplayDeviceInfo|mBaseDisplayInfo"</span> <span class="keyword">|</span> <span class="func">head</span> <span class="keyword">-3</span>
+<span class="func">echo</span> <span class="string">""</span>
+
+<span class="comment"># 2. تفعيل إظهار نقاط اللمس</span>
+<span class="func">echo</span> <span class="string">"[2] Activating touch visualization..."</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">settings</span> <span class="keyword">put</span> <span class="keyword">system</span> <span class="string">show_touches</span> <span class="num">1</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">settings</span> <span class="keyword">put</span> <span class="keyword">system</span> <span class="string">pointer_location</span> <span class="num">1</span>
+<span class="func">echo</span> <span class="string">"   Touch visualization ON - touch the screen to test"</span>
+<span class="func">echo</span> <span class="string">"   (Circle appears where you touch)"</span>
+<span class="func">echo</span> <span class="string">""</span>
+
+<span class="comment"># 3. اختبار الألوان (للبكسلات الميتة والعالقة)</span>
+<span class="func">echo</span> <span class="string">"[3] Color Test - Look for dead/stuck pixels"</span>
+<span class="func">echo</span> <span class="string">"   Flashing RED, GREEN, BLUE, WHITE, BLACK..."</span>
+
+<span class="comment"># أحمر</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">am</span> <span class="keyword">start</span> <span class="keyword">-a</span> <span class="string">android.intent.action.VIEW</span> <span class="keyword">-d</span> <span class="string">"https://www.colorhexa.com/ff0000.png"</span> <span class="keyword">2</span>><span class="keyword">/dev/null</span>
+<span class="func">echo</span> <span class="string">"   🔴 RED - Look for dark spots (dead pixels) or green/blue spots (stuck pixels)"</span>
+<span class="func">sleep</span> <span class="num">3</span>
+
+<span class="comment"># أخضر</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">am</span> <span class="keyword">start</span> <span class="keyword">-a</span> <span class="string">android.intent.action.VIEW</span> <span class="keyword">-d</span> <span class="string">"https://www.colorhexa.com/00ff00.png"</span> <span class="keyword">2</span>><span class="keyword">/dev/null</span>
+<span class="func">echo</span> <span class="string">"   🟢 GREEN - Look for dark spots or red/blue spots"</span>
+<span class="func">sleep</span> <span class="num">3</span>
+
+<span class="comment"># أزرق</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">am</span> <span class="keyword">start</span> <span class="keyword">-a</span> <span class="string">android.intent.action.VIEW</span> <span class="keyword">-d</span> <span class="string">"https://www.colorhexa.com/0000ff.png"</span> <span class="keyword">2</span>><span class="keyword">/dev/null</span>
+<span class="func">echo</span> <span class="string">"   🔵 BLUE - Look for dark spots or red/green spots"</span>
+<span class="func">sleep</span> <span class="num">3</span>
+
+<span class="comment"># أبيض</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">am</span> <span class="keyword">start</span> <span class="keyword">-a</span> <span class="string">android.intent.action.VIEW</span> <span class="keyword">-d</span> <span class="string">"https://www.colorhexa.com/ffffff.png"</span> <span class="keyword">2</span>><span class="keyword">/dev/null</span>
+<span class="func">echo</span> <span class="string">"   ⚪ WHITE - Look for dark spots or colored spots"</span>
+<span class="func">sleep</span> <span class="num">3</span>
+
+<span class="comment"># أسود</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">am</span> <span class="keyword">start</span> <span class="keyword">-a</span> <span class="string">android.intent.action.VIEW</span> <span class="keyword">-d</span> <span class="string">"https://www.colorhexa.com/000000.png"</span> <span class="keyword">2</span>><span class="keyword">/dev/null</span>
+<span class="func">echo</span> <span class="string">"   ⚫ BLACK - Look for white/colored spots (stuck pixels) or gray areas (LCD backlight)"</span>
+<span class="func">sleep</span> <span class="num">3</span>
+
+<span class="comment"># 4. اختبار السطوع</span>
+<span class="func">echo</span> <span class="string">""</span>
+<span class="func">echo</span> <span class="string">"[4] Brightness Test"</span>
+<span class="func">echo</span> <span class="string">"   Maximum brightness (255)..."</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">settings</span> <span class="keyword">put</span> <span class="keyword">system</span> <span class="string">screen_brightness</span> <span class="num">255</span>
+<span class="func">sleep</span> <span class="num">2</span>
+<span class="func">echo</span> <span class="string">"   Minimum brightness (10)..."</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">settings</span> <span class="keyword">put</span> <span class="keyword">system</span> <span class="string">screen_brightness</span> <span class="num">10</span>
+<span class="func">sleep</span> <span class="num">2</span>
+<span class="func">echo</span> <span class="string">"   Normal brightness (128)..."</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">settings</span> <span class="keyword">put</span> <span class="keyword">system</span> <span class="string">screen_brightness</span> <span class="num">128</span>
+
+<span class="comment"># 5. إيقاف إظهار اللمس</span>
+<span class="func">echo</span> <span class="string">""</span>
+<span class="func">echo</span> <span class="string">"[5] Deactivating touch visualization..."</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">settings</span> <span class="keyword">put</span> <span class="keyword">system</span> <span class="string">show_touches</span> <span class="num">0</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">settings</span> <span class="keyword">put</span> <span class="keyword">system</span> <span class="string">pointer_location</span> <span class="num">0</span>
+
+<span class="func">echo</span> <span class="string">""</span>
+<span class="func">echo</span> <span class="string">"========================================"</span>
+<span class="func">echo</span> <span class="string">"  ✅ Screen Test Complete!"</span>
+<span class="func">echo</span> <span class="string">"========================================"</span></pre>
+</div>
+
+<!-- سكريبت ٢ -->
+<h3>سكريبت ٢: إصلاح Stuck Pixels</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">fix-stuck-pixel.sh — محاولة إصلاح البكسلات العالقة</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment">#!/bin/bash</span>
+<span class="comment"># Stuck Pixel Fix - تومض ألواناً سريعة لمحاولة إصلاح البكسلات العالقة</span>
+
+<span class="func">echo</span> <span class="string">"[*] Stuck Pixel Fixer"</span>
+<span class="func">echo</span> <span class="string">"[*] This will flash colors rapidly for 2 minutes"</span>
+<span class="func">echo</span> <span class="string">"[*] Works for STUCK pixels (colored), NOT dead pixels (black)"</span>
+<span class="func">echo</span> <span class="string">"[*] Press Ctrl+C to stop"</span>
+
+<span class="func">COLORS</span>=(<span class="string">"0xFFFF0000"</span> <span class="string">"0xFF00FF00"</span> <span class="string">"0xFF0000FF"</span> <span class="string">"0xFFFFFFFF"</span> <span class="string">"0xFF000000"</span>
+         <span class="string">"0xFFFFFF00"</span> <span class="string">"0xFFFF00FF"</span> <span class="string">"0xFF00FFFF"</span>)
+
+<span class="keyword">for</span> <span class="func">i</span> <span class="keyword">in</span> <span class="string">{1..120}</span>; <span class="keyword">do</span>
+    <span class="keyword">for</span> <span class="func">color</span> <span class="keyword">in</span> <span class="string">"${COLORS[@]}"</span>; <span class="keyword">do</span>
+        <span class="func">adb</span> <span class="keyword">shell</span> <span class="func">am</span> <span class="keyword">start</span> <span class="keyword">-a</span> <span class="string">android.intent.action.VIEW</span> <span class="keyword">-d</span> <span class="string">"data:,$color"</span> <span class="keyword">2</span>><span class="keyword">/dev/null</span>
+        <span class="func">sleep</span> <span class="num">0.5</span>
+    <span class="keyword">done</span>
+<span class="keyword">done</span>
+
+<span class="func">echo</span> <span class="string">"[✓] Stuck Pixel Fix Complete!"</span></pre>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٩: نصائح ذهبية -->
+<!-- ================================================================ -->
+<h2>💎 نصائح ذهبية للشاشة</h2>
+
+<div class="alert alert-success">
+  <span class="alert-icon">✅</span>
+  <div>
+    <strong>قواعد لا تنساها:</strong>
+    <ol style="margin-top:0.5rem; padding-right:1.2rem; line-height:2.2;">
+      <li><strong>اختبر الشاشة الجديدة قبل اللصق.</strong> ١٠٪ من الشاشات الجديدة معيبة. اختبر الألوان، اللمس، السطوع، الكاميرا الأمامية، السماعة قبل الغراء.</li>
+      <li><strong>الشاشات التجارية ليست مثل الأصلية.</strong> قد تعاني من Ghost Touch، ألوان باهتة، سطوع أقل، أو استهلاك بطارية أعلى.</li>
+      <li><strong>لا تشتري شاشة OLED رخيصة جداً.</strong> غالباً تكون LCD متنكرة. الألوان ستكون سيئة جداً.</li>
+      <li><strong>صور البراغي قبل فكها.</strong> بعض البراغي أطول من بعض. وضع برغي طويل في مكان قصير = ثقب في الشاشة الجديدة.</li>
+      <li><strong>لا تستخدم حرارة عالية.</strong> أكثر من 90°C قد تحرق الشاشة القديمة (خطر حريق) أو تتلف البطارية.</li>
+      <li><strong>نظف الكاميرا الأمامية والسماعة.</strong> عند تغيير الشاشة، هذه فرصتك لتنظيف القطع المكشوفة.</li>
+      <li><strong>استخدم غراء B7000.</strong> يجف شفافاً، سهل الإزالة لاحقاً، ويمسك بقوة.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١٠: خلاصة -->
+<!-- ================================================================ -->
+<h2>🎯 خلاصة مشاكل الشاشة</h2>
+
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(52,211,153,0.06),rgba(56,189,248,0.06)); border-color:rgba(52,211,153,0.3);">
+  <h3 style="margin-top:0; color:var(--c-success);">القواعد الذهبية لتشخيص الشاشة</h3>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">1</div>
+    <div class="text"><strong>اعرف نوع الشاشة.</strong> LCD أم OLED؟ هذا يحدد الأعطال المحتملة.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">2</div>
+    <div class="text"><strong>ميّز بين السوفتوير والهاردوير.</strong> Safe Mode و Factory Reset هما صديقاك.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">3</div>
+    <div class="text"><strong>لـ Ghost Touch:</strong> ابدأ بالشاحن، ثم الواقي، ثم Safe Mode، ثم افتح الجهاز.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">4</div>
+    <div class="text"><strong>Dead Pixels ≠ Stuck Pixels.</strong> الميت لا يصلح. العالق قد يصلح.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">5</div>
+    <div class="text"><strong>اختبر قبل اللصق.</strong> هذه القاعدة وفرت آلاف الدولارات للفنيين.</div>
+  </div>
+</div>
+
+<div class="alert alert-info">
+  <span class="alert-icon">📚</span>
+  <div><strong>في الفصل القادم (الفصل ٨: الهاردوير الأساسي):</strong> سنتعلم أساسيات الهاردوير — استخدام الملتيميتر، أنواع الـ IC، المكثفات، المقاومات، وفحص الدوائر الكهربائية.</div>
+</div>
+
+<div class="next-prev">
+  <a href="chapter6.html" class="prev">← الفصل 6: مشاكل البطارية</a>
+  <a href="chapter8.html" class="next">الفصل 8: الهاردوير الأساسي →</a>
+</div>
+
+</main>
+
+</body>
+</html>

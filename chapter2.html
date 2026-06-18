@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الفصل 2: أوامر ADB/Fastboot الأسطورية | أكاديمية صيانة الهواتف</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg: #0f172a; --c-surface: #1e293b; --c-surface2: #334155;
+  --c-primary: #38bdf8; --c-secondary: #818cf8; --c-accent: #f472b6;
+  --c-success: #34d399; --c-warning: #fbbf24; --c-danger: #f87171;
+  --c-text: #f1f5f9; --c-text2: #94a3b8; --c-border: #334155;
+  --glow: 0 0 20px rgba(56,189,248,0.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Tajawal', sans-serif; background: var(--c-bg); color: var(--c-text); line-height: 1.8; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(15,23,42,0.9); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--c-border); padding: 0.75rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { font-weight: 800; font-size: 1.2rem; color: var(--c-primary); text-decoration: none; }
+.nav-back { color: var(--c-text2); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.nav-back:hover { color: var(--c-primary); }
+
+main { max-width: 1000px; margin: 0 auto; padding: 6rem 2rem 3rem; }
+
+.chapter-header {
+  text-align: center; margin-bottom: 3rem; padding: 2rem;
+  background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(129,140,248,0.1));
+  border-radius: 20px; border: 1px solid rgba(56,189,248,0.2);
+}
+.chapter-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 50px; height: 50px; background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; font-weight: 900; border-radius: 14px; font-size: 1.3rem; margin-bottom: 1rem;
+}
+.chapter-header h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.75rem; }
+.chapter-header p { color: var(--c-text2); font-size: 1.1rem; }
+
+h2 {
+  font-size: 1.6rem; font-weight: 800; margin: 2.5rem 0 1rem;
+  padding-right: 1rem; border-right: 4px solid var(--c-primary);
+  color: var(--c-text);
+}
+h3 { font-size: 1.2rem; font-weight: 700; margin: 1.5rem 0 0.75rem; color: var(--c-primary); }
+p { color: var(--c-text2); margin-bottom: 1rem; font-size: 1.05rem; }
+
+.code-block {
+  background: #0d1117; border: 1px solid #30363d; border-radius: 12px;
+  overflow: hidden; margin: 1.5rem 0; direction: ltr; text-align: left;
+}
+.code-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.6rem 1rem; background: #161b22; border-bottom: 1px solid #30363d;
+}
+.code-title { font-family: 'Fira Code', monospace; font-size: 0.8rem; color: #8b949e; }
+.code-dots { display: flex; gap: 6px; }
+.code-dot { width: 10px; height: 10px; border-radius: 50%; }
+.code-dot.r { background: #ff5f56; } .code-dot.y { background: #ffbd2e; } .code-dot.g { background: #27c93f; }
+pre {
+  padding: 1.2rem; overflow-x: auto; font-family: 'Fira Code', monospace;
+  font-size: 0.85rem; line-height: 1.7; color: #e6edf3;
+}
+pre .comment { color: #8b949e; }
+pre .keyword { color: #ff7b72; }
+pre .string { color: #a5d6ff; }
+pre .func { color: #d2a8ff; }
+pre .num { color: #79c0ff; }
+pre .cmd { color: #7ee787; }
+pre .output { color: #a5d6ff; }
+pre .err { color: #ff7b72; }
+
+.terminal {
+  background: #0d1117; border: 1px solid #30363d; border-radius: 12px;
+  overflow: hidden; margin: 1.5rem 0; direction: ltr; text-align: left;
+}
+.terminal-header {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.6rem 1rem; background: #161b22; border-bottom: 1px solid #30363d;
+}
+.terminal-body {
+  padding: 1.2rem; font-family: 'Fira Code', monospace;
+  font-size: 0.85rem; line-height: 1.8; color: #e6edf3;
+}
+.terminal-body .cmd { color: #7ee787; }
+.terminal-body .output { color: #8b949e; }
+.terminal-body .prompt { color: #ff7b72; }
+
+.data-table {
+  width: 100%; border-collapse: collapse; margin: 1.5rem 0;
+  background: var(--c-surface); border-radius: 12px; overflow: hidden;
+  border: 1px solid var(--c-border);
+}
+.data-table th {
+  background: var(--c-surface2); padding: 1rem; text-align: right;
+  font-weight: 700; color: var(--c-primary); font-size: 0.9rem;
+}
+.data-table td {
+  padding: 0.9rem 1rem; border-top: 1px solid var(--c-border);
+  color: var(--c-text2); font-size: 0.9rem;
+}
+.data-table tr:hover td { background: rgba(56,189,248,0.05); }
+
+.alert {
+  padding: 1rem 1.25rem; border-radius: 12px; margin: 1.5rem 0;
+  display: flex; align-items: flex-start; gap: 0.75rem; border: 1px solid;
+}
+.alert-info { background: rgba(56,189,248,0.08); border-color: rgba(56,189,248,0.3); color: var(--c-primary); }
+.alert-warn { background: rgba(251,191,36,0.08); border-color: rgba(251,191,36,0.3); color: var(--c-warning); }
+.alert-danger { background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.3); color: var(--c-danger); }
+.alert-success { background: rgba(52,211,153,0.08); border-color: rgba(52,211,153,0.3); color: var(--c-success); }
+.alert-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+.diagram-box {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 16px; padding: 2rem; margin: 1.5rem 0;
+}
+.diagram-step {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem; margin: 0.5rem 0; border-radius: 10px;
+  background: rgba(56,189,248,0.05); border: 1px solid rgba(56,189,248,0.15);
+}
+.diagram-step .num {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.9rem; flex-shrink: 0;
+}
+.diagram-step .text { font-size: 0.95rem; color: var(--c-text); }
+.diagram-arrow { text-align: center; font-size: 1.5rem; color: var(--c-primary); margin: 0.25rem 0; }
+
+.os-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.os-tab {
+  padding: 0.5rem 1.2rem; border-radius: 8px; border: 1px solid var(--c-border);
+  background: var(--c-surface); color: var(--c-text2); cursor: pointer;
+  font-weight: 600; font-family: inherit; font-size: 0.9rem; transition: all 0.2s;
+}
+.os-tab.active { background: linear-gradient(135deg, var(--c-primary), var(--c-secondary)); color: #0f172a; border-color: transparent; }
+.os-tab:hover:not(.active) { border-color: var(--c-primary); color: var(--c-primary); }
+.os-panel { display: none; }
+.os-panel.active { display: block; }
+
+.next-prev {
+  display: flex; justify-content: space-between; margin-top: 3rem;
+  padding-top: 2rem; border-top: 1px solid var(--c-border);
+}
+.next-prev a {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.8rem 1.5rem; border-radius: 12px;
+  text-decoration: none; font-weight: 700; transition: all 0.3s;
+}
+.next-prev .prev { color: var(--c-text2); border: 1px solid var(--c-border); }
+.next-prev .prev:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.next-prev .next {
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; box-shadow: 0 4px 15px rgba(56,189,248,0.3);
+}
+.next-prev .next:hover { transform: translateX(-3px); }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar-thumb { background: var(--c-surface2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-primary); }
+
+@media (max-width: 768px) {
+  main { padding: 5rem 1rem 2rem; }
+  .chapter-header h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.3rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">📱 أكاديمية صيانة الهواتف</a>
+  <a href="index.html" class="nav-back">← العودة للرئيسية</a>
+</nav>
+
+<main>
+
+<div class="chapter-header">
+  <div class="chapter-num">02</div>
+  <h1>أوامر ADB/Fastboot الأسطورية</h1>
+  <p>٣٠ أمر ADB + ١٥ أمر Fastboot — شرح تفصيلي ممل لكل أمر</p>
+</div>
+
+<!-- ================================================================ -->
+<!-- تحميل Platform Tools -->
+<!-- ================================================================ -->
+<h2>📥 تحميل وتثبيت ADB و Fastboot</h2>
+
+<div class="alert alert-info">
+  <span class="alert-icon">🔗</span>
+  <div><strong>الرابط الرسمي:</strong> <a href="https://developer.android.com/tools/releases/platform-tools" target="_blank" style="color:var(--c-primary);">developer.android.com/tools/releases/platform-tools</a></div>
+</div>
+
+<div class="os-tabs">
+  <button class="os-tab active" onclick="showOS('win')">🪟 Windows</button>
+  <button class="os-tab" onclick="showOS('linux')">🐧 Linux</button>
+  <button class="os-tab" onclick="showOS('mac')">🍎 macOS</button>
+</div>
+
+<div id="win" class="os-panel active">
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">PowerShell — تثبيت Platform Tools</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># إنشاء مجلد</span>
+<span class="func">New-Item</span> <span class="keyword">-ItemType</span> <span class="string">Directory</span> <span class="keyword">-Path</span> <span class="string">"C:\platform-tools"</span> <span class="keyword">-Force</span>
+
+<span class="comment"># تحميل</span>
+<span class="func">Invoke-WebRequest</span> <span class="keyword">-Uri</span> <span class="string">"https://dl.google.com/android/repository/platform-tools-latest-windows.zip"</span> <span class="keyword">-OutFile</span> <span class="string">"C:\platform-tools.zip"</span>
+
+<span class="comment"># فك الضغط</span>
+<span class="func">Expand-Archive</span> <span class="keyword">-Path</span> <span class="string">"C:\platform-tools.zip"</span> <span class="keyword">-DestinationPath</span> <span class="string">"C:\"</span> <span class="keyword">-Force</span>
+
+<span class="comment"># إضافة للمسار</span>
+<span class="func">[Environment]::SetEnvironmentVariable</span>(<span class="string">"Path"</span>, <span class="func">$env:Path</span> + <span class="string">";C:\platform-tools"</span>, <span class="string">"User"</span>)</pre>
+</div>
+</div>
+
+<div id="linux" class="os-panel">
+<div class="terminal">
+  <div class="terminal-header">
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+    <span class="code-title">Terminal</span>
+  </div>
+  <div class="terminal-body">
+<span class="prompt">$</span> <span class="cmd">sudo apt update && sudo apt install</span> android-tools-adb android-tools-fastboot
+  </div>
+</div>
+</div>
+
+<div id="mac" class="os-panel">
+<div class="terminal">
+  <div class="terminal-header">
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+    <span class="code-title">Terminal</span>
+  </div>
+  <div class="terminal-body">
+<span class="prompt">$</span> <span class="cmd">brew install --cask</span> android-platform-tools
+  </div>
+</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- تفعيل USB Debugging -->
+<!-- ================================================================ -->
+<h2>📱 تفعيل تصحيح أخطاء USB</h2>
+
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(52,211,153,0.08),rgba(56,189,248,0.08)); border-color:rgba(52,211,153,0.3);">
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">1</div>
+    <div class="text">افتح <strong>الإعدادات</strong> → <strong>حول الهاتف</strong> → اضغط <strong>رقم الإصدار</strong> ٧ مرات</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">2</div>
+    <div class="text">ارجع → <strong>خيارات المطور</strong></div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">3</div>
+    <div class="text">فعّل <strong>تصحيح أخطاء USB</strong></div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">4</div>
+    <div class="text">وصّل الهاتف ← اضغط <strong>السماح</strong></div>
+  </div>
+</div>
+
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div>إذا لم تظهر نافذة "السماح": جرب كابل USB آخر (بعض الكابلات شحن فقط)، جرب منفذ USB آخر، أعد تشغيل الهاتف.</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- أوامر ADB - 30 أمر -->
+<!-- ================================================================ -->
+<h2>🔌 أوامر ADB الثلاثون — شرح تفصيلي ممل</h2>
+
+<!-- ١ -->
+<h3>الأمر ١: adb devices — عرض الأجهزة المتصلة</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb devices</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يبحث عن هاتف أندرويد موصول بالكمبيوتر عبر USB وفي وضع تصحيح USB.
+# يبدأ خادم ADB تلقائياً، يمسح المنافذ، يرسل إشارة استفسار، ويعرض الرقم التسلسلي مع الحالة.</span>
+
+<span class="cmd">adb</span> devices
+<span class="cmd">adb</span> devices -l   <span class="comment"># تفاصيل إضافية (اسم الموديل، الرقم التسلسلي)</span>
+
+<span class="comment"># 📋 النتيجة الصحيحة:</span>
+<span class="output">List of devices attached
+ABC123DEF    device</span>
+
+<span class="comment"># الحالات الممكنة:
+# device       = متصل وجاهز ✅
+# offline      = متصل لكن لا يستجيب ← أعد تشغيل الهاتف أو adb kill-server
+# unauthorized = لم توافق على تصحيح USB ← افتح الهاتف واضغط Allow
+# recovery     = الجهاز في Recovery Mode
+# fastboot     = الجهاز في Fastboot Mode</span>
+
+<span class="comment"># ❌ أشهر الأخطاء:
+# ١. قائمة فارغة → الكابل شحن فقط، أو تصحيح USB غير مفعل
+# ٢. 'adb' not recognized → ADB غير مثبت أو PATH غير مضاف
+# ٣. server version mismatch → نسختان من ADB (احذف القديمة)</span>
+
+<span class="comment"># 🔧 الحل السحري:</span>
+<span class="cmd">adb</span> kill-server && <span class="cmd">adb</span> start-server && <span class="cmd">adb</span> devices</pre>
+</div>
+
+<!-- ٢ -->
+<h3>الأمر ٢: adb shell — فتح نافذة أوامر داخل الهاتف</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb shell</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يفتح جلسة طرفية داخل الهاتف. كل أمر تكتبه ينفذ على معالج الهاتف.
+# المؤشر يتغير من C:\Users\...> إلى اسم_الجهاز:/ $</span>
+
+<span class="cmd">adb</span> shell
+<span class="output">bullhead:/ $</span>   <span class="comment">← $ = مستخدم عادي | # = صلاحيات Root</span>
+
+<span class="comment"># تنفيذ أمر واحد بدون دخول Shell:</span>
+<span class="cmd">adb</span> shell ls /sdcard
+
+<span class="comment"># ❌ أشهر خطأ: error: more than one device → حدد: adb -s ABC123DEF shell
+# للخروج: اكتب exit أو اضغط Ctrl+D</span></pre>
+</div>
+
+<!-- ٣ -->
+<h3>الأمر ٣: adb shell ls — استعراض ملفات الهاتف</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb shell ls /sdcard</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يعرض محتويات مجلد في الهاتف. مثل dir في ويندوز.</span>
+
+<span class="cmd">adb shell ls</span> /sdcard/              <span class="comment"># الذاكرة الداخلية</span>
+<span class="cmd">adb shell ls</span> /sdcard/Download/    <span class="comment"># مجلد التحميلات</span>
+<span class="cmd">adb shell ls</span> /system/              <span class="comment"># مجلد النظام (يحتاج Root)</span>
+<span class="cmd">adb shell ls</span> -la /sdcard/          <span class="comment"># عرض مفصل مع الصلاحيات</span></pre>
+</div>
+
+<!-- ٤ -->
+<h3>الأمر ٤: adb push — رفع ملف للهاتف</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb push [كمبيوتر] [هاتف]</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: ينقل ملفاً أو مجلداً من الكمبيوتر إلى الهاتف.</span>
+
+<span class="cmd">adb push</span> C:\file.zip <span class="output">/sdcard/Download/</span>
+<span class="cmd">adb push</span> C:\photos\ <span class="output">/sdcard/DCIM/</span>
+
+<span class="comment"># ❌ أشهر خطأ: cannot stat → الملف غير موجود في الكمبيوتر</span></pre>
+</div>
+
+<!-- ٥ -->
+<h3>الأمر ٥: adb pull — سحب ملف من الهاتف</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb pull [هاتف] [كمبيوتر]</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يسحب ملفاً أو مجلداً من الهاتف إلى الكمبيوتر.</span>
+
+<span class="cmd">adb pull</span> <span class="output">/sdcard/DCIM/photo.jpg</span> C:\Desktop\
+<span class="cmd">adb pull</span> <span class="output">/sdcard/DCIM/</span> C:\backup\          <span class="comment"># سحب مجلد كامل</span>
+
+<span class="comment"># ❌ أشهر خطأ: remote object does not exist → المسار خطأ في الهاتف</span></pre>
+</div>
+
+<!-- ٦ -->
+<h3>الأمر ٦: adb install — تثبيت تطبيق</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb install app.apk</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يثبت تطبيق APK على الهاتف مباشرة من الكمبيوتر.</span>
+
+<span class="cmd">adb</span> install app.apk              <span class="comment"># تثبيت عادي</span>
+<span class="cmd">adb</span> install -r app.apk           <span class="comment"># إعادة تثبيت (استبدال النسخة الموجودة)</span>
+<span class="cmd">adb</span> install -d app.apk           <span class="comment"># السماح بتخفيض الإصدار</span>
+<span class="cmd">adb</span> install -s app.apk           <span class="comment"># تثبيت على التخزين الخارجي</span>
+
+<span class="comment"># 📋 النتيجة: Success = تم ✅
+# ❌ INSTALL_FAILED_INSUFFICIENT_STORAGE = مساحة غير كافية
+# ❌ INSTALL_FAILED_UPDATE_INCOMPATIBLE = استخدم -r</span></pre>
+</div>
+
+<!-- ٧ -->
+<h3>الأمر ٧: adb uninstall — إلغاء تثبيت تطبيق</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb uninstall com.package.name</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يزيل تطبيقاً بالكامل. تحتاج اسم الحزمة وليس اسم التطبيق.</span>
+
+<span class="comment"># كيف تعرف اسم الحزمة؟</span>
+<span class="cmd">adb shell pm list packages</span> | findstr <span class="string">"whatsapp"</span>
+<span class="output">package:com.whatsapp</span>
+
+<span class="cmd">adb</span> uninstall com.whatsapp        <span class="comment"># إلغاء تثبيت</span>
+<span class="cmd">adb</span> uninstall -k com.whatsapp     <span class="comment"># إلغاء مع الاحتفاظ بالبيانات</span></pre>
+</div>
+
+<!-- ٨ -->
+<h3>الأمر ٨: adb logcat — سجل النظام للتشخيص</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb logcat — أقوى أداة تشخيصية</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يعرض سجل النظام. كل خطأ، تحذير، وحدث يسجل هنا.</span>
+
+<span class="cmd">adb</span> logcat -d > log.txt           <span class="comment"># حفظ السجل في ملف</span>
+<span class="cmd">adb</span> logcat *:E                    <span class="comment"># الأخطاء فقط</span>
+<span class="cmd">adb</span> logcat *:W                    <span class="comment"># التحذيرات والأخطاء</span>
+<span class="cmd">adb</span> logcat -s <span class="output">BatteryService</span>      <span class="comment"># تصفية حسب Tag</span>
+<span class="cmd">adb</span> logcat -v time                <span class="comment"># مع الوقت والتاريخ</span>
+<span class="cmd">adb</span> logcat -c                     <span class="comment"># مسح السجل القديم</span>
+
+<span class="comment"># ابحث في الملف عن: FATAL EXCEPTION, ANR, OutOfMemoryError, NullPointerException</span></pre>
+</div>
+
+<!-- ٩ -->
+<h3>الأمر ٩: adb reboot — إعادة تشغيل الهاتف</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb reboot [نوع]</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يعيد تشغيل الهاتف برمجياً (Soft Reboot).</span>
+
+<span class="cmd">adb</span> reboot              <span class="comment"># إعادة تشغيل عادية</span>
+<span class="cmd">adb</span> reboot bootloader   <span class="comment"># إلى Fastboot</span>
+<span class="cmd">adb</span> reboot recovery     <span class="comment"># إلى Recovery</span>
+<span class="cmd">adb</span> reboot download     <span class="comment"># لسامسونج: Download Mode</span>
+
+<span class="comment"># 🔧 إذا لم يستجب الهاتف: اضغط زر الباور ١٠-١٥ ثانية</span></pre>
+</div>
+
+<!-- ١٠ -->
+<h3>الأمر ١٠: adb reboot bootloader — الدخول إلى Fastboot</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb reboot bootloader</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يعيد تشغيل الهاتف إلى وضع Bootloader/Fastboot.
+# هذا الوضع للصيانة العميقة — تفليش أقسام، فتح Bootloader، إلخ.
+# ⚠️ سامسونج لا تستخدم Fastboot. استخدم adb reboot download + Odin.</span>
+
+<span class="comment"># للتأكد أنك في Fastboot:</span>
+<span class="cmd">fastboot</span> devices
+<span class="output">ABC123DEF    fastboot</span>
+
+<span class="comment"># للخروج:</span>
+<span class="cmd">fastboot</span> reboot</pre>
+</div>
+
+<!-- ١١ -->
+<h3>الأمر ١١: adb reboot recovery — الدخول إلى Recovery</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb reboot recovery</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يعيد تشغيل الهاتف إلى وضع Recovery Mode.
+# بيئة صيانة مستقلة تسمح بمسح البيانات، مسح الكاش، وتفليش التحديثات.
+# مفيد عندما أزرار الصوت معطلة أو الشاشة مكسورة.</span>
+
+<span class="comment"># ❌ مشكلة "No Command" (روبوت ميت):
+# اضغط زر الباور ثم اضغط زر رفع الصوت مرة واحدة (اختصار سري)</span></pre>
+</div>
+
+<!-- ١٢ -->
+<h3>الأمر ١٢: adb backup — نسخ احتياطي كامل</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb backup -apk -shared -all -f backup.ab</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: ينشئ نسخة احتياطية كاملة للجهاز. سيطلب تأكيداً على الهاتف.</span>
+
+<span class="cmd">adb</span> backup -apk -shared -all -f backup.ab
+
+<span class="comment"># -apk    = يشمل ملفات التطبيقات
+# -shared = يشمل التخزين المشترك (صور، فيديوهات)
+# -all    = كل التطبيقات
+# -f      = اسم الملف الناتج
+
+# ⚠️ هذه الطريقة قديمة ولا تشمل كل البيانات. للنسخ الكامل استخدم TWRP أو dd.</span></pre>
+</div>
+
+<!-- ١٣ -->
+<h3>الأمر ١٣: adb restore — استعادة نسخة احتياطية</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb restore backup.ab</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يستعيد نسخة احتياطية تم إنشاؤها بـ adb backup.
+# سيطلب تأكيداً على الهاتف.</span>
+
+<span class="cmd">adb</span> restore backup.ab</pre>
+</div>
+
+<!-- ١٤ -->
+<h3>الأمر ١٤: adb sideload — تفليش روم عبر Recovery</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb sideload rom.zip</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يفلش ملف ZIP على الهاتف من خلال Recovery Mode.
+# يجب أن يكون الهاتف في Recovery واختيار "Apply update from ADB".</span>
+
+<span class="comment"># الخطوات:
+# ١. adb reboot recovery
+# ٢. في الهاتف: اختر Apply update from ADB
+# ٣. في الكمبيوتر:</span>
+<span class="cmd">adb</span> sideload rom.zip
+
+<span class="comment"># تظهر نسبة التقدم على الجهازين معاً
+# ❌ protocol fault → الهاتف ليس في وضع Sideload</span></pre>
+</div>
+
+<!-- ١٥ -->
+<h3>الأمر ١٥: adb shell pm list packages — عرض التطبيقات</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb shell pm list packages</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يعرض كل التطبيقات المثبتة على الهاتف.
+# مفيد للبحث عن تطبيقات خبيثة أو معرفة اسم الحزمة.</span>
+
+<span class="cmd">adb shell pm list packages</span>                    <span class="comment"># كل التطبيقات</span>
+<span class="cmd">adb shell pm list packages</span> -3                <span class="comment"># تطبيقات المستخدم فقط</span>
+<span class="cmd">adb shell pm list packages</span> -s                <span class="comment"># تطبيقات النظام فقط</span>
+<span class="cmd">adb shell pm list packages</span> -f                <span class="comment"># مع مسار ملف APK</span>
+<span class="cmd">adb shell pm list packages</span> | grep <span class="string">"facebook"</span>  <span class="comment"># بحث</span></pre>
+</div>
+
+<!-- ١٦ -->
+<h3>الأمر ١٦: adb shell pm disable-user — تعطيل تطبيق</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb shell pm disable-user com.bloatware</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يعطل تطبيقاً بدون الحاجة لـ Root. التطبيق يختفي ويتوقف.
+# الفرق بين disable و uninstall: disable يخفي التطبيق فقط، uninstall يحذفه.</span>
+
+<span class="cmd">adb shell pm disable-user</span> com.bloatware      <span class="comment"># تعطيل</span>
+<span class="cmd">adb shell pm enable</span> com.bloatware            <span class="comment"># إعادة تفعيل</span>
+<span class="cmd">adb shell pm uninstall -k --user 0</span> com.bloatware  <span class="comment"># حذف للمستخدم الحالي</span>
+
+<span class="comment"># ⚠️ احذر: تعطيل تطبيقات نظام حرجة قد يسبب Bootloop!</span></pre>
+</div>
+
+<!-- ١٧ -->
+<h3>الأمر ١٧: adb shell screencap — لقطة شاشة</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb shell screencap -p /sdcard/screen.png</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يأخذ لقطة شاشة (Screenshot) ويحفظها في الهاتف.</span>
+
+<span class="cmd">adb shell screencap -p</span> <span class="output">/sdcard/screen.png</span>
+<span class="cmd">adb pull</span> <span class="output">/sdcard/screen.png</span>              <span class="comment"># اسحبها للكمبيوتر</span>
+
+<span class="comment"># 🔧 مفيد لتوثيق المشكلة للعميل أو للرجوع إليها.</span></pre>
+</div>
+
+<!-- ١٨ -->
+<h3>الأمر ١٨: adb shell screenrecord — تسجيل شاشة</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb shell screenrecord /sdcard/video.mp4</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يسجل فيديو للشاشة. اضغط Ctrl+C للإيقاف.</span>
+
+<span class="cmd">adb shell screenrecord</span> <span class="output">/sdcard/video.mp4</span>
+<span class="comment"># اضغط Ctrl+C للإيقاف، ثم:</span>
+<span class="cmd">adb pull</span> <span class="output">/sdcard/video.mp4</span>
+
+<span class="comment"># خيارات إضافية:
+# --time-limit 30 = مدة ٣٠ ثانية
+# --bit-rate 4000000 = جودة 4Mbps</span></pre>
+</div>
+
+<!-- ١٩ -->
+<h3>الأمر ١٩: adb shell dumpsys — معلومات النظام</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb shell dumpsys [خدمة]</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يعرض معلومات تفصيلية عن أي خدمة في النظام.
+# هذا كنز معلومات لفني الصيانة.</span>
+
+<span class="cmd">adb shell dumpsys</span> battery              <span class="comment"># حالة البطارية</span>
+<span class="cmd">adb shell dumpsys</span> wifi                 <span class="comment"># معلومات الواي فاي</span>
+<span class="cmd">adb shell dumpsys</span> meminfo             <span class="comment"># استهلاك الرام</span>
+<span class="cmd">adb shell dumpsys</span> cpuinfo             <span class="comment"># استهلاك المعالج</span>
+<span class="cmd">adb shell dumpsys</span> telephony.registry  <span class="comment"># معلومات الشبكة</span>
+<span class="cmd">adb shell dumpsys</span> sensorservice       <span class="comment"># كل الحساسات</span>
+<span class="cmd">adb shell dumpsys</span> media.camera        <span class="comment"># مواصفات الكاميرات</span>
+<span class="cmd">adb shell dumpsys</span> audio               <span class="comment"># حالة الصوت والمايك</span></pre>
+</div>
+
+<!-- ٢٠ -->
+<h3>الأمر ٢٠: adb shell dumpsys battery — فحص البطارية</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb shell dumpsys battery</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 أهم أمر لتشخيص البطارية قبل فتح الهاتف.</span>
+
+<span class="cmd">adb shell dumpsys</span> battery
+
+<span class="comment"># 📋 القيم المهمة وكيف تقرأها:
+# health: 2 = سليمة ✅
+# health: 3 = حرارة زائدة 🔥
+# health: 4 = تالفة ❌ (تحتاج استبدال)
+# health: 5 = جهد زائد ⚡ (خطر!)
+# level: 85 = نسبة الشحن 85%
+# temperature: 350 = 35°C (طبيعي)
+# temperature: 450+ = خطر! افصل الشاحن فوراً
+# technology: Li-ion = نوع البطارية</span></pre>
+</div>
+
+<!-- ٢١ -->
+<h3>الأمر ٢١: adb shell getprop — خصائص النظام</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb shell getprop</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يقرأ خصائص النظام. يعرض مئات المعلومات عن الهاتف.</span>
+
+<span class="cmd">adb shell getprop</span> ro.product.model              <span class="comment"># اسم الموديل</span>
+<span class="cmd">adb shell getprop</span> ro.build.version.release     <span class="comment"># إصدار أندرويد</span>
+<span class="cmd">adb shell getprop</span> ro.build.version.sdk         <span class="comment"># API Level</span>
+<span class="cmd">adb shell getprop</span> ro.product.cpu.abi           <span class="comment"># نوع المعالج</span>
+<span class="cmd">adb shell getprop</span> ro.product.manufacturer      <span class="comment"># الشركة المصنعة</span>
+<span class="cmd">adb shell getprop</span> gsm.version.baseband         <span class="comment"># إصدار Baseband</span>
+<span class="cmd">adb shell getprop</span> ro.boot.flash.locked         <span class="comment"># حالة Bootloader (1=مقفول)</span>
+<span class="cmd">adb shell getprop</span> ro.serialno                  <span class="comment"># الرقم التسلسلي</span>
+
+<span class="comment"># لعرض كل الخصائص دفعة واحدة:</span>
+<span class="cmd">adb shell getprop</span></pre>
+</div>
+
+<!-- ٢٢ -->
+<h3>الأمر ٢٢: adb shell setprop — تعديل خصائص (Root)</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb shell setprop [خاصية] [قيمة]</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يعدل خاصية من خصائص النظام. يتطلب Root في معظم الحالات.
+# التعديل مؤقت — يزول بعد إعادة التشغيل.</span>
+
+<span class="cmd">adb shell setprop</span> debug.hwui.renderer skiagl   <span class="comment"># تغيير محرك الرسوميات</span>
+<span class="cmd">adb shell setprop</span> persist.sys.usb.config mtp   <span class="comment"># تفعيل وضع MTP</span>
+
+<span class="comment"># ⚠️ بحذر! تعديل خاطئ قد يسبب Bootloop.</span></pre>
+</div>
+
+<!-- ٢٣ -->
+<h3>الأمر ٢٣: adb shell am start — تشغيل الأنشطة</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb shell am start</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يشغل أي Activity في النظام — تطبيقات، صفحات إعدادات، نوايا.</span>
+
+<span class="cmd">adb shell am start</span> -a android.intent.action.VIEW -d <span class="string">"https://google.com"</span>
+<span class="comment"># يفتح الرابط في المتصفح</span>
+
+<span class="cmd">adb shell am start</span> -a android.settings.WIFI_SETTINGS
+<span class="comment"># يفتح إعدادات الواي فاي</span>
+
+<span class="cmd">adb shell am start</span> -a android.settings.APPLICATION_DETAILS_SETTINGS -d <span class="string">"package:com.app"</span>
+<span class="comment"># يفتح إعدادات تطبيق محدد</span>
+
+<span class="cmd">adb shell am start</span> -a android.intent.action.MAIN -c android.intent.category.HOME
+<span class="comment"># يعيد تشغيل الواجهة الرئيسية — حل لتجمد الشاشة</span></pre>
+</div>
+
+<!-- ٢٤ -->
+<h3>الأمر ٢٤: adb shell input — محاكاة اللمس والكتابة</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb shell input</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يحاكي إدخالات المستخدم. مفيد عندما الشاشة مكسورة.</span>
+
+<span class="cmd">adb shell input tap</span> 500 500          <span class="comment"># لمس النقطة (500,500)</span>
+<span class="cmd">adb shell input swipe</span> 500 1000 500 500  <span class="comment"># سحب للأعلى</span>
+<span class="cmd">adb shell input text</span> <span class="string">"hello"</span>         <span class="comment"># كتابة نص</span>
+<span class="cmd">adb shell input keyevent</span> 26          <span class="comment"># زر الباور</span>
+<span class="cmd">adb shell input keyevent</span> 3           <span class="comment"># زر Home</span>
+<span class="cmd">adb shell input keyevent</span> 4           <span class="comment"># زر Back</span>
+<span class="cmd">adb shell input keyevent</span> 66          <span class="comment"># زر Enter</span>
+
+<span class="comment"># 🔧 يمكنك فتح قفل الشاشة بهذه الأوامر!</span></pre>
+</div>
+
+<!-- ٢٥ -->
+<h3>الأمر ٢٥: adb shell wm size — دقة الشاشة</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb shell wm</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يعرض أو يغير دقة الشاشة وكثافتها.</span>
+
+<span class="cmd">adb shell wm size</span>                     <span class="comment"># عرض الدقة الحالية</span>
+<span class="cmd">adb shell wm density</span>                  <span class="comment"># عرض الكثافة الحالية</span>
+<span class="cmd">adb shell wm size</span> 1080x1920           <span class="comment"># تغيير الدقة (مؤقت)</span>
+<span class="cmd">adb shell wm size</span> reset               <span class="comment"># إعادة الدقة الأصلية</span>
+<span class="cmd">adb shell wm density</span> 440              <span class="comment"># تغيير الكثافة</span>
+
+<span class="comment"># 🔧 مفيد لحل مشاكل الشاشة بعد تغييرها. ⚠️ قيم خاطئة = شاشة سوداء.</span></pre>
+</div>
+
+<!-- ٢٦ -->
+<h3>الأمر ٢٦: adb shell settings — تعديل إعدادات النظام</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb shell settings</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يعدل إعدادات النظام مباشرة من سطر الأوامر.
+# settings list = عرض | settings put = تعديل | settings get = قراءة</span>
+
+<span class="cmd">adb shell settings put global</span> airplane_mode_on 1    <span class="comment"># تفعيل طيران</span>
+<span class="cmd">adb shell settings put global</span> adb_enabled 0         <span class="comment"># تعطيل ADB</span>
+<span class="cmd">adb shell settings put system</span> screen_brightness 128 <span class="comment"># سطوع 50%</span>
+<span class="cmd">adb shell settings put system</span> show_touches 1        <span class="comment"># إظهار نقاط اللمس</span>
+<span class="cmd">adb shell settings get global</span> airplane_mode_on      <span class="comment"># قراءة حالة الطيران</span>
+
+<span class="comment"># 🔧 مفيد لإصلاح مشاكل الإعدادات بدون فتح الهاتف.</span></pre>
+</div>
+
+<!-- ٢٧ -->
+<h3>الأمر ٢٧: adb kill-server / start-server — إدارة خادم ADB</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb kill-server && adb start-server</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 kill-server: يوقف خادم ADB تماماً ويقطع كل الاتصالات.
+# 📌 start-server: يشغل خادم ADB من جديد.</span>
+
+<span class="cmd">adb</span> kill-server
+<span class="cmd">adb</span> start-server
+
+<span class="comment"># الحل السحري لمشاكل ADB — ينظف أي تضارب أو اتصال عالق:</span>
+<span class="cmd">adb</span> kill-server && <span class="cmd">adb</span> start-server && <span class="cmd">adb</span> devices
+
+<span class="comment"># 🔧 استخدمها عندما:
+# - الهاتف لا يظهر في adb devices
+# - تظهر رسالة "server version mismatch"
+# - الهاتف يظهر offline
+# - تريد "تنظيف" الاتصالات القديمة</span></pre>
+</div>
+
+<!-- ٢٨ -->
+<h3>الأمر ٢٨: adb connect — اتصال ADB لاسلكي عبر WiFi</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb connect [IP]:5555</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يتيح استخدام ADB عبر WiFi بدون كابل USB.
+# مفيد جداً عندما يكون بورت الشحن تالفاً.</span>
+
+<span class="comment"># الإعداد الأولي (يحتاج كابل USB مرة واحدة فقط):</span>
+<span class="cmd">adb</span> tcpip 5555                       <span class="comment"># تفعيل وضع WiFi على الهاتف</span>
+<span class="comment"># الآن افصل الكابل</span>
+<span class="cmd">adb</span> connect 192.168.1.10:5555        <span class="comment"># استخدم IP الهاتف</span>
+
+<span class="comment"># لمعرفة IP الهاتف:
+# الإعدادات > حول الهاتف > الحالة > عنوان IP
+# أو: adb shell ip addr show wlan0</span>
+
+<span class="comment"># للعودة للوضع السلكي:</span>
+<span class="cmd">adb</span> usb
+
+<span class="comment"># ❌ أشهر خطأ: connection refused → الهاتف والكمبيوتر ليسا على نفس الشبكة</span></pre>
+</div>
+
+<!-- ٢٩ -->
+<h3>الأمر ٢٩: adb shell su — صلاحيات Root</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb shell su</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يرفع صلاحياتك إلى Root (Superuser).
+# يتطلب أن يكون الهاتف عليه Root (Magisk مثلاً).</span>
+
+<span class="cmd">adb</span> shell
+<span class="output">bullhead:/ $</span> <span class="cmd">su</span>                    <span class="comment"># اطلب صلاحيات Root</span>
+<span class="output">bullhead:/ #</span>                        <span class="comment"># # = أنت الآن Root!</span>
+
+<span class="comment"># تنفيذ أمر واحد كـ Root بدون دخول Shell:</span>
+<span class="cmd">adb</span> shell su -c <span class="string">"ls /data"</span>
+
+<span class="comment"># ⚠️ بحذر شديد! مع Root يمكنك تدمير النظام بالكامل.
+# لا تستخدم rm -rf أو dd إلا إذا كنت متأكداً 100%.</span></pre>
+</div>
+
+<!-- ٣٠ -->
+<h3>الأمر ٣٠: adb shell dd — نسخ واستعادة الأقسام</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ adb shell dd — أهم أمر للنسخ الاحتياطي</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: ينسخ بيانات خام (Raw) بين الأقسام والملفات.
+# هذا هو الأمر الوحيد الذي يحفظ EFS و IMEI بشكل صحيح. يتطلب Root.</span>
+
+<span class="comment"># ⚠️⚠️⚠️ تحذير: dd إذا أخطأت (عكست if و of) قد تدمر الهاتف للأبد!</span>
+
+<span class="comment"># نسخ قسم EFS (يحتوي على IMEI):</span>
+<span class="cmd">adb shell</span> su -c <span class="string">"dd if=/dev/block/bootdevice/by-name/efs of=/sdcard/efs.img"</span>
+<span class="cmd">adb pull</span> /sdcard/efs.img              <span class="comment"># احفظه في مكان آمن!</span>
+
+<span class="comment"># نسخ أقسام أخرى:</span>
+<span class="cmd">adb shell</span> su -c <span class="string">"dd if=/dev/block/bootdevice/by-name/persist of=/sdcard/persist.img"</span>
+<span class="cmd">adb shell</span> su -c <span class="string">"dd if=/dev/block/bootdevice/by-name/boot of=/sdcard/boot.img"</span>
+<span class="cmd">adb shell</span> su -c <span class="string">"dd if=/dev/block/bootdevice/by-name/recovery of=/sdcard/recovery.img"</span>
+
+<span class="comment"># استعادة:</span>
+<span class="cmd">adb push</span> efs.img /sdcard/
+<span class="cmd">adb shell</span> su -c <span class="string">"dd if=/sdcard/efs.img of=/dev/block/bootdevice/by-name/efs"</span>
+<span class="cmd">adb reboot</span>
+
+<span class="comment"># if = input file (المصدر) | of = output file (الوجهة)
+# ⚠️ لا تعكسهم أبداً! if = تقرأ منه | of = تكتب فيه</span></pre>
+</div>
+
+<!-- ================================================================ -->
+<!-- أوامر Fastboot - 15 أمر -->
+<!-- ================================================================ -->
+<h2>⚡ أوامر Fastboot الخمسة عشر — شرح تفصيلي</h2>
+
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div><strong>تذكير:</strong> سامسونج لا تستخدم Fastboot. استخدم <strong>Download Mode</strong> + برنامج <strong>Odin</strong>. جميع الماركات الأخرى تستخدم Fastboot.</div>
+</div>
+
+<!-- Fastboot ١ -->
+<h3>الأمر ٣١: fastboot devices — عرض الأجهزة</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ fastboot devices</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 مثل adb devices لكن لوضع Fastboot. أول أمر تستخدمه للتأكد من الاتصال.</span>
+
+<span class="cmd">fastboot</span> devices
+<span class="output">ABC123DEF    fastboot</span>   <span class="comment">← جاهز ✅</span>
+
+<span class="comment"># ❌ waiting for device → لا يوجد جهاز في Fastboot
+# ❌ ???????????? fastboot → مشكلة تعريف USB (ثبّت Google USB Driver)</span></pre>
+</div>
+
+<!-- Fastboot ٢ -->
+<h3>الأمر ٣٢: fastboot reboot — إعادة تشغيل</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ fastboot reboot</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 يعيد تشغيل الهاتف من وضع Fastboot إلى النظام العادي.</span>
+
+<span class="cmd">fastboot</span> reboot              <span class="comment"># إعادة تشغيل عادية</span>
+<span class="cmd">fastboot</span> reboot recovery     <span class="comment"># إعادة تشغيل إلى Recovery</span>
+<span class="cmd">fastboot</span> reboot bootloader   <span class="comment"># إعادة تشغيل إلى Fastboot مرة أخرى</span></pre>
+</div>
+
+<!-- Fastboot ٣ -->
+<h3>الأمر ٣٣: fastboot flash — تفليش قسم</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ fastboot flash [قسم] [ملف.img]</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 يكتب ملف .img مباشرة على قسم من أقسام الذاكرة.
+# هذا هو الأمر الأساسي لتفليش الرومات وإصلاح مشاكل الإقلاع.</span>
+
+<span class="cmd">fastboot flash</span> boot boot.img        <span class="comment"># تفليش Kernel</span>
+<span class="cmd">fastboot flash</span> recovery twrp.img    <span class="comment"># تفليش Recovery مخصص</span>
+<span class="cmd">fastboot flash</span> system system.img    <span class="comment"># تفليش النظام</span>
+<span class="cmd">fastboot flash</span> vendor vendor.img    <span class="comment"># تفليش تعريفات الجهاز</span>
+
+<span class="comment"># تفليش كل الأقسام دفعة واحدة:</span>
+<span class="cmd">fastboot</span> flashall                   <span class="comment"># ينفذ من مجلد factory image</span>
+
+<span class="comment"># ❌ FAILED: Partition not found → اسم القسم خطأ
+# ❌ FAILED: Flashing is not allowed → Bootloader مقفول</span></pre>
+</div>
+
+<!-- Fastboot ٤ -->
+<h3>الأمر ٣٤: fastboot erase — مسح قسم</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ fastboot erase [قسم]</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 يمسح محتوى قسم بالكامل. يختلف عن format.
+# erase = يمسح البيانات فقط | format = يعيد بناء نظام الملفات</span>
+
+<span class="cmd">fastboot erase</span> userdata            <span class="comment"># مسح بيانات المستخدم</span>
+<span class="cmd">fastboot erase</span> cache               <span class="comment"># مسح الكاش</span>
+<span class="cmd">fastboot erase</span> system              <span class="comment"># مسح النظام (خطر!)</span>
+
+<span class="comment"># ⚠️ erase userdata يمسح كل تطبيقاتك وإعداداتك!</span></pre>
+</div>
+
+<!-- Fastboot ٥ -->
+<h3>الأمر ٣٥: fastboot format — تهيئة قسم</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ fastboot format [قسم]</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 يهيئ قسماً بنظام ملفات محدد (ext4/f2fs). أعمق من erase.</span>
+
+<span class="cmd">fastboot</span> format data               <span class="comment"># تهيئة قسم data (ext4)</span>
+<span class="cmd">fastboot</span> format:f2fs data          <span class="comment"># تهيئة بنظام f2fs (أسرع)</span>
+<span class="cmd">fastboot</span> format cache              <span class="comment"># تهيئة قسم cache</span>
+
+<span class="comment"># ⚠️ format data يمسح كل شيء بما فيها التخزين الداخلي (صور، فيديوهات)!</span></pre>
+</div>
+
+<!-- Fastboot ٦ -->
+<h3>الأمر ٣٦: fastboot boot — تشغيل صورة مؤقتة</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ fastboot boot [ملف.img]</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 يشغل صورة (مثل TWRP) مؤقتاً بدون تفليشها دائماً.
+# عند إعادة التشغيل، يختفي كل شيء ويعود الهاتف لحالته الأصلية.</span>
+
+<span class="cmd">fastboot boot</span> twrp.img
+
+<span class="comment"># هذا آمن 100% — لا يغير أي شيء دائم في الهاتف.
+# مثالي لتجربة Recovery قبل تثبيته، أو لعمل نسخة احتياطية سريعة.</span></pre>
+</div>
+
+<!-- Fastboot ٧ -->
+<h3>الأمر ٣٧: fastboot oem unlock — فتح Bootloader (قديم)</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ fastboot oem unlock</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 يفتح Bootloader للأجهزة القديمة.
+# ⚠️⚠️⚠️ هذا الإجراء يمسح كل بيانات الهاتف بالكامل!</span>
+
+<span class="cmd">fastboot</span> oem unlock
+
+<span class="comment"># يستخدم مع: Samsung, HTC, Sony, Motorola القديمة
+# بعد الأمر، سيظهر تأكيد على شاشة الهاتف. استخدم أزرار الصوت للتنقل.</span></pre>
+</div>
+
+<!-- Fastboot ٨ -->
+<h3>الأمر ٣٨: fastboot flashing unlock — فتح Bootloader (جديد)</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ fastboot flashing unlock</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 يفتح Bootloader للأجهزة الحديثة.
+# ⚠️⚠️⚠️ يمسح كل بيانات الهاتف بالكامل!</span>
+
+<span class="cmd">fastboot</span> flashing unlock
+
+<span class="comment"># يستخدم مع: Google Pixel, OnePlus, Xiaomi, Nothing, Motorola الجديدة
+# يجب تفعيل OEM Unlocking في خيارات المطور أولاً.</span></pre>
+</div>
+
+<!-- Fastboot ٩ -->
+<h3>الأمر ٣٩: fastboot flashing lock — قفل Bootloader</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ fastboot flashing lock</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 يعيد قفل Bootloader للعودة للحالة الرسمية.
+# ⚠️⚠️⚠️ يمسح كل بيانات الهاتف أيضاً!</span>
+
+<span class="cmd">fastboot</span> flashing lock
+
+<span class="comment"># استخدم هذا قبل بيع الهاتف أو إعادته للضمان.
+# تأكد من أن النظام روم رسمي قبل القفل، وإلا قد تحصل على Brick!</span></pre>
+</div>
+
+<!-- Fastboot ١٠ -->
+<h3>الأمر ٤٠: fastboot getvar all — معلومات الجهاز</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ fastboot getvar all</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 يعرض كل متغيرات Bootloader. كنز من المعلومات عن الجهاز.</span>
+
+<span class="cmd">fastboot</span> getvar all
+
+<span class="comment"># 📋 أهم المعلومات التي ستظهر:
+# (bootloader) unlocked: yes/no     ← حالة Bootloader
+# (bootloader) product: elsa        ← الاسم الرمزي للجهاز
+# (bootloader) serialno: ABC123     ← الرقم التسلسلي
+# (bootloader) imei: 1234567890     ← IMEI الجهاز
+# (bootloader) version-bootloader   ← إصدار Bootloader
+
+# 🔧 استخدم هذا للتأكد من طراز الجهاز قبل تفليش أي روم!</span></pre>
+</div>
+
+<!-- Fastboot ١١ -->
+<h3>الأمر ٤١: fastboot oem device-info — حالة Bootloader</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ fastboot oem device-info</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 يعرض حالة Bootloader فقط (مقفول/مفتوح). أسرع من getvar all.</span>
+
+<span class="cmd">fastboot</span> oem device-info
+
+<span class="comment"># 📋 النتيجة:
+# (bootloader) Device unlocked: true   ← مفتوح ✅
+# (bootloader) Device unlocked: false  ← مقفول ❌</span></pre>
+</div>
+
+<!-- Fastboot ١٢ -->
+<h3>الأمر ٤٢: fastboot set_active — تبديل A/B Slot</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ fastboot set_active [a|b]</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 الأجهزة الحديثة لها نظامان (Slot A و Slot B) لتحديثات سلسة.
+# إذا فشل تحديث على Slot، يمكنك التبديل للآخر.</span>
+
+<span class="cmd">fastboot</span> getvar current-slot       <span class="comment"># معرفة الـ Slot النشط حالياً</span>
+<span class="cmd">fastboot</span> set_active a              <span class="comment"># تفعيل Slot A</span>
+<span class="cmd">fastboot</span> set_active b              <span class="comment"># تفعيل Slot B</span>
+<span class="cmd">fastboot</span> --set-active=other        <span class="comment"># تفعيل الـ Slot الآخر تلقائياً</span>
+
+<span class="comment"># 🔧 حل سحري لـ Bootloop بعد تحديث فاشل!
+# إذا فشل التحديث على Slot A، انتقل لـ Slot B:</span>
+<span class="cmd">fastboot</span> --set-active=other
+<span class="cmd">fastboot</span> reboot</pre>
+</div>
+
+<!-- Fastboot ١٣ -->
+<h3>الأمر ٤٣: fastboot --set-active=other</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ fastboot --set-active=other</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 اختصار للأمر السابق. يفعل Slot الآخر تلقائياً بدون تحديد a أو b.</span>
+
+<span class="cmd">fastboot</span> --set-active=other
+<span class="cmd">fastboot</span> reboot
+
+<span class="comment"># 🔧 الحل السريع عندما يكون الهاتف في Bootloop بعد تحديث.
+# يجرب النظام الآخر الذي قد يكون سليماً.</span></pre>
+</div>
+
+<!-- Fastboot ١٤ -->
+<h3>الأمر ٤٤: fastboot flashall — تفليش كل صورة المصنع</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ fastboot flashall</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 يفلش كل أقسام صورة المصنع (factory image) دفعة واحدة.
+# يجب أن تكون في المجلد الذي يحتوي على ملفات الصورة.</span>
+
+<span class="comment"># في ويندوز: شغّل flash-all.bat
+# في لينكس/ماك: شغّل flash-all.sh
+# أو يدوياً:</span>
+<span class="cmd">fastboot</span> flashall
+
+<span class="comment"># ⚠️ هذا يمسح كل شيء ويعيد الهاتف لحالة المصنع.
+# تأكد من أن الصورة لنفس طراز جهازك بالضبط!</span></pre>
+</div>
+
+<!-- Fastboot ١٥ -->
+<h3>الأمر ٤٥: fastboot oem lock — قفل Bootloader (قديم)</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">$ fastboot oem lock</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 يعيد قفل Bootloader للأجهزة القديمة.
+# ⚠️⚠️⚠️ يمسح كل البيانات!</span>
+
+<span class="cmd">fastboot</span> oem lock
+
+<span class="comment"># للأجهزة الحديثة، استخدم: fastboot flashing lock
+# تأكد من أن النظام روم رسمي قبل القفل، وإلا = Brick!</span></pre>
+</div>
+
+<!-- ================================================================ -->
+<!-- سكريبتات جاهزة -->
+<!-- ================================================================ -->
+<h2>🔥 سكريبتات جاهزة للاستخدام</h2>
+
+<h3>سكريبت ١: backup-all.sh — نسخ احتياطي كامل (Linux/macOS)</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">backup-all.sh</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment">#!/bin/bash</span>
+<span class="comment"># نسخ احتياطي كامل قبل أي تفليش</span>
+
+<span class="func">DEVICE</span>=<span class="string">$(adb shell getprop ro.product.model | tr -d '\r')</span>
+<span class="func">DATE</span>=<span class="string">$(date +%Y%m%d_%H%M%S)</span>
+<span class="func">BACKUP_DIR</span>=<span class="string">"backup_${DEVICE}_${DATE}"</span>
+
+<span class="func">mkdir</span> <span class="keyword">-p</span> <span class="string">"$BACKUP_DIR"</span>
+
+<span class="func">echo</span> <span class="string">"[*] Backing up partitions..."</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">su</span> <span class="keyword">-c</span> <span class="string">"dd if=/dev/block/bootdevice/by-name/boot of=/sdcard/boot_backup.img"</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">su</span> <span class="keyword">-c</span> <span class="string">"dd if=/dev/block/bootdevice/by-name/recovery of=/sdcard/recovery_backup.img"</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">su</span> <span class="keyword">-c</span> <span class="string">"dd if=/dev/block/bootdevice/by-name/efs of=/sdcard/efs_backup.img"</span>
+
+<span class="func">echo</span> <span class="string">"[*] Pulling backups..."</span>
+<span class="func">adb</span> <span class="keyword">pull</span> <span class="string">/sdcard/boot_backup.img</span> <span class="string">"$BACKUP_DIR/"</span>
+<span class="func">adb</span> <span class="keyword">pull</span> <span class="string">/sdcard/recovery_backup.img</span> <span class="string">"$BACKUP_DIR/"</span>
+<span class="func">adb</span> <span class="keyword">pull</span> <span class="string">/sdcard/efs_backup.img</span> <span class="string">"$BACKUP_DIR/"</span>
+
+<span class="func">echo</span> <span class="string">"[✓] Backup complete: $BACKUP_DIR"</span>
+<span class="func">echo</span> <span class="string">"[✓] Keep this folder safe! It contains your IMEI."</span></pre>
+</div>
+
+<h3>سكريبت ٢: diagnose.bat — تشخيص سريع (Windows)</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">diagnose.bat</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="keyword">@echo off</span>
+<span class="func">echo</span> <span class="string">========================================</span>
+<span class="func">echo</span> <span class="string">  Phone Diagnostic Tool</span>
+<span class="func">echo</span> <span class="string">========================================</span>
+<span class="func">echo</span>.
+
+<span class="func">echo</span> <span class="string">[1] Checking ADB connection...</span>
+<span class="func">adb</span> <span class="keyword">devices</span>
+
+<span class="func">echo</span>.
+<span class="func">echo</span> <span class="string">[2] Device info...</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">getprop</span> <span class="keyword">ro.product.model</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">getprop</span> <span class="keyword">ro.build.version.release</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">getprop</span> <span class="keyword">ro.build.version.security_patch</span>
+
+<span class="func">echo</span>.
+<span class="func">echo</span> <span class="string">[3] Battery status...</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">dumpsys</span> <span class="keyword">battery</span> <span class="keyword">|</span> <span class="func">findstr</span> <span class="string">"level status health"</span>
+
+<span class="func">echo</span>.
+<span class="func">echo</span> <span class="string">[4] Storage info...</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">df</span> <span class="keyword">-h</span> <span class="keyword">/data</span> <span class="keyword">|</span> <span class="func">findstr</span> <span class="string">"/data"</span>
+
+<span class="func">echo</span>.
+<span class="func">echo</span> <span class="string">[5] IMEI check...</span>
+<span class="func">adb</span> <span class="keyword">shell</span> <span class="func">service</span> <span class="keyword">call</span> <span class="num">iphonesubinfo</span> <span class="num">1</span>
+
+<span class="func">echo</span>.
+<span class="func">echo</span> <span class="string">[✓] Diagnostic complete!</span>
+<span class="func">pause</span></pre>
+</div>
+
+<h3>سكريبت ٣: backup-efs.bat — نسخ EFS (Windows)</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">backup-efs.bat — أهم سكريبت!</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="keyword">@echo off</span>
+<span class="func">echo</span> <span class="string">========================================</span>
+<span class="func">echo</span> <span class="string">  EFS Backup Tool</span>
+<span class="func">echo</span> <span class="string">========================================</span>
+<span class="func">echo</span>.
+
+<span class="func">echo</span> <span class="string">[*] Backing up EFS partition...</span>
+<span class="func">adb shell</span> su -c <span class="string">"dd if=/dev/block/bootdevice/by-name/efs of=/sdcard/efs_backup.img"</span>
+
+<span class="func">echo</span>.
+<span class="func">echo</span> <span class="string">[*] Pulling backup to computer...</span>
+<span class="func">adb pull</span> /sdcard/efs_backup.img .\efs_backup.img
+
+<span class="func">echo</span>.
+<span class="func">echo</span> <span class="string">[*] Cleaning phone copy...</span>
+<span class="func">adb shell</span> rm /sdcard/efs_backup.img
+
+<span class="func">echo</span>.
+<span class="func">echo</span> <span class="string">[✓] EFS backup saved to efs_backup.img</span>
+<span class="func">echo</span> <span class="string">[✓] WARNING: This file contains your IMEI!</span>
+<span class="func">echo</span>.
+<span class="func">echo</span> <span class="string">To restore:</span>
+<span class="func">echo</span> <span class="string">  adb push efs_backup.img /sdcard/</span>
+<span class="func">echo</span> <span class="string">  adb shell su -c "dd if=/sdcard/efs_backup.img of=/dev/block/bootdevice/by-name/efs"</span>
+<span class="func">echo</span> <span class="string">  adb reboot</span>
+<span class="func">pause</span></pre>
+</div>
+
+<!-- ================================================================ -->
+<!-- جداول مرجعية -->
+<!-- ================================================================ -->
+<h2>📊 جداول مرجعية سريعة</h2>
+
+<h3>جدول أوامر ADB كاملاً (30 أمراً)</h3>
+<table class="data-table">
+  <tr><th>#</th><th>الأمر</th><th>الوظيفة</th></tr>
+  <tr><td>1</td><td><code>adb devices</code></td><td>عرض الأجهزة المتصلة</td></tr>
+  <tr><td>2</td><td><code>adb shell</code></td><td>فتح نافذة أوامر داخل الهاتف</td></tr>
+  <tr><td>3</td><td><code>adb shell ls</code></td><td>استعراض ملفات الهاتف</td></tr>
+  <tr><td>4</td><td><code>adb push</code></td><td>رفع ملف من الكمبيوتر للهاتف</td></tr>
+  <tr><td>5</td><td><code>adb pull</code></td><td>سحب ملف من الهاتف للكمبيوتر</td></tr>
+  <tr><td>6</td><td><code>adb install</code></td><td>تثبيت تطبيق APK</td></tr>
+  <tr><td>7</td><td><code>adb uninstall</code></td><td>إلغاء تثبيت تطبيق</td></tr>
+  <tr><td>8</td><td><code>adb logcat</code></td><td>عرض سجل النظام للتشخيص</td></tr>
+  <tr><td>9</td><td><code>adb reboot</code></td><td>إعادة تشغيل الهاتف</td></tr>
+  <tr><td>10</td><td><code>adb reboot bootloader</code></td><td>إعادة تشغيل إلى Fastboot</td></tr>
+  <tr><td>11</td><td><code>adb reboot recovery</code></td><td>إعادة تشغيل إلى Recovery</td></tr>
+  <tr><td>12</td><td><code>adb backup</code></td><td>نسخ احتياطي كامل</td></tr>
+  <tr><td>13</td><td><code>adb restore</code></td><td>استعادة نسخة احتياطية</td></tr>
+  <tr><td>14</td><td><code>adb sideload</code></td><td>تفليش روم عبر Recovery</td></tr>
+  <tr><td>15</td><td><code>adb shell pm list packages</code></td><td>عرض كل التطبيقات المثبتة</td></tr>
+  <tr><td>16</td><td><code>adb shell pm disable-user</code></td><td>تعطيل تطبيق بدون Root</td></tr>
+  <tr><td>17</td><td><code>adb shell screencap</code></td><td>لقطة شاشة</td></tr>
+  <tr><td>18</td><td><code>adb shell screenrecord</code></td><td>تسجيل فيديو للشاشة</td></tr>
+  <tr><td>19</td><td><code>adb shell dumpsys</code></td><td>معلومات تفصيلية عن أي خدمة</td></tr>
+  <tr><td>20</td><td><code>adb shell dumpsys battery</code></td><td>فحص حالة البطارية</td></tr>
+  <tr><td>21</td><td><code>adb shell getprop</code></td><td>قراءة خصائص النظام</td></tr>
+  <tr><td>22</td><td><code>adb shell setprop</code></td><td>تعديل خصائص النظام (Root)</td></tr>
+  <tr><td>23</td><td><code>adb shell am start</code></td><td>تشغيل أي نشاط/تطبيق</td></tr>
+  <tr><td>24</td><td><code>adb shell input</code></td><td>محاكاة اللمس والكتابة</td></tr>
+  <tr><td>25</td><td><code>adb shell wm</code></td><td>التحكم بدقة الشاشة</td></tr>
+  <tr><td>26</td><td><code>adb shell settings</code></td><td>تعديل إعدادات النظام</td></tr>
+  <tr><td>27</td><td><code>adb kill-server / start-server</code></td><td>إدارة خادم ADB</td></tr>
+  <tr><td>28</td><td><code>adb connect / tcpip</code></td><td>اتصال ADB لاسلكي عبر WiFi</td></tr>
+  <tr><td>29</td><td><code>adb shell su</code></td><td>صلاحيات Root</td></tr>
+  <tr><td>30</td><td><code>adb shell dd</code></td><td>نسخ/استعادة أقسام (EFS)</td></tr>
+</table>
+
+<h3>جدول أوامر Fastboot كاملاً (15 أمراً)</h3>
+<table class="data-table">
+  <tr><th>#</th><th>الأمر</th><th>الوظيفة</th></tr>
+  <tr><td>31</td><td><code>fastboot devices</code></td><td>عرض الأجهزة في وضع Fastboot</td></tr>
+  <tr><td>32</td><td><code>fastboot reboot</code></td><td>إعادة تشغيل</td></tr>
+  <tr><td>33</td><td><code>fastboot flash</code></td><td>تفليش قسم محدد</td></tr>
+  <tr><td>34</td><td><code>fastboot erase</code></td><td>مسح محتوى قسم</td></tr>
+  <tr><td>35</td><td><code>fastboot format</code></td><td>تهيئة قسم بنظام ملفات</td></tr>
+  <tr><td>36</td><td><code>fastboot boot</code></td><td>تشغيل صورة مؤقتة</td></tr>
+  <tr><td>37</td><td><code>fastboot oem unlock</code></td><td>فتح Bootloader (قديم)</td></tr>
+  <tr><td>38</td><td><code>fastboot flashing unlock</code></td><td>فتح Bootloader (جديد)</td></tr>
+  <tr><td>39</td><td><code>fastboot flashing lock</code></td><td>قفل Bootloader</td></tr>
+  <tr><td>40</td><td><code>fastboot getvar all</code></td><td>عرض كل معلومات الجهاز</td></tr>
+  <tr><td>41</td><td><code>fastboot oem device-info</code></td><td>حالة Bootloader</td></tr>
+  <tr><td>42</td><td><code>fastboot set_active</code></td><td>تبديل A/B Slot</td></tr>
+  <tr><td>43</td><td><code>fastboot --set-active=other</code></td><td>تفعيل الـ Slot الآخر</td></tr>
+  <tr><td>44</td><td><code>fastboot flashall</code></td><td>تفليش كل صورة المصنع</td></tr>
+  <tr><td>45</td><td><code>fastboot oem lock</code></td><td>قفل Bootloader (قديم)</td></tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- نصائح ختامية -->
+<!-- ================================================================ -->
+<h2>💎 نصائح ذهبية للفني المحترف</h2>
+
+<div class="alert alert-success">
+  <span class="alert-icon">✅</span>
+  <div>
+    <strong>قواعد لا تنساها أبداً:</strong>
+    <ol style="margin-top:0.5rem; padding-right:1.2rem;">
+      <li><strong>السوفتوير أولاً دائماً</strong> — مجاني وآمن. لا تفتح هاتفاً قبل أن تستنفد كل الحلول البرمجية.</li>
+      <li><strong>انسخ EFS قبل أي تفليش</strong> — هذه بوليصة التأمين الوحيدة لـ IMEI.</li>
+      <li><strong>التشخيص قبل التفكيك</strong> — ٥٠٪ من التشخيص يأتي من أسئلة العميل.</li>
+      <li><strong>كابل USB الأصلي</strong> — ٥٠٪ من مشاكل ADB سببها كابل شحن فقط.</li>
+      <li><strong>لا تفليش روم لطراز مختلف</strong> — قد تدمر IC الشبكة بشكل دائم.</li>
+      <li><strong>صوّر كل خطوة</strong> — عند تفكيك هاتف، صور كل شيء لتعرف كيف تعيده.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="alert alert-info">
+  <span class="alert-icon">📚</span>
+  <div><strong>في الفصل القادم (الفصل ٣: التشخيص المنطقي):</strong> سنتعلم كيف نشخص المشاكل الحقيقية باستخدام هذه الأوامر.</div>
+</div>
+
+<div class="next-prev">
+  <a href="chapter1.html" class="prev">← الفصل 1: أساسيات Android</a>
+  <a href="chapter3.html" class="next">الفصل 3: التشخيص المنطقي →</a>
+</div>
+
+</main>
+
+<script>
+function showOS(id) {
+  document.querySelectorAll('.os-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.os-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+
+</body>
+</html>

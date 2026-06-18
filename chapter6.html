@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الفصل 6: مشاكل البطارية | أكاديمية صيانة الهواتف</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg: #0f172a; --c-surface: #1e293b; --c-surface2: #334155;
+  --c-primary: #38bdf8; --c-secondary: #818cf8; --c-accent: #f472b6;
+  --c-success: #34d399; --c-warning: #fbbf24; --c-danger: #f87171;
+  --c-text: #f1f5f9; --c-text2: #94a3b8; --c-border: #334155;
+  --glow: 0 0 20px rgba(56,189,248,0.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Tajawal', sans-serif; background: var(--c-bg); color: var(--c-text); line-height: 1.9; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(15,23,42,0.92); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--c-border); padding: 0.75rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { font-weight: 800; font-size: 1.2rem; color: var(--c-primary); text-decoration: none; }
+.nav-back { color: var(--c-text2); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.nav-back:hover { color: var(--c-primary); }
+
+main { max-width: 1000px; margin: 0 auto; padding: 6rem 2rem 3rem; }
+
+.chapter-header {
+  text-align: center; margin-bottom: 3rem; padding: 2.5rem 2rem;
+  background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(129,140,248,0.1));
+  border-radius: 20px; border: 1px solid rgba(56,189,248,0.2);
+}
+.chapter-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 55px; height: 55px; background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; font-weight: 900; border-radius: 14px; font-size: 1.4rem; margin-bottom: 1rem;
+}
+.chapter-header h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 0.75rem; }
+.chapter-header p { color: var(--c-text2); font-size: 1.1rem; }
+
+h2 {
+  font-size: 1.8rem; font-weight: 800; margin: 3.5rem 0 2rem;
+  padding-right: 1rem; border-right: 4px solid var(--c-primary);
+  color: var(--c-text);
+}
+h3 { font-size: 1.3rem; font-weight: 700; margin: 2.5rem 0 1.2rem; color: var(--c-primary); }
+h4 { font-size: 1.1rem; font-weight: 700; margin: 2rem 0 1rem; color: var(--c-warning); }
+p { color: var(--c-text2); margin-bottom: 1rem; font-size: 1.05rem; line-height: 2; }
+
+.code-block {
+  background: #0d1117; border: 1px solid #30363d; border-radius: 14px;
+  overflow: hidden; margin: 2rem 0; direction: ltr; text-align: left;
+}
+.code-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.7rem 1.2rem; background: #161b22; border-bottom: 1px solid #30363d;
+}
+.code-title { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #8b949e; }
+.code-dots { display: flex; gap: 7px; }
+.code-dot { width: 11px; height: 11px; border-radius: 50%; }
+.code-dot.r { background: #ff5f56; } .code-dot.y { background: #ffbd2e; } .code-dot.g { background: #27c93f; }
+pre {
+  padding: 1.4rem; overflow-x: auto; font-family: 'Fira Code', monospace;
+  font-size: 0.88rem; line-height: 1.9; color: #e6edf3;
+}
+pre .comment { color: #8b949e; }
+pre .keyword { color: #ff7b72; }
+pre .string { color: #a5d6ff; }
+pre .func { color: #d2a8ff; }
+pre .num { color: #79c0ff; }
+pre .cmd { color: #7ee787; }
+pre .output { color: #a5d6ff; }
+pre .err { color: #ff7b72; }
+pre .warn { color: #fbbf24; }
+
+.data-table {
+  width: 100%; border-collapse: collapse; margin: 2rem 0;
+  background: var(--c-surface); border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--c-border);
+}
+.data-table th {
+  background: var(--c-surface2); padding: 1.1rem 1.3rem; text-align: right;
+  font-weight: 700; color: var(--c-primary); font-size: 0.9rem;
+}
+.data-table td {
+  padding: 1rem 1.3rem; border-top: 1px solid var(--c-border);
+  color: var(--c-text2); font-size: 0.92rem; line-height: 1.8;
+}
+.data-table tr:hover td { background: rgba(56,189,248,0.04); }
+
+.alert {
+  padding: 1.2rem 1.5rem; border-radius: 14px; margin: 2rem 0;
+  display: flex; align-items: flex-start; gap: 0.9rem; border: 1px solid;
+  font-size: 1rem;
+}
+.alert-info { background: rgba(56,189,248,0.06); border-color: rgba(56,189,248,0.25); color: var(--c-primary); }
+.alert-warn { background: rgba(251,191,36,0.06); border-color: rgba(251,191,36,0.25); color: var(--c-warning); }
+.alert-danger { background: rgba(248,113,113,0.06); border-color: rgba(248,113,113,0.25); color: var(--c-danger); }
+.alert-success { background: rgba(52,211,153,0.06); border-color: rgba(52,211,153,0.25); color: var(--c-success); }
+.alert-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+
+.diagram-box {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 18px; padding: 2rem; margin: 2rem 0;
+}
+.diagram-step {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem 1.2rem; margin: 0.5rem 0; border-radius: 12px;
+  background: rgba(56,189,248,0.04); border: 1px solid rgba(56,189,248,0.12);
+}
+.diagram-step .num {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.95rem; flex-shrink: 0;
+}
+.diagram-step .text { font-size: 0.95rem; color: var(--c-text); line-height: 1.7; }
+.diagram-arrow { text-align: center; font-size: 1.6rem; color: var(--c-primary); margin: 0.2rem 0; }
+
+.battery-visual {
+  width: 100%; height: 60px; background: var(--c-surface2); border-radius: 12px;
+  position: relative; overflow: hidden; margin: 2rem 0; border: 2px solid var(--c-border);
+}
+.battery-visual::after {
+  content: ''; position: absolute; right: -8px; top: 15px; bottom: 15px;
+  width: 8px; background: var(--c-surface2); border-radius: 0 4px 4px 0;
+}
+.battery-fill {
+  height: 100%; border-radius: 10px; transition: width 0.5s ease;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 1.1rem; color: #0f172a;
+}
+.battery-fill.good { background: linear-gradient(90deg, var(--c-success), #10b981); }
+.battery-fill.warn { background: linear-gradient(90deg, var(--c-warning), #f59e0b); }
+.battery-fill.danger { background: linear-gradient(90deg, var(--c-danger), #ef4444); }
+
+.flowchart {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 18px; padding: 2rem; margin: 2rem 0;
+}
+.flow-node {
+  padding: 1.2rem 1.5rem; border-radius: 14px; margin: 0.85rem 0;
+  text-align: center; font-weight: 700; font-size: 1rem;
+  border: 2px solid;
+}
+.flow-node.start { background: rgba(52,211,153,0.08); border-color: var(--c-success); color: var(--c-success); }
+.flow-node.question { background: rgba(251,191,36,0.08); border-color: var(--c-warning); color: var(--c-warning); border-radius: 50px; }
+.flow-node.action { background: rgba(56,189,248,0.08); border-color: var(--c-primary); color: var(--c-primary); }
+.flow-node.end { background: rgba(248,113,113,0.08); border-color: var(--c-danger); color: var(--c-danger); }
+.flow-node.success { background: rgba(52,211,153,0.08); border-color: var(--c-success); color: var(--c-success); }
+.flow-line { text-align: center; color: var(--c-text2); font-size: 1.6rem; margin: 0.3rem 0; }
+.flow-yesno {
+  display: flex; justify-content: center; gap: 3rem; margin: 0.6rem 0;
+  font-size: 0.85rem; font-weight: 600;
+}
+
+.next-prev {
+  display: flex; justify-content: space-between; margin-top: 4rem;
+  padding-top: 2.5rem; border-top: 1px solid var(--c-border);
+}
+.next-prev a {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.9rem 1.8rem; border-radius: 14px;
+  text-decoration: none; font-weight: 700; transition: all 0.3s;
+}
+.next-prev .prev { color: var(--c-text2); border: 1px solid var(--c-border); }
+.next-prev .prev:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.next-prev .next {
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; box-shadow: 0 4px 15px rgba(56,189,248,0.3);
+}
+.next-prev .next:hover { transform: translateX(-3px); }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar-thumb { background: var(--c-surface2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-primary); }
+
+@media (max-width: 768px) {
+  main { padding: 5rem 1rem 2rem; }
+  .chapter-header h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">📱 أكاديمية صيانة الهواتف</a>
+  <a href="index.html" class="nav-back">← العودة للرئيسية</a>
+</nav>
+
+<main>
+
+<div class="chapter-header">
+  <div class="chapter-num">06</div>
+  <h1>مشاكل البطارية</h1>
+  <p>تشخيص · معايرة · شحن مباشر · فحص IC الشحن — شرح تفصيلي كامل</p>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١: قراءة حالة البطارية -->
+<!-- ================================================================ -->
+<h2>🔋 قراءة حالة البطارية عبر ADB</h2>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>أهم أمر لتشخيص البطارية:</strong> <code>adb shell dumpsys battery</code> — هذا الأمر وحده يغنيك عن فتح الهاتف في ٧٠٪ من مشاكل البطارية. يعطيك كل المعلومات التي تحتاجها لتقرر إذا كانت المشكلة في البطارية نفسها أم في البوردة.
+  </div>
+</div>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">الأمر: adb shell dumpsys battery</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="cmd">adb shell dumpsys</span> battery
+
+<span class="comment"># 📋 النتيجة الكاملة مع شرح كل سطر:</span>
+<span class="output">Current Battery Service state:</span>
+<span class="output">  AC powered: false</span>           <span class="comment"># هل الشاحن موصول؟ false = لا</span>
+<span class="output">  USB powered: true</span>           <span class="comment"># هل كابل USB موصول؟ true = نعم</span>
+<span class="output">  Wireless powered: false</span>     <span class="comment"># شحن لاسلكي؟ false = لا</span>
+<span class="output">  Max charging current: 1500000</span> <span class="comment"># أقصى تيار شحن = 1500mA = 1.5A</span>
+<span class="output">  Max charging voltage: 5000000</span> <span class="comment"># أقصى جهد شحن = 5V</span>
+<span class="output">  Charge counter: 2800000</span>      <span class="comment"># الشحنة المتبقية بالميكرو أمبير</span>
+<span class="output">  status: 2</span>                   <span class="comment"># حالة الشحن (انظر الجدول أدناه)</span>
+<span class="output">  health: 2</span>                   <span class="comment"># صحة البطارية (انظر الجدول أدناه)</span>
+<span class="output">  present: true</span>               <span class="comment"># هل البطارية موجودة؟ true = نعم</span>
+<span class="output">  level: 85</span>                   <span class="comment"># نسبة الشحن الحالية (0-100)</span>
+<span class="output">  scale: 100</span>                  <span class="comment"># أقصى نسبة (دائماً 100)</span>
+<span class="output">  voltage: 4201</span>               <span class="comment"># جهد البطارية بالملي فولت (4201mV = 4.2V)</span>
+<span class="output">  temperature: 298</span>            <span class="comment"># حرارة البطارية (298 = 29.8°C — اقسم على 10)</span>
+<span class="output">  technology: Li-ion</span>          <span class="comment"># نوع البطارية</span></pre>
+</div>
+
+<!-- جدول تفسير status -->
+<h3>📊 تفسير قيم status (حالة الشحن):</h3>
+<table class="data-table">
+  <tr>
+    <th>القيمة</th>
+    <th>المعنى</th>
+    <th>متى تظهر؟</th>
+    <th>الإجراء</th>
+  </tr>
+  <tr>
+    <td><strong>1</strong></td>
+    <td>Unknown</td>
+    <td>حالة غير معروفة (نادر)</td>
+    <td>أعد تشغيل الهاتف وجرب مرة أخرى</td>
+  </tr>
+  <tr>
+    <td><strong>2</strong></td>
+    <td>Charging</td>
+    <td>الهاتف متصل بالشاحن ويشحن ✅</td>
+    <td>طبيعي — لا شيء مطلوب</td>
+  </tr>
+  <tr>
+    <td><strong>3</strong></td>
+    <td>Discharging</td>
+    <td>الهاتف مفصول من الشاحن ويستهلك ✅</td>
+    <td>طبيعي — لا شيء مطلوب</td>
+  </tr>
+  <tr>
+    <td><strong>4</strong></td>
+    <td>Not charging</td>
+    <td>متصل بالشاحن لكن <strong>لا يشحن</strong> ❌</td>
+    <td>افحص الكابل، الشاحن، IC الشحن</td>
+  </tr>
+  <tr>
+    <td><strong>5</strong></td>
+    <td>Full</td>
+    <td>البطارية ممتلئة ١٠٠٪ ✅</td>
+    <td>طبيعي — افصل الشاحن</td>
+  </tr>
+</table>
+
+<!-- جدول تفسير health -->
+<h3>📊 تفسير قيم health (صحة البطارية):</h3>
+<table class="data-table">
+  <tr>
+    <th>القيمة</th>
+    <th>المعنى</th>
+    <th>الخطورة</th>
+    <th>الإجراء الفوري</th>
+  </tr>
+  <tr>
+    <td><strong>1</strong></td>
+    <td>Unknown</td>
+    <td>⚠️ منخفضة</td>
+    <td>أعد التشغيل وجرب مرة أخرى</td>
+  </tr>
+  <tr>
+    <td><strong>2</strong></td>
+    <td>Good</td>
+    <td>✅ لا شيء</td>
+    <td>البطارية سليمة — لا تحتاج شيئاً</td>
+  </tr>
+  <tr>
+    <td><strong>3</strong></td>
+    <td>Overheat</td>
+    <td>🔥 متوسطة</td>
+    <td>افصل الشاحن فوراً! اترك الهاتف يبرد. افحص IC الشحن</td>
+  </tr>
+  <tr>
+    <td><strong>4</strong></td>
+    <td>Dead</td>
+    <td>🚨 عالية</td>
+    <td>البطارية تالفة. استبدلها فوراً</td>
+  </tr>
+  <tr>
+    <td><strong>5</strong></td>
+    <td>Over voltage</td>
+    <td>💥 خطيرة جداً</td>
+    <td>افصل الشاحن فوراً! IC الشحن تالف وقد ينفجر</td>
+  </tr>
+  <tr>
+    <td><strong>temperature > 450</strong></td>
+    <td>حرارة > 45°C</td>
+    <td>🔥🔥 عالية</td>
+    <td>افصل الشاحن. افحص IC الشحن والبطارية</td>
+  </tr>
+</table>
+
+<!-- تمثيل بصري للبطارية -->
+<h3>🔋 تمثيل بصري لحالة البطارية:</h3>
+<div class="battery-visual">
+  <div class="battery-fill good" style="width: 85%;">85% — جيدة ✅</div>
+</div>
+<div class="battery-visual">
+  <div class="battery-fill warn" style="width: 25%;">25% — منخفضة ⚠️</div>
+</div>
+<div class="battery-visual">
+  <div class="battery-fill danger" style="width: 100%;">100% — لكن health: 4 (تالفة) 🚨</div>
+</div>
+
+<!-- أوامر إضافية -->
+<h3>🔍 أوامر إضافية لفحص البطارية:</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">أوامر متقدمة لفحص البطارية</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># معرفة السعة الفعلية مقابل السعة الأصلية</span>
+<span class="cmd">adb shell cat</span> /sys/class/power_supply/battery/charge_full
+<span class="cmd">adb shell cat</span> /sys/class/power_supply/battery/charge_full_design
+<span class="comment"># charge_full = السعة الحالية | charge_full_design = السعة الأصلية
+# مثال: 3200000 / 4500000 = 71% (فقدت 29% من عمرها)</span>
+
+<span class="comment"># معرفة عدد دورات الشحن</span>
+<span class="cmd">adb shell cat</span> /sys/class/power_supply/battery/cycle_count
+<span class="comment"># أكثر من 500 دورة = البطارية قاربت نهاية عمرها</span>
+
+<span class="comment"># فحص استهلاك البطارية (يتطلب Root)</span>
+<span class="cmd">adb shell</span> su -c <span class="string">"dumpsys batterystats --reset"</span>   <span class="comment"># مسح الإحصائيات</span>
+<span class="cmd">adb shell</span> dumpsys batterystats | grep <span class="string">"Estimated power use"</span>
+<span class="comment"># يعرض أكثر التطبيقات استهلاكاً للبطارية</span></pre>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٢: مشاكل البطارية الشائعة -->
+<!-- ================================================================ -->
+<h2>📊 مشاكل البطارية الشائعة — تشخيص وحلول</h2>
+
+<table class="data-table">
+  <tr>
+    <th>المشكلة</th>
+    <th>العرض</th>
+    <th>كيف تتأكد؟</th>
+    <th>السبب</th>
+    <th>الحل</th>
+  </tr>
+  <tr>
+    <td><strong>لا يشحن نهائياً</strong></td>
+    <td>لا LED، لا شعار بطارية، لا استجابة عند توصيل الشاحن</td>
+    <td>جرب شاحن وكابل آخر. إذا لم يستجب: قس البطارية بالملتيميتر. إذا 0V = بطارية تالفة. إذا 3.7V+ = مشكلة بوردة.</td>
+    <td>IC شحن تالف، منفذ USB مكسور، كابل FPC مقطوع، بطارية ميتة</td>
+    <td>١. نظف منفذ USB<br>٢. جرب شاحن + كابل آخر<br>٣. افحص IC الشحن بالملتيميتر<br>٤. استبدل IC الشحن</td>
+  </tr>
+  <tr>
+    <td><strong>يشحن ببطء شديد</strong></td>
+    <td>يستغرق ٥+ ساعات للشحن الكامل</td>
+    <td>استخدم <code>dumpsys battery</code>. انظر إلى Max charging current. إذا كان أقل من 500mA = مشكلة.</td>
+    <td>شاحن رديء، كابل تالف، IC شحن ضعيف، منفذ USB متسخ</td>
+    <td>١. جرب شاحن 2A+<br>٢. جرب كابل أصلي<br>٣. نظف منفذ USB<br>٤. افحص IC الشحن</td>
+  </tr>
+  <tr>
+    <td><strong>يفرغ بسرعة</strong></td>
+    <td>ينتهي في ٢-٣ ساعات بدلاً من يوم كامل</td>
+    <td>افحص cycle_count. إذا > 500 = البطارية منتهية. استخدم BetterBatteryStats للبحث عن Wakelocks.</td>
+    <td>بطارية قديمة، تطبيق Wakelock، IC شحن تالف يسحب تيار</td>
+    <td>١. افحص استهلاك التطبيقات<br>٢. احذف التطبيقات المشبوهة<br>٣. امسح cache<br>٤. استبدل البطارية</td>
+  </tr>
+  <tr>
+    <td><strong>يتوقف عند نسبة معينة</strong></td>
+    <td>يتوقف عند 80% أو 99% ولا يكمل</td>
+    <td>لاحظ هل يتوقف عند نفس النسبة دائماً. إذا نعم = معايرة خاطئة.</td>
+    <td>معايرة خاطئة، IC شحن لا يقرأ الجهد صحيحاً</td>
+    <td>١. قم بمعايرة البطارية<br>٢. إذا استمر: افحص IC الشحن</td>
+  </tr>
+  <tr>
+    <td><strong>ينتفخ</strong></td>
+    <td>غطاء خلفي مرتفع، الشاشة منفوخة للأعلى</td>
+    <td>المس ظهر الهاتف. إذا كان غير مستوٍ أو تشعر بفراغ = البطارية منتفخة.</td>
+    <td>تفاعل كيميائي داخلي بسبب حرارة أو عيب تصنيع</td>
+    <td>🚨 <strong>استبدل البطارية فوراً!</strong> لا تشحنها. لا تضغط عليها. خطر انفجار!</td>
+  </tr>
+  <tr>
+    <td><strong>يغلق عند ٢٠-٣٠٪</strong></td>
+    <td>إطفاء مفاجئ مع أن البطارية لم تصل ٠٪</td>
+    <td>لاحظ إذا كان يغلق عند نفس النسبة كل مرة.</td>
+    <td>بطارية تالفة فقدت قدرتها، معايرة خاطئة</td>
+    <td>١. معايرة البطارية<br>٢. إذا استمر: استبدل البطارية</td>
+  </tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- القسم ٣: مخطط تدفق تشخيص البطارية -->
+<!-- ================================================================ -->
+<h2>📊 مخطط تدفق تشخيص مشاكل البطارية</h2>
+
+<div class="flowchart">
+  <div class="flow-node start">🔋 العميل: "الهاتف لا يشحن"</div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">السؤال ١: هل الكابل والشاحن يعملان مع هاتف آخر؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-danger);">❌ لا → غيّر الكابل/الشاحن!</span>
+    <span style="color:var(--c-success);">✅ نعم → انتقل للسؤال ٢</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">السؤال ٢: هل منفذ USB نظيف؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-danger);">❌ متسخ → نظف بفرشاة + كحول</span>
+    <span style="color:var(--c-success);">✅ نظيف → انتقل للسؤال ٣</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">السؤال ٣: هل يظهر مؤشر الشحن على الشاشة؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ يظهر → المشكلة ليست في الشحن</span>
+    <span style="color:var(--c-danger);">❌ لا يظهر → انتقل للسؤال ٤</span>
+  </div>
+  <div class="flow-line">⬇</div>
+
+  <div class="flow-node question">السؤال ٤: افتح الهاتف. قس البطارية بالملتيميتر. هل الجهد 3.7V+؟</div>
+  <div class="flow-yesno">
+    <span style="color:var(--c-success);">✅ 3.7-4.2V → البطارية سليمة. المشكلة في البوردة (IC شحن/PMIC)</span>
+    <span style="color:var(--c-danger);">❌ أقل من 3.3V أو 0V → البطارية تالفة. استبدلها</span>
+  </div>
+  <div class="flow-line">⬇</div>
+  <div class="flow-node success">✅ تم التشخيص!</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٤: معايرة البطارية -->
+<!-- ================================================================ -->
+<h2>🔧 معايرة البطارية — إعادة ضبط عداد الشحن</h2>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>ما هي معايرة البطارية؟</strong> مع مرور الوقت، قد يخرج "عداد" البطارية في النظام عن الدقة. فمثلاً النظام يظن أن البطارية ٢٠٪ بينما هي في الحقيقة ٥٪. هذا يسبب إطفاء مفاجئ. المعايرة تعيد ضبط هذا العداد ليتطابق مع الواقع.
+  </div>
+</div>
+
+<h3>📋 الطريقة الأولى: المعايرة اليدوية (بدون كمبيوتر)</h3>
+<div class="diagram-box">
+  <h4 style="margin-top:0; color:var(--c-warning);">🔄 دورة الشحن الكاملة (تستغرق ٦-٨ ساعات)</h4>
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>استخدم الهاتف حتى ٠٪</strong> ويطفئ نفسه تماماً. لا تشحنه عندما يطلب منك الشحن — استمر في استخدامه حتى يموت.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>اشحن حتى ١٠٠٪ بدون استخدام.</strong> وصله بالشاحن الأصلي واتركه يشحن. <strong>لا تستخدمه</strong> أثناء الشحن. اتركه ٢-٣ ساعات حتى يمتلئ تماماً.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>اتركه متصلاً ٣٠ دقيقة إضافية</strong> بعد أن يصل ١٠٠٪. هذا يضمن أن البطارية مشحونة بالكامل.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text"><strong>استخدمه حتى ٠٪ مرة أخرى</strong> بدون شحن. لا تشحنه ولو للحظة. دعه يطفئ نفسه.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">5</div>
+    <div class="text"><strong>اشحن حتى ١٠٠٪ مرة أخيرة.</strong> بعد هذه الدورة الكاملة (٠←١٠٠←٠←١٠٠)، تمت المعايرة ✅</div>
+  </div>
+</div>
+
+<h3>💻 الطريقة الثانية: المعايرة عبر ADB (للمحترفين)</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">معايرة البطارية عبر ADB (يتطلب Root)</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 هذه الطريقة تمسح إحصائيات البطارية القديمة.
+# النظام سيبدأ في جمع إحصائيات جديدة من الصفر.
+# يفضل عملها بعد دورة الشحن اليدوية أعلاه.</span>
+
+<span class="comment"># ١. اشحن الهاتف إلى ١٠٠٪ (مهم!)</span>
+
+<span class="comment"># ٢. مسح إحصائيات البطارية (يتطلب Root)</span>
+<span class="cmd">adb shell</span> su -c <span class="string">"dumpsys batterystats --reset"</span>
+
+<span class="comment"># ٣. مسح ملف batterystats (يتطلب Root)</span>
+<span class="cmd">adb shell</span> su -c <span class="string">"rm /data/system/batterystats.bin"</span>
+<span class="comment"># إذا لم تجد الملف، لا تقلق — بعض الأجهزة لا تستخدمه</span>
+
+<span class="comment"># ٤. إعادة التشغيل</span>
+<span class="cmd">adb</span> reboot
+
+<span class="comment"># ٥. بعد الإقلاع، استخدم الهاتف عادياً.
+# النظام الآن سيتعلم من جديد كيف تتصرف البطارية.</span>
+
+<span class="comment"># ⚠️ ملاحظات مهمة:
+# - لا تكرر هذه العملية كثيراً. مرة كل ٣-٦ أشهر تكفي.
+# - إذا لم تتحسن البطارية بعد المعايرة = البطارية تالفة وتحتاج استبدال.
+# - هذه الطريقة لا تصلح بطارية تالفة — فقط تصحح العداد.</span></pre>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٥: الشحن المباشر -->
+<!-- ================================================================ -->
+<h2>⚡ الشحن المباشر — للاختبار فقط!</h2>
+
+<div class="alert alert-danger">
+  <span class="alert-icon">🚨</span>
+  <div>
+    <strong>تحذير خطير جداً!</strong> الشحن المباشر للبطارية بدون IC حماية (الموجود على البوردة) <strong>يعرض البطارية لخطر الانفجار والحريق!</strong> هذه الطريقة للاختبار السريع فقط في ورشة الصيانة لتحديد إذا كانت المشكلة في البطارية أم في IC الشحن. لا تترك البطارية أبداً بدون مراقبة أثناء الشحن المباشر!
+  </div>
+</div>
+
+<h3>متى تحتاج الشحن المباشر؟</h3>
+<p>تحتاجه في حالة واحدة: <strong>الهاتف لا يشحن نهائياً</strong> وتريد أن تعرف إذا كانت المشكلة في البطارية أم في IC الشحن على البوردة.</p>
+
+<h3>📋 طريقة الشحن المباشر (للمحترفين فقط):</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(248,113,113,0.04),rgba(251,191,36,0.04)); border-color:rgba(248,113,113,0.3);">
+  <h4 style="margin-top:0; color:var(--c-danger);">⚡ خطوات الشحن المباشر (للتشخيص فقط)</h4>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">1</div>
+    <div class="text"><strong>افصل البطارية عن الهاتف تماماً.</strong> اعزل أطرافها. لا تشحنها وهي متصلة بالبوردة!</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">2</div>
+    <div class="text"><strong>استخدم باور سبلاي (Power Supply)</strong> وليس شاحن عادي. اضبطه على <strong>4.2V</strong> و <strong>0.5A كحد أقصى</strong>. لا تستخدم فولت أعلى من 4.2V!</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">3</div>
+    <div class="text"><strong>وصّل طرف + من الباور سبلاي إلى + البطارية، وطرف - إلى - البطارية.</strong> تأكد من القطبية! العكس = انفجار.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">4</div>
+    <div class="text"><strong>راقب التيار.</strong> إذا سحبت البطارية تياراً (0.3-0.5A) = البطارية تقبل الشحن ✅. إذا 0A = البطارية ميتة ❌.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">5</div>
+    <div class="text"><strong>اشحنها لبضع دقائق فقط</strong> حتى يصل الجهد إلى 3.7V. ثم أعد توصيلها بالهاتف وجرب التشغيل.</div>
+  </div>
+</div>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">الشحن المباشر — المعلومات التقنية</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># معلومات تقنية عن بطاريات Li-ion:</span>
+<span class="comment"># - الجهد الاسمي: 3.7V</span>
+<span class="comment"># - جهد الشحن الكامل: 4.2V</span>
+<span class="comment"># - جهد التفريغ الآمن: 3.0V (لا تنزل أبداً أقل من هذا!)</span>
+<span class="comment"># - جهد التلف: أقل من 2.5V (البطارية تموت)</span>
+
+<span class="comment"># مراحل الشحن الصحيح (الذي يقوم به IC الشحن عادة):</span>
+<span class="comment"># ١. CC (Constant Current): تيار ثابت حتى يصل الجهد لـ 4.2V</span>
+<span class="comment"># ٢. CV (Constant Voltage): جهد ثابت 4.2V حتى يقل التيار لـ 0.05C</span>
+<span class="comment"># ٣. يقطع الشحن تلقائياً</span>
+
+<span class="comment"># ⚠️ الشحن المباشر يتجاوز هذه المراحل = خطر!</span>
+<span class="comment"># ⚠️ لا تشحن أبداً بتيار أكثر من 1A مباشرة</span>
+<span class="comment"># ⚠️ لا تترك البطارية أبداً بدون مراقبة</span></pre>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٦: فحص IC الشحن بالملتيميتر -->
+<!-- ================================================================ -->
+<h2>🔬 فحص IC الشحن بالملتيميتر</h2>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>IC الشحن (Charging IC)</strong> هو الشريحة المسؤولة عن تنظيم عملية الشحن. إذا تلفت، لن يشحن الهاتف حتى لو كانت البطارية سليمة. فحصها بالملتيميتر هو الخطوة الأولى لتشخيص مشاكل الشحن.
+  </div>
+</div>
+
+<div class="img-wrap">
+  <img src="images/4_How_to_Use_a_Multimeter_to_Repair.png" alt="فحص اللوحة بالملتيميتر">
+  <div class="img-caption">فحص البوردة بالملتيميتر — قياس جهد VBUS و VBAT</div>
+</div>
+
+<h3>📋 نقاط الفحص الأساسية على البوردة:</h3>
+<table class="data-table">
+  <tr>
+    <th>نقطة الفحص</th>
+    <th>الموقع</th>
+    <th>الجهد الطبيعي</th>
+    <th>إذا كان 0V</th>
+    <th>إذا كان منخفضاً</th>
+  </tr>
+  <tr>
+    <td><strong>VBUS</strong></td>
+    <td>دبابيس منفذ USB (الدبوس الأكبر)</td>
+    <td>5.0V عند توصيل الشاحن</td>
+    <td>كابل/شاحن تالف، منفذ USB مكسور</td>
+    <td>شاحن ضعيف، كابل رديء</td>
+  </tr>
+  <tr>
+    <td><strong>VBAT / BATT+</strong></td>
+    <td>فيصل البطارية (طرف +)</td>
+    <td>3.7V - 4.2V</td>
+    <td>بطارية ميتة، IC شحن تالف</td>
+    <td>بطارية منخفضة الشحن</td>
+  </tr>
+  <tr>
+    <td><strong>VPH_PWR</strong></td>
+    <td>مكثف كبير قرب PMIC</td>
+    <td>3.7V - 4.2V</td>
+    <td>PMIC تالف، مسار مقطوع</td>
+    <td>مقاومة في المسار</td>
+  </tr>
+  <tr>
+    <td><strong>VREG_LDO</strong></td>
+    <td>مكثفات صغيرة قرب PMIC</td>
+    <td>1.8V أو 3.3V</td>
+    <td>PMIC تالف</td>
+    <td>PMIC تالف جزئياً</td>
+  </tr>
+  <tr>
+    <td><strong>VBUCK (CPU)</strong></td>
+    <td>مكثفات قرب المعالج</td>
+    <td>0.8V - 1.2V</td>
+    <td>PMIC لا يغذي المعالج</td>
+    <td>جهد غير كافٍ = Bootloop</td>
+  </tr>
+</table>
+
+<h3>🔍 كيف تفحص IC الشحن خطوة بخطوة:</h3>
+<div class="diagram-box">
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>اضبط الملتيميتر على DC 20V.</strong> هذا هو وضع قياس الفولت المستمر.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>ضع الطرف الأسود على GND</strong> (أي نقطة أرضي — الهيكل المعدني أو برغي).</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>ضع الطرف الأحمر على VBUS</strong> (دبوس الشحن في منفذ USB). يجب أن تقرأ 5V مع توصيل الشاحن.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text"><strong>ضع الطرف الأحمر على VBAT</strong> (طرف + في فيصل البطارية). يجب أن تقرأ 3.7-4.2V.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">5</div>
+    <div class="text"><strong>إذا كان VBUS = 5V و VBAT = 0V:</strong> IC الشحن لا ينقل التيار للبطارية = IC تالف.</div>
+  </div>
+</div>
+
+<h3>🩺 فحص الشورت (القفلة) في IC الشحن:</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">فحص الشورت في دائرة الشحن</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 فحص الشورت (Short Circuit):</span>
+<span class="comment"># ١. اضبط الملتيميتر على وضع "الجرس" (Continuity/Buzzer)</span>
+<span class="comment"># ٢. ضع طرف على GND والطرف الآخر على VBAT</span>
+<span class="comment"># ٣. إذا سمعت صفارة مستمرة = يوجد شورت في دائرة الشحن!</span>
+
+<span class="comment"># الأماكن التي تفحص فيها الشورت:</span>
+<span class="comment"># - المكثفات حول IC الشحن (أي مكثف يعطي صفارة = شورت)</span>
+<span class="comment"># - المكثفات حول PMIC</span>
+<span class="comment"># - فيصل البطارية (لا يجب أن يكون شورت بين + و -)</span>
+
+<span class="comment"># 🔧 إذا وجدت شورت:</span>
+<span class="comment"># ١. افحص المكثفات واحداً واحداً</span>
+<span class="comment"># ٢. المكثف التالف = شورت (صفارة على طرفيه)</span>
+<span class="comment"># ٣. انزعه واختبر مرة أخرى. إذا اختفى الشورت = استبدل المكثف</span>
+<span class="comment"># ٤. إذا استمر الشورت = IC نفسه تالف ويحتاج استبدال</span></pre>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٧: سخونة البطارية -->
+<!-- ================================================================ -->
+<h2>🔥 تشخيص سخونة البطارية</h2>
+
+<p><strong>سخونة البطارية غير طبيعية</strong> وتدل على مشكلة خطيرة. هذه جدول لتشخيص مصدر السخونة:</p>
+
+<table class="data-table">
+  <tr>
+    <th>مكان السخونة</th>
+    <th>متى تحدث؟</th>
+    <th>السبب المحتمل</th>
+    <th>الإجراء</th>
+  </tr>
+  <tr>
+    <td><strong>أسفل الهاتف</strong> (قرب منفذ الشحن)</td>
+    <td>أثناء الشحن</td>
+    <td>IC شحن تالف أو شاحن بتيار عالي</td>
+    <td>جرب شاحن آخر. إذا استمرت = IC شحن تالف</td>
+  </tr>
+  <tr>
+    <td><strong>وسط الهاتف</strong> (منطقة المعالج)</td>
+    <td>أثناء الاستخدام الثقيل</td>
+    <td>طبيعي إذا كان الاستخدام ثقيلاً. إذا سخن بدون سبب = شورت في CPU/GPU</td>
+    <td>افحص استهلاك CPU. إذا 100% بدون سبب = تطبيق خبيث</td>
+  </tr>
+  <tr>
+    <td><strong>البطارية نفسها</strong></td>
+    <td>طوال الوقت حتى بدون استخدام</td>
+    <td>بطارية تالفة أو IC شحن يسحب تيار زائد</td>
+    <td>افصل الهاتف. إذا استمرت السخونة = بطارية تالفة (استبدلها فوراً)</td>
+  </tr>
+  <tr>
+    <td><strong>أعلى الهاتف</strong> (منطقة الشبكة)</td>
+    <td>في منطقة إشارة ضعيفة</td>
+    <td>IC شبكة يعمل بأقصى طاقة للبحث عن إشارة</td>
+    <td>طبيعي في المناطق الضعيفة. فعل Airplane Mode للاختبار</td>
+  </tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- القسم ٨: سيناريوهات واقعية -->
+<!-- ================================================================ -->
+<h2>🎬 سيناريوهات واقعية</h2>
+
+<h3>السيناريو ١: بطارية تخلص في ساعتين</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(248,113,113,0.04),rgba(251,191,36,0.04)); border-color:rgba(248,113,113,0.2);">
+  <h4 style="margin-top:0; color:var(--c-danger);">🧊 الموقف:</h4>
+  <p>العميل: "البطارية كانت تعمر يوم كامل، فجأة صارت تخلص في ساعتين."</p>
+
+  <h4 style="color:var(--c-warning);">🤔 التشخيص:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>افحص صحة البطارية:</strong> <code>adb shell dumpsys battery</code>. انظر إلى health. إذا health: 4 = استبدل البطارية.</li>
+    <li><strong>افحص عدد الدورات:</strong> <code>adb shell cat /sys/class/power_supply/battery/cycle_count</code>. إذا > 500 = البطارية انتهى عمرها.</li>
+    <li><strong>افحص السعة:</strong> قارن charge_full مع charge_full_design. إذا فقدت > 30% = استبدلها.</li>
+    <li><strong>إذا البطارية سليمة:</strong> ابحث عن Wakelocks. استخدم <code>adb shell dumpsys batterystats</code> لمعرفة التطبيق المستهلك.</li>
+  </ol>
+
+  <h4 style="color:var(--c-success);">✅ الحل:</h4>
+  <p>في ٧٠٪ = بطارية تحتاج استبدال. في ٢٠٪ = تطبيق Wakelock (احذفه). في ١٠٪ = IC شحن تالف.</p>
+</div>
+
+<h3>السيناريو ٢: الهاتف لا يشحن نهائياً</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(251,191,36,0.04),rgba(56,189,248,0.04)); border-color:rgba(251,191,36,0.2);">
+  <h4 style="margin-top:0; color:var(--c-warning);">📡 الموقف:</h4>
+  <p>العميل: "الهاتف ما يشحن أبداً. جربت ٣ شواحن مختلفة."</p>
+
+  <h4 style="color:var(--c-warning);">🤔 التشخيص:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>نظف منفذ USB</strong> بفرشاة + كحول. هذه الخطوة تحل ٣٠٪ من المشاكل.</li>
+    <li><strong>جرب الشحن اللاسلكي</strong> (إذا كان مدعوماً). إذا شحن = منفذ USB تالف.</li>
+    <li><strong>افتح الهاتف.</strong> قس البطارية بالملتيميتر.</li>
+    <li><strong>إذا VBAT = 0V:</strong> البطارية تالفة. استبدلها.</li>
+    <li><strong>إذا VBAT = 3.7V:</strong> المشكلة في IC الشحن. افحص VBUS (يجب 5V).</li>
+    <li><strong>إذا VBUS = 5V و VBAT = 3.7V لكن الهاتف لا يشتغل:</strong> المشكلة في PMIC أو مسار الطاقة.</li>
+  </ol>
+
+  <h4 style="color:var(--c-success);">✅ الحل:</h4>
+  <p>في ٣٠٪ = تنظيف المنفذ يحل المشكلة. في ٣٠٪ = بطارية تالفة. في ٣٠٪ = IC شحن تالف. في ١٠٪ = PMIC تالف.</p>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٩: سكريبت مراقبة البطارية -->
+<!-- ================================================================ -->
+<h2>📱 سكريبتات البطارية</h2>
+
+<!-- سكريبت ١ -->
+<h3>سكريبت ١: مراقبة مستمرة للبطارية</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">battery-monitor.sh — مراقبة وتسجيل حالة البطارية</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment">#!/bin/bash</span>
+<span class="comment"># Battery Monitor - يسجل حالة البطارية كل دقيقة</span>
+<span class="comment"># مفيد لتشخيص مشاكل الاستنزاف السريع أو الشحن البطيء</span>
+
+<span class="func">LOGFILE</span>=<span class="string">"battery_log_$(date +%Y%m%d_%H%M%S).csv"</span>
+<span class="func">echo</span> <span class="string">"timestamp,level,status,health,voltage,temp,current"</span> <span class="keyword">></span> <span class="string">"$LOGFILE"</span>
+
+<span class="func">echo</span> <span class="string">"========================================"</span>
+<span class="func">echo</span> <span class="string">"  🔋 Battery Monitor"</span>
+<span class="func">echo</span> <span class="string">"  Logging to: $LOGFILE"</span>
+<span class="func">echo</span> <span class="string">"  Press Ctrl+C to stop"</span>
+<span class="func">echo</span> <span class="string">"========================================"</span>
+
+<span class="keyword">while</span> <span class="func">true</span>; <span class="keyword">do</span>
+    <span class="func">LEVEL</span>=<span class="string">$(adb shell dumpsys battery | grep "level:" | awk '{print $2}')</span>
+    <span class="func">STATUS</span>=<span class="string">$(adb shell dumpsys battery | grep "status:" | head -1 | awk '{print $2}')</span>
+    <span class="func">HEALTH</span>=<span class="string">$(adb shell dumpsys battery | grep "health:" | head -1 | awk '{print $2}')</span>
+    <span class="func">VOLT</span>=<span class="string">$(adb shell dumpsys battery | grep "voltage:" | awk '{print $2}')</span>
+    <span class="func">TEMP</span>=<span class="string">$(adb shell dumpsys battery | grep "temperature:" | awk '{print $2}')</span>
+    <span class="func">CURR</span>=<span class="string">$(adb shell dumpsys battery | grep "Max charging current:" | awk '{print $4}')</span>
+
+    <span class="func">echo</span> <span class="string">"$(date '+%H:%M:%S'),$LEVEL,$STATUS,$HEALTH,$VOLT,$TEMP,$CURR"</span> <span class="keyword">>></span> <span class="string">"$LOGFILE"</span>
+
+    <span class="comment"># عرض مباشر</span>
+    <span class="func">echo</span> <span class="string">"$(date '+%H:%M:%S') | Level: ${LEVEL}% | Volt: ${VOLT}mV | Temp: $((TEMP/10))°C"</span>
+
+    <span class="comment"># تنبيه إذا الحرارة > 45°C</span>
+    <span class="keyword">if</span> <span class="func">[</span> <span class="string">"$TEMP"</span> <span class="keyword">-gt</span> <span class="num">450</span> <span class="func">]</span>; <span class="keyword">then</span>
+        <span class="func">echo</span> <span class="string">"[!] 🚨 WARNING: Battery temperature > 45°C! ($((TEMP/10))°C)"</span>
+        <span class="func">echo</span> <span class="string">"[!] Disconnect charger immediately if charging!"</span>
+        <span class="comment"># يمكنك إضافة أمر لإطفاء الشاشة تلقائياً:</span>
+        <span class="comment"># adb shell input keyevent 26</span>
+    <span class="keyword">fi</span>
+
+    <span class="comment"># تنبيه إذا health = 3 (حرارة زائدة)</span>
+    <span class="keyword">if</span> <span class="func">[</span> <span class="string">"$HEALTH"</span> <span class="keyword">=</span> <span class="string">"3"</span> <span class="func">]</span>; <span class="keyword">then</span>
+        <span class="func">echo</span> <span class="string">"[!] 🔥 WARNING: Battery health = OVERHEAT!"</span>
+    <span class="keyword">fi</span>
+
+    <span class="comment"># تنبيه إذا health = 4 (تالفة)</span>
+    <span class="keyword">if</span> <span class="func">[</span> <span class="string">"$HEALTH"</span> <span class="keyword">=</span> <span class="string">"4"</span> <span class="func">]</span>; <span class="keyword">then</span>
+        <span class="func">echo</span> <span class="string">"[!] 💀 CRITICAL: Battery health = DEAD! Replace immediately!"</span>
+    <span class="keyword">fi</span>
+
+    <span class="func">sleep</span> <span class="num">60</span>
+<span class="keyword">done</span></pre>
+</div>
+
+<!-- سكريبت ٢ -->
+<h3>سكريبت ٢: تشخيص سريع للبطارية</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">battery-check.sh — فحص سريع للبطارية</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment">#!/bin/bash</span>
+<span class="comment"># Battery Quick Check - تقرير سريع عن حالة البطارية</span>
+
+<span class="func">echo</span> <span class="string">"========================================"</span>
+<span class="func">echo</span> <span class="string">"  🔋 Battery Quick Check"</span>
+<span class="func">echo</span> <span class="string">"========================================"</span>
+<span class="func">echo</span> <span class="string">""</span>
+
+<span class="comment"># معلومات أساسية</span>
+<span class="func">LEVEL</span>=<span class="string">$(adb shell dumpsys battery | grep "level:" | awk '{print $2}')</span>
+<span class="func">HEALTH</span>=<span class="string">$(adb shell dumpsys battery | grep "health:" | head -1 | awk '{print $2}')</span>
+<span class="func">TEMP</span>=<span class="string">$(adb shell dumpsys battery | grep "temperature:" | awk '{print $2}')</span>
+<span class="func">VOLT</span>=<span class="string">$(adb shell dumpsys battery | grep "voltage:" | awk '{print $2}')</span>
+
+<span class="func">echo</span> <span class="string">"📊 Basic Info:"</span>
+<span class="func">echo</span> <span class="string">"   Level: ${LEVEL}%"</span>
+<span class="func">echo</span> <span class="string">"   Voltage: ${VOLT}mV ($(echo "scale=1; $VOLT/1000" | bc)V)"</span>
+<span class="func">echo</span> <span class="string">"   Temperature: $((TEMP/10))°C"</span>
+
+<span class="comment"># تفسير health</span>
+<span class="func">echo</span> <span class="string">""</span>
+<span class="func">echo</span> <span class="string">"🩺 Health Check:"</span>
+<span class="keyword">case</span> <span class="func">$HEALTH</span> <span class="keyword">in</span>
+    <span class="num">2</span>) <span class="func">echo</span> <span class="string">"   ✅ Battery is GOOD"</span> ;;
+    <span class="num">3</span>) <span class="func">echo</span> <span class="string">"   🔥 Battery is OVERHEATING!"</span> ;;
+    <span class="num">4</span>) <span class="func">echo</span> <span class="string">"   💀 Battery is DEAD - Replace now!"</span> ;;
+    <span class="num">5</span>) <span class="func">echo</span> <span class="string">"   ⚡ OVER VOLTAGE - Charging IC damaged!"</span> ;;
+    *) <span class="func">echo</span> <span class="string">"   ❓ Unknown ($HEALTH)"</span> ;;
+<span class="keyword">esac</span>
+
+<span class="comment"># السعة والاستهلاك</span>
+<span class="func">echo</span> <span class="string">""</span>
+<span class="func">echo</span> <span class="string">"📈 Capacity Check:"</span>
+<span class="func">FULL</span>=<span class="string">$(adb shell cat /sys/class/power_supply/battery/charge_full 2>/dev/null || echo "N/A")</span>
+<span class="func">DESIGN</span>=<span class="string">$(adb shell cat /sys/class/power_supply/battery/charge_full_design 2>/dev/null || echo "N/A")</span>
+<span class="keyword">if</span> <span class="func">[</span> <span class="string">"$FULL"</span> <span class="keyword">!=</span> <span class="string">"N/A"</span> <span class="func">]</span> <span class="keyword">&&</span> <span class="func">[</span> <span class="string">"$DESIGN"</span> <span class="keyword">!=</span> <span class="string">"N/A"</span> <span class="func">]</span>; <span class="keyword">then</span>
+    <span class="func">PERCENT</span>=<span class="string">$(echo "scale=1; $FULL * 100 / $DESIGN" | bc)</span>
+    <span class="func">echo</span> <span class="string">"   Full: ${FULL}μAh"</span>
+    <span class="func">echo</span> <span class="string">"   Design: ${DESIGN}μAh"</span>
+    <span class="func">echo</span> <span class="string">"   Health: ${PERCENT}%"</span>
+    <span class="keyword">if</span> <span class="func">[</span> <span class="string">"$(echo "$PERCENT < 70" | bc)"</span> <span class="keyword">=</span> <span class="string">"1"</span> <span class="func">]</span>; <span class="keyword">then</span>
+        <span class="func">echo</span> <span class="string">"   ⚠️ Battery capacity below 70% - consider replacement"</span>
+    <span class="keyword">fi</span>
+<span class="keyword">else</span>
+    <span class="func">echo</span> <span class="string">"   Capacity info not available (needs root on some devices)"</span>
+<span class="keyword">fi</span>
+
+<span class="comment"># دورات الشحن</span>
+<span class="func">echo</span> <span class="string">""</span>
+<span class="func">echo</span> <span class="string">"🔄 Cycle Count:"</span>
+<span class="func">CYCLES</span>=<span class="string">$(adb shell cat /sys/class/power_supply/battery/cycle_count 2>/dev/null || echo "N/A")</span>
+<span class="func">echo</span> <span class="string">"   Cycles: $CYCLES"</span>
+<span class="keyword">if</span> <span class="func">[</span> <span class="string">"$CYCLES"</span> <span class="keyword">!=</span> <span class="string">"N/A"</span> <span class="func">]</span> <span class="keyword">&&</span> <span class="func">[</span> <span class="string">"$CYCLES"</span> <span class="keyword">-gt</span> <span class="num">500</span> <span class="func">]</span>; <span class="keyword">then</span>
+    <span class="func">echo</span> <span class="string">"   ⚠️ Over 500 cycles - battery approaching end of life"</span>
+<span class="keyword">fi</span>
+
+<span class="func">echo</span> <span class="string">""</span>
+<span class="func">echo</span> <span class="string">"[✓] Check complete!"</span></pre>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١٠: نصائح ذهبية -->
+<!-- ================================================================ -->
+<h2>💎 نصائح ذهبية للبطارية</h2>
+
+<div class="alert alert-success">
+  <span class="alert-icon">✅</span>
+  <div>
+    <strong>قواعد لا تنساها:</strong>
+    <ol style="margin-top:0.5rem; padding-right:1.2rem; line-height:2.2;">
+      <li><strong>لا تشحن الهاتف طوال الليل.</strong> الشحن الزائد يولد حرارة تقصر عمر البطارية. IC الشحن يقطع الشحن عند ١٠٠٪ لكن الحرارة تستمر.</li>
+      <li><strong>لا تترك البطارية تصل إلى ٠٪.</strong> التفريغ العميق (أقل من 3.0V) يدمر خلايا البطارية بشكل دائم.</li>
+      <li><strong>استخدم الشاحن والكابل الأصليين.</strong> الشواحن الرخيصة ترسل تياراً غير مستقراً يدمر IC الشحن مع الوقت.</li>
+      <li><strong>إذا انتفخت البطارية، استبدلها فوراً.</strong> لا تشحنها. لا تضغط عليها. لا تثقبها. البطارية المنتفخة قنبلة موقوتة.</li>
+      <li><strong>لا تشحن الهاتف تحت الوسادة.</strong> الحرارة هي العدو الأول للبطارية. اشحن الهاتف في مكان مفتوح.</li>
+      <li><strong>افحص IC الشحن</strong> إذا تكرر تلف البطاريات في نفس الهاتف. IC تالف = يقتل البطارية الجديدة أيضاً.</li>
+      <li><strong>البطاريات البديلة الرخيصة خطيرة.</strong> استخدم بطاريات أصلية أو من ماركات معروفة.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١١: جدول مرجعي سريع -->
+<!-- ================================================================ -->
+<h2>📊 جدول مرجعي سريع — قيم dumpsys battery</h2>
+
+<table class="data-table">
+  <tr>
+    <th>القيمة</th>
+    <th>النطاق الطبيعي</th>
+    <th>خطر</th>
+    <th>الإجراء</th>
+  </tr>
+  <tr><td><strong>status</strong></td><td>2 أو 3 أو 5</td><td>4 = لا يشحن</td><td>افحص IC الشحن</td></tr>
+  <tr><td><strong>health</strong></td><td>2</td><td>3,4,5</td><td>3=حرارة, 4=استبدل, 5=IC تالف</td></tr>
+  <tr><td><strong>level</strong></td><td>0-100</td><td>-</td><td>أقل من 15% = اشحن</td></tr>
+  <tr><td><strong>voltage</strong></td><td>3700-4200 mV</td><td>< 3300 أو > 4300</td><td>منخفض=اشحن, عالي=خطر IC تالف</td></tr>
+  <tr><td><strong>temperature</strong></td><td>250-400 (25-40°C)</td><td>> 450 (45°C)</td><td>افصل الشاحن فوراً</td></tr>
+  <tr><td><strong>Max charging current</strong></td><td>500000-3000000 (0.5-3A)</td><td>< 500000</td><td>كابل رديء أو IC ضعيف</td></tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- القسم ١٢: خلاصة -->
+<!-- ================================================================ -->
+<h2>🎯 خلاصة مشاكل البطارية</h2>
+
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(52,211,153,0.06),rgba(56,189,248,0.06)); border-color:rgba(52,211,153,0.3);">
+  <h3 style="margin-top:0; color:var(--c-success);">القواعد الذهبية لتشخيص البطارية</h3>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">1</div>
+    <div class="text"><strong>ابدأ بـ dumpsys battery.</strong> هذا الأمر يخبرك ٧٠٪ من القصة بدون فتح الهاتف.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">2</div>
+    <div class="text"><strong>تحقق من health و temperature.</strong> إذا health != 2 أو temperature > 450 = مشكلة حقيقية.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">3</div>
+    <div class="text"><strong>افحص cycle_count و charge_full.</strong> أكثر من 500 دورة أو أقل من 70% سعة = استبدل البطارية.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">4</div>
+    <div class="text"><strong>إذا كان الهاتف لا يشحن:</strong> نظف المنفذ أولاً. ثم قس البطارية بالملتيميتر. VBUS = 5V؟ VBAT = 3.7V+؟</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">5</div>
+    <div class="text"><strong>IC الشحن هو المشتبه به الأول</strong> في حالات "لا يشحن" مع بطارية سليمة.</div>
+  </div>
+</div>
+
+<div class="alert alert-info">
+  <span class="alert-icon">📚</span>
+  <div><strong>في الفصل القادم (الفصل ٧: مشاكل الشاشة):</strong> سنتعلم كيف نشخص و نصلح مشاكل الشاشة، Ghost Touch، البكسلات الميتة، وتغيير الشاشة.</div>
+</div>
+
+<div class="next-prev">
+  <a href="chapter5.html" class="prev">← الفصل 5: مشاكل الشبكة وIMEI</a>
+  <a href="chapter7.html" class="next">الفصل 7: مشاكل الشاشة →</a>
+</div>
+
+</main>
+
+</body>
+</html>

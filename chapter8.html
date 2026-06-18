@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الفصل 8: الهاردوير الأساسي | أكاديمية صيانة الهواتف</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg: #0f172a; --c-surface: #1e293b; --c-surface2: #334155;
+  --c-primary: #38bdf8; --c-secondary: #818cf8; --c-accent: #f472b6;
+  --c-success: #34d399; --c-warning: #fbbf24; --c-danger: #f87171;
+  --c-text: #f1f5f9; --c-text2: #94a3b8; --c-border: #334155;
+  --glow: 0 0 20px rgba(56,189,248,0.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Tajawal', sans-serif; background: var(--c-bg); color: var(--c-text); line-height: 1.9; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(15,23,42,0.92); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--c-border); padding: 0.75rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { font-weight: 800; font-size: 1.2rem; color: var(--c-primary); text-decoration: none; }
+.nav-back { color: var(--c-text2); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.nav-back:hover { color: var(--c-primary); }
+
+main { max-width: 1000px; margin: 0 auto; padding: 6rem 2rem 3rem; }
+
+.chapter-header {
+  text-align: center; margin-bottom: 3rem; padding: 2.5rem 2rem;
+  background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(129,140,248,0.1));
+  border-radius: 20px; border: 1px solid rgba(56,189,248,0.2);
+}
+.chapter-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 55px; height: 55px; background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; font-weight: 900; border-radius: 14px; font-size: 1.4rem; margin-bottom: 1rem;
+}
+.chapter-header h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 0.75rem; }
+.chapter-header p { color: var(--c-text2); font-size: 1.1rem; }
+
+h2 {
+  font-size: 1.8rem; font-weight: 800; margin: 3.5rem 0 2rem;
+  padding-right: 1rem; border-right: 4px solid var(--c-primary);
+  color: var(--c-text);
+}
+h3 { font-size: 1.3rem; font-weight: 700; margin: 2.5rem 0 1.2rem; color: var(--c-primary); }
+h4 { font-size: 1.1rem; font-weight: 700; margin: 2rem 0 1rem; color: var(--c-warning); }
+p { color: var(--c-text2); margin-bottom: 1rem; font-size: 1.05rem; line-height: 2; }
+
+.code-block {
+  background: #0d1117; border: 1px solid #30363d; border-radius: 14px;
+  overflow: hidden; margin: 2rem 0; direction: ltr; text-align: left;
+}
+.code-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.7rem 1.2rem; background: #161b22; border-bottom: 1px solid #30363d;
+}
+.code-title { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #8b949e; }
+.code-dots { display: flex; gap: 7px; }
+.code-dot { width: 11px; height: 11px; border-radius: 50%; }
+.code-dot.r { background: #ff5f56; } .code-dot.y { background: #ffbd2e; } .code-dot.g { background: #27c93f; }
+pre {
+  padding: 1.4rem; overflow-x: auto; font-family: 'Fira Code', monospace;
+  font-size: 0.88rem; line-height: 1.9; color: #e6edf3;
+}
+pre .comment { color: #8b949e; }
+pre .keyword { color: #ff7b72; }
+pre .string { color: #a5d6ff; }
+pre .func { color: #d2a8ff; }
+pre .num { color: #79c0ff; }
+pre .cmd { color: #7ee787; }
+pre .output { color: #a5d6ff; }
+pre .err { color: #ff7b72; }
+pre .warn { color: #fbbf24; }
+
+.data-table {
+  width: 100%; border-collapse: collapse; margin: 2rem 0;
+  background: var(--c-surface); border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--c-border);
+}
+.data-table th {
+  background: var(--c-surface2); padding: 1.1rem 1.3rem; text-align: right;
+  font-weight: 700; color: var(--c-primary); font-size: 0.9rem;
+}
+.data-table td {
+  padding: 1rem 1.3rem; border-top: 1px solid var(--c-border);
+  color: var(--c-text2); font-size: 0.92rem; line-height: 1.8;
+}
+.data-table tr:hover td { background: rgba(56,189,248,0.04); }
+
+.alert {
+  padding: 1.2rem 1.5rem; border-radius: 14px; margin: 2rem 0;
+  display: flex; align-items: flex-start; gap: 0.9rem; border: 1px solid;
+  font-size: 1rem;
+}
+.alert-info { background: rgba(56,189,248,0.06); border-color: rgba(56,189,248,0.25); color: var(--c-primary); }
+.alert-warn { background: rgba(251,191,36,0.06); border-color: rgba(251,191,36,0.25); color: var(--c-warning); }
+.alert-danger { background: rgba(248,113,113,0.06); border-color: rgba(248,113,113,0.25); color: var(--c-danger); }
+.alert-success { background: rgba(52,211,153,0.06); border-color: rgba(52,211,153,0.25); color: var(--c-success); }
+.alert-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+
+.diagram-box {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 18px; padding: 2rem; margin: 2rem 0;
+}
+.diagram-step {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem 1.2rem; margin: 0.5rem 0; border-radius: 12px;
+  background: rgba(56,189,248,0.04); border: 1px solid rgba(56,189,248,0.12);
+}
+.diagram-step .num {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.95rem; flex-shrink: 0;
+}
+.diagram-step .text { font-size: 0.95rem; color: var(--c-text); line-height: 1.7; }
+.diagram-arrow { text-align: center; font-size: 1.6rem; color: var(--c-primary); margin: 0.2rem 0; }
+
+.ic-card {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 16px; padding: 1.8rem; margin: 1.5rem 0;
+  border-right: 5px solid var(--c-primary);
+}
+.ic-card h4 { color: var(--c-primary); margin: 0 0 0.8rem 0; font-size: 1.2rem; }
+.ic-card p { color: var(--c-text2); font-size: 0.95rem; margin: 0.5rem 0; line-height: 1.9; }
+.ic-card .symptoms { 
+  background: rgba(248,113,113,0.06); border: 1px solid rgba(248,113,113,0.2); 
+  border-radius: 8px; padding: 0.8rem 1rem; margin: 0.8rem 0; 
+}
+.ic-card .symptoms strong { color: var(--c-danger); }
+
+.img-wrap {
+  border-radius: 16px; overflow: hidden; margin: 2rem 0;
+  border: 1px solid var(--c-border); background: var(--c-surface);
+}
+.img-wrap img { width: 100%; height: auto; display: block; }
+.img-caption {
+  padding: 0.85rem 1.2rem; text-align: center; color: var(--c-text2);
+  font-size: 0.88rem; background: var(--c-surface); border-top: 1px solid var(--c-border);
+}
+
+.next-prev {
+  display: flex; justify-content: space-between; margin-top: 4rem;
+  padding-top: 2.5rem; border-top: 1px solid var(--c-border);
+}
+.next-prev a {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.9rem 1.8rem; border-radius: 14px;
+  text-decoration: none; font-weight: 700; transition: all 0.3s;
+}
+.next-prev .prev { color: var(--c-text2); border: 1px solid var(--c-border); }
+.next-prev .prev:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.next-prev .next {
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; box-shadow: 0 4px 15px rgba(56,189,248,0.3);
+}
+.next-prev .next:hover { transform: translateX(-3px); }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar-thumb { background: var(--c-surface2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-primary); }
+
+@media (max-width: 768px) {
+  main { padding: 5rem 1rem 2rem; }
+  .chapter-header h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">📱 أكاديمية صيانة الهواتف</a>
+  <a href="index.html" class="nav-back">← العودة للرئيسية</a>
+</nav>
+
+<main>
+
+<div class="chapter-header">
+  <div class="chapter-num">08</div>
+  <h1>الهاردوير الأساسي</h1>
+  <p>المقياس الكهربائي · أنواع الـ IC · المكثفات · المقاومات · فحص الدوائر — شرح تفصيلي كامل</p>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١: المقياس الكهربائي -->
+<!-- ================================================================ -->
+<h2>📏 المقياس الكهربائي (Multimeter) — أهم أداة في ورشتك</h2>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>بدون ملتيميتر، أنت أعمى.</strong> الملتيميتر هو العين التي ترى بها الكهرباء. بدونه، لا يمكنك التمييز بين بطارية تالفة و IC تالف، أو بين شورت ودائرة مفتوحة. استثمر في ملتيميتر جيد — سيدفع ثمنه في أول إصلاح.
+  </div>
+</div>
+
+<div class="img-wrap">
+  <img src="images/8_How_to_Use_a_Multimeter_to_Repair.png" alt="أدوات صيانة الهواتف">
+  <div class="img-caption">ورشة صيانة هواتف محترفة: ميكروسكوب، محطة لحام، ملتيميتر، باور سبلاي</div>
+</div>
+
+<h3>📊 وضعيات الملتيميتر واستخداماتها في صيانة الهواتف:</h3>
+
+<table class="data-table">
+  <tr>
+    <th>الوضع</th>
+    <th>الرمز</th>
+    <th>ماذا يقيس؟</th>
+    <th>أهميته في الصيانة</th>
+    <th>كيف تستخدمه بالضبط؟</th>
+  </tr>
+  <tr>
+    <td><strong>Continuity (الجرس)</strong></td>
+    <td>🔊 أو ⏗</td>
+    <td>هل هناك اتصال كهربائي بين نقطتين؟</td>
+    <td>⭐⭐⭐⭐⭐ أهم وضع. فحص المسارات، فحص الشورت، فحص الفيصلات</td>
+    <td>ضع طرفاً على كل نقطة. إذا سمعت صفارة = متصل (Short). إذا OL = مفتوح.</td>
+  </tr>
+  <tr>
+    <td><strong>DC Voltage</strong></td>
+    <td>V⎓ أو VDC</td>
+    <td>الجهد المستمر (فولت)</td>
+    <td>⭐⭐⭐⭐⭐ فحص البطارية، فحص IC، فحص نقاط الشحن</td>
+    <td>اضبط على 20V. الأسود على GND. الأحمر على نقطة القياس. اقرأ الرقم.</td>
+  </tr>
+  <tr>
+    <td><strong>Resistance</strong></td>
+    <td>Ω</td>
+    <td>المقاومة الكهربائية (أوم)</td>
+    <td>⭐⭐⭐⭐ فحص المقاومات، فحص المكثفات، فحص المسارات</td>
+    <td>افصل القطعة عن الدائرة أولاً. ضع طرفاً على كل جانب. اقرأ القيمة.</td>
+  </tr>
+  <tr>
+    <td><strong>Diode Mode</strong></td>
+    <td>⏵|</td>
+    <td>الجهد الأمامي للديود</td>
+    <td>⭐⭐⭐ فحص الديودات، فحص الترانزستورات، فحص IC</td>
+    <td>0.5-0.7V في اتجاه واحد. OL في الاتجاه الآخر = سليم.</td>
+  </tr>
+  <tr>
+    <td><strong>Capacitance</strong></td>
+    <td>F</td>
+    <td>سعة المكثف (فاراد)</td>
+    <td>⭐⭐ نادر الاستخدام يومياً</td>
+    <td>افصل المكثف. ضع الطرفين عليه. قارن بالقيمة المكتوبة.</td>
+  </tr>
+  <tr>
+    <td><strong>Current (DC)</strong></td>
+    <td>A⎓</td>
+    <td>التيار المستمر (أمبير)</td>
+    <td>⭐⭐⭐ فحص تيار الشحن، فحص استهلاك الهاتف</td>
+    <td>⚠️ وصّل الملتيميتر <strong>على التسلسل</strong> مع الدائرة. لا توصله بالتوازي!</td>
+  </tr>
+</table>
+
+<div class="alert alert-danger">
+  <span class="alert-icon">🚨</span>
+  <div>
+    <strong>تحذيرات مهمة عند استخدام الملتيميتر:</strong>
+    <ul style="margin-top:0.5rem; padding-right:1.2rem;">
+      <li><strong>لا تقس المقاومة أو الديود على دائرة مشتغلة.</strong> افصل البطارية أولاً. وإلا قد تحرق الملتيميتر.</li>
+      <li><strong>لا تقس التيار بالتوازي.</strong> توصيل الأميتر بالتوازي مع البطارية = شورت = انفجار!</li>
+      <li><strong>تأكد من مكان الأطراف.</strong> الطرف الأسود دائماً في COM. الأحمر في VΩmA (وليس في 10A إلا لقياس التيار العالي).</li>
+    </ul>
+  </div>
+</div>
+
+<h3>🔍 كيف تستخدم Continuity Mode (الجرس) لكشف الشورت:</h3>
+<div class="diagram-box">
+  <h4 style="margin-top:0; color:var(--c-warning);">🩺 فحص الشورت (Short Circuit) — أهم فحص في الصيانة</h4>
+  <p style="margin-bottom:1rem;">الشورت هو السبب الأول لموت الهواتف. يحدث عندما يتصل طرف موجب بطرف سالب مباشرة، مما يسبب سحب تيار عالي وحرارة. Continuity Mode هو أسرع طريقة لاكتشافه.</p>
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>اضبط الملتيميتر على وضع Continuity</strong> (رمز الجرس 🔊). ستسمع صفارة عند ملامسة الطرفين لبعضهما — هذا طبيعي.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>ضع الطرف الأسود على GND</strong> (أي نقطة أرضي: الهيكل المعدني، برغي، أو نقطة GND في البوردة).</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>ضع الطرف الأحمر على النقطة المراد فحصها</strong> (VBAT، VCC، مكثف).</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text"><strong>إذا سمعت صفارة مستمرة</strong> = هذه النقطة فيها <strong>شورت مع GND</strong>. هذا يعني أن IC أو المكثف المتصل بهذه النقطة تالف.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">5</div>
+    <div class="text"><strong>إذا ظهر OL (Open Line)</strong> = النقطة سليمة ولا يوجد شورت. طبيعي.</div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٢: أنواع الـ IC -->
+<!-- ================================================================ -->
+<h2>🔬 الرقاقات الإلكترونية (ICs) في الهاتف</h2>
+
+<p>الـ IC (Integrated Circuit) هي "العقول الصغيرة" في الهاتف. كل IC له وظيفة محددة. معرفة وظيفة كل IC وأعراض تلفه هو <strong>أساس تشخيص الهاردوير</strong>.</p>
+
+<!-- PMIC -->
+<div class="ic-card">
+  <h4>🔌 PMIC — Power Management IC (دارة إدارة الطاقة)</h4>
+  <p><strong>الوظيفة:</strong> هو <strong>أهم IC بعد المعالج</strong>. يستقبل جهد البطارية (3.7-4.2V) ويحوله إلى جهود مختلفة يحتاجها الهاتف: 1.8V، 3.3V، 0.8V (للمعالج)، 1.2V (للرام).</p>
+  <p><strong>أين يوجد؟</strong> عادة بجانب المعالج، كبير الحجم نسبياً، وله مكثفات كثيرة حوله.</p>
+  <div class="symptoms">
+    <strong>🚨 أعراض التلف:</strong> هاتف ميت تماماً (لا شحن ولا شاشة ولا LED)، Bootloop، يشتغل ويطفئ فجأة، سخونة في منطقة PMIC.
+  </div>
+  <p><strong>🔧 كيف تفحصه؟</strong> قس جهد الخرج على المكثفات حوله. يجب أن تجد 1.8V و 3.3V. إذا كانت 0V = PMIC تالف أو لا يصله جهد.</p>
+</div>
+
+<!-- Charging IC -->
+<div class="ic-card" style="border-right-color: var(--c-warning);">
+  <h4 style="color:var(--c-warning);">⚡ Charging IC — دارة الشحن</h4>
+  <p><strong>الوظيفة:</strong> يتحكم في عملية شحن البطارية. يحول 5V القادمة من USB إلى 4.2V مناسبة للبطارية. يدير مراحل الشحن (CC/CV) ويحمي من الشحن الزائد.</p>
+  <p><strong>أين يوجد؟</strong> قرب منفذ USB أو فيصل البطارية.</p>
+  <div class="symptoms">
+    <strong>🚨 أعراض التلف:</strong> لا يشحن أبداً، يشحن ببطء شديد، بطارية ساخنة أثناء الشحن، الهاتف يشتغل على الشاحن فقط وليس على البطارية.
+  </div>
+  <p><strong>🔧 كيف تفحصه؟</strong> قس VBUS (دبوس USB) = 5V. قس VBAT (فيصل البطارية). إذا VBUS = 5V و VBAT = 0V مع بطارية سليمة = IC شحن تالف.</p>
+</div>
+
+<!-- Modem IC -->
+<div class="ic-card" style="border-right-color: var(--c-success);">
+  <h4 style="color:var(--c-success);">📡 Modem IC / Baseband — دارة الشبكة</h4>
+  <p><strong>الوظيفة:</strong> يدير الاتصال الخلوي (2G/3G/4G/5G). يعمل مع Baseband firmware. يترجم إشارات الراديو من الأنتين إلى بيانات رقمية.</p>
+  <p><strong>أين يوجد؟</strong> أعلى الهاتف غالباً، قرب الأنتين.</p>
+  <div class="symptoms">
+    <strong>🚨 أعراض التلف:</strong> لا شبكة، "No Service"، IMEI = 0، Baseband = Unknown، الهاتف لا يجد أي شبكة عند البحث اليدوي.
+  </div>
+  <p><strong>🔧 كيف تفحصه؟</strong> تأكد أولاً أن المشكلة ليست برمجية (Baseband موجود؟). جرب فلاش ROM. إذا استمر = IC شبكة تالف.</p>
+</div>
+
+<!-- Touch IC -->
+<div class="ic-card" style="border-right-color: var(--c-accent);">
+  <h4 style="color:var(--c-accent);">👆 Touch IC — دارة اللمس</h4>
+  <p><strong>الوظيفة:</strong> يترجم إشارات اللمس من الشاشة (Digitizer) ويرسلها للمعالج.</p>
+  <p><strong>أين يوجد؟</strong> على كابل الشاشة نفسه أو على البوردة قرب فيصل الشاشة.</p>
+  <div class="symptoms">
+    <strong>🚨 أعراض التلف:</strong> Ghost Touch (لمس شبح)، اللمس لا يستجيب أبداً، اللمس لا يستجيب في منطقة معينة، لمس عشوائي.
+  </div>
+  <p><strong>🔧 كيف تفحصه؟</strong> جرب شاشة معروفة. إذا اشتغل اللمس = IC في الشاشة القديمة تالف. إذا لم يشتغل = IC على البوردة تالف.</p>
+</div>
+
+<!-- Audio IC -->
+<div class="ic-card" style="border-right-color: #a78bfa;">
+  <h4 style="color:#a78bfa;">🎵 Audio IC / Codec — دارة الصوت</h4>
+  <p><strong>الوظيفة:</strong> يدير كل ما يتعلق بالصوت: سماعة الأذن، السماعة الخارجية، المايكات، مدخل السماعات.</p>
+  <div class="symptoms">
+    <strong>🚨 أعراض التلف:</strong> لا صوت نهائياً، صوت مشوش/مقطع، مايك لا يعمل، صوت منخفض جداً، صوت في سماعة واحدة فقط.
+  </div>
+  <p><strong>🔧 كيف تفحصه؟</strong> جرب Bluetooth. إذا اشتغل الصوت على Bluetooth = Audio IC أو السماعة الداخلية تالفة.</p>
+</div>
+
+<!-- ISP -->
+<div class="ic-card" style="border-right-color: #f97316;">
+  <h4 style="color:#f97316;">📷 ISP — Image Signal Processor (معالج الصور)</h4>
+  <p><strong>الوظيفة:</strong> يعالج إشارات الكاميرا الخام ويحولها إلى صورة.</p>
+  <div class="symptoms">
+    <strong>🚨 أعراض التلف:</strong> كاميرا سوداء، "Cannot connect to camera"، تعليق عند فتح الكاميرا، الكاميرا تعمل لكن الصورة مشوشة.
+  </div>
+  <p><strong>🔧 كيف تفحصه؟</strong> جرب كاميرا معروفة. إذا لم تشتغل = ISP تالف. إذا اشتغلت = الكاميرا القديمة تالفة.</p>
+</div>
+
+<!-- eMMC/UFS -->
+<div class="ic-card" style="border-right-color: #ef4444;">
+  <h4 style="color:#ef4444;">💾 eMMC / UFS — شريحة التخزين</h4>
+  <p><strong>الوظيفة:</strong> الذاكرة الدائمة للهاتف. تخزن النظام والبيانات. مثل SSD في الكمبيوتر.</p>
+  <div class="symptoms">
+    <strong>🚨 أعراض التلف:</strong> بطء شديد، تعليق، لا يقلع (يقف على الشعار)، Bootloop، فشل في التفليش، "failed to mount /data".
+  </div>
+  <p><strong>🔧 كيف تفحصه؟</strong> صعب الفحص بدون أدوات متقدمة. إذا فشل التفليش دائماً عند كتابة system = eMMC تالف.</p>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٣: المكثفات -->
+<!-- ================================================================ -->
+<h2>⚡ المكثفات (Capacitors) — مخازن الطاقة الصغيرة</h2>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>ما هو المكثف؟</strong> المكثف مثل "بطارية صغيرة جداً". يخزن شحنة كهربائية ويفرغها بسرعة. في الهواتف، وظيفته الأساسية هي <strong>تثبيت الجهد</strong> و<strong>ترشيح التشويش</strong>. كل IC في الهاتف تحيط به مكثفات صغيرة.
+  </div>
+</div>
+
+<h3>📊 أنواع المكثفات في الهواتف:</h3>
+<table class="data-table">
+  <tr>
+    <th>النوع</th>
+    <th>الشكل</th>
+    <th>الحجم</th>
+    <th>الوظيفة</th>
+    <th>أعراض التلف</th>
+    <th>كيف تفحصه؟</th>
+  </tr>
+  <tr>
+    <td><strong>Ceramic MLCC</strong></td>
+    <td>بني/رمادي، مستطيل صغير</td>
+    <td>0201, 0402 (متناهي الصغر)</td>
+    <td>ترشيح التشويش، تثبيت الجهد عند كل IC</td>
+    <td><strong>قصر (Short):</strong> يسحب تيار عالي، يسبب حرارة. <strong>فتح (Open):</strong> تذبذب في الجهد، تعليق.</td>
+    <td>وضع Continuity: إذا صفّر على الطرفين = قصر. إذا OL على الطرفين = مفتوح.</td>
+  </tr>
+  <tr>
+    <td><strong>Tantalum</strong></td>
+    <td>أصفر/أسود، له قطبية (+ و -)</td>
+    <td>أكبر قليلاً</td>
+    <td>تثبيت VBAT و VCC الرئيسي</td>
+    <td><strong>قصر:</strong> حرارة شديدة، دخان أحياناً. خطر حريق!</td>
+    <td>له قطبية. الطرف + يذهب لـ VBAT. قس Continuity بين + و -. إذا صفّر = تالف.</td>
+  </tr>
+  <tr>
+    <td><strong>Electrolytic</strong></td>
+    <td>أسطواني، له قطبية</td>
+    <td>نادر في الهواتف الحديثة</td>
+    <td>تثبيت كبير للجهد</td>
+    <td>انتفاخ في الأعلى = تالف.</td>
+    <td>بصرياً: إذا منتفخ = تالف. قس Capacitance.</td>
+  </tr>
+</table>
+
+<h3>🔍 كيف تفحص المكثف بالملتيميتر؟</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">فحص المكثف باستخدام الملتيميتر</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 طريقة ١: Diode Mode (الأسرع والأسهل)</span>
+<span class="comment"># ١. اضبط الملتيميتر على Diode Mode (رمز ⏵|)</span>
+<span class="comment"># ٢. ضع الطرفين على طرفي المكثف</span>
+<span class="comment"># ٣. القراءة الطبيعية:</span>
+<span class="output">#     - يظهر رقم (0.3-0.7) ثم OL = المكثف يشحن ثم يمتلئ ✅</span>
+<span class="comment"># ٤. القراءة الخطأ:</span>
+<span class="err">#     - 0.000 ويسمع صفارة = قصر (Short) ❌</span>
+<span class="err">#     - OL مباشرة بدون رقم = مفتوح (Open) ❌</span>
+
+<span class="comment"># 📌 طريقة ٢: Resistance Mode</span>
+<span class="comment"># ١. اضبط على Resistance (Ω)</span>
+<span class="comment"># ٢. ضع الطرفين على المكثف</span>
+<span class="comment"># ٣. القراءة الطبيعية:</span>
+<span class="output">#     - تبدأ منخفضة (100-500Ω) ثم ترتفع تدريجياً حتى OL ✅</span>
+<span class="comment"># ٤. القراءة الخطأ:</span>
+<span class="err">#     - 0Ω ثابت = قصر ❌</span>
+<span class="err">#     - OL ثابت من البداية = مفتوح ❌</span>
+
+<span class="comment"># ⚠️ ملاحظات مهمة:</span>
+<span class="comment"># - المكثف المتصل بـ GND سيظهر دائماً قصر! تأكد من فصله أولاً.</span>
+<span class="comment"># - لفحص دقيق، يجب فصل المكثف عن البوردة بمحطة هواء ساخن.</span></pre>
+</div>
+
+<h3>📍 أين تجد المكثفات في البوردة؟</h3>
+<ul style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+  <li><strong>حول كل IC:</strong> كل IC تحيط به ٥-١٥ مكثفاً صغيراً لتثبيت الجهد. إذا وجدت شورتاً عند IC، افحص المكثفات حوله أولاً قبل أن تتهم الـ IC نفسه.</li>
+  <li><strong>قرب فيصل البطارية:</strong> مكثفات كبيرة (Tantalum) لتثبيت VBAT.</li>
+  <li><strong>قرب منفذ USB:</strong> مكثفات لترشيح جهد الشحن.</li>
+  <li><strong>قرب المعالج والرام:</strong> مئات المكثفات الصغيرة جداً (0201). هذه لا تفحص واحداً واحداً — إذا كان فيها شورت، غالباً المعالج هو التالف.</li>
+</ul>
+
+<!-- ================================================================ -->
+<!-- القسم ٤: المقاومات -->
+<!-- ================================================================ -->
+<h2>🔧 المقاومات (Resistors) — منظمات التيار</h2>
+
+<p>المقاومات <strong>تحد من التيار</strong> المار في الدائرة. في الهواتف، هي صغيرة جداً (بحجم 0201 أو 0402 — أصغر من حبة رمل). قيمتها تُكتب على سطحها برمز مكون من ٣ أو ٤ أرقام.</p>
+
+<h3>📖 كيف تقرأ قيمة المقاومة؟</h3>
+<table class="data-table">
+  <tr>
+    <th>الرمز المكتوب</th>
+    <th>كيف تحسبها؟</th>
+    <th>القيمة</th>
+    <th>أين تستخدم في الهاتف؟</th>
+  </tr>
+  <tr>
+    <td><strong>100</strong></td>
+    <td>10 × 10^0 = 10 × 1</td>
+    <td>10 Ω</td>
+    <td>مقاومات صغيرة في مسارات البيانات</td>
+  </tr>
+  <tr>
+    <td><strong>101</strong></td>
+    <td>10 × 10^1 = 10 × 10</td>
+    <td>100 Ω</td>
+    <td>شائع جداً في مسارات الإشارة</td>
+  </tr>
+  <tr>
+    <td><strong>102</strong></td>
+    <td>10 × 10^2 = 10 × 100</td>
+    <td>1,000 Ω = <strong>1 kΩ</strong></td>
+    <td>مقاومات Pull-up/Pull-down</td>
+  </tr>
+  <tr>
+    <td><strong>103</strong></td>
+    <td>10 × 10^3 = 10 × 1,000</td>
+    <td>10,000 Ω = <strong>10 kΩ</strong></td>
+    <td>شائع جداً</td>
+  </tr>
+  <tr>
+    <td><strong>104</strong></td>
+    <td>10 × 10^4 = 10 × 10,000</td>
+    <td>100,000 Ω = <strong>100 kΩ</strong></td>
+    <td>مقاومات敏感ة</td>
+  </tr>
+  <tr>
+    <td><strong>105</strong></td>
+    <td>10 × 10^5 = 10 × 100,000</td>
+    <td>1,000,000 Ω = <strong>1 MΩ</strong></td>
+    <td>نادر</td>
+  </tr>
+  <tr>
+    <td><strong>R100</strong></td>
+    <td>R = نقطة عشرية</td>
+    <td>0.100 Ω</td>
+    <td>مقاومات التيار (Current Sense)</td>
+  </tr>
+  <tr>
+    <td><strong>0</strong> أو <strong>000</strong></td>
+    <td>صفر أوم</td>
+    <td>0 Ω</td>
+    <td>وصلات (Jumpers) — تعمل كسلك!</td>
+  </tr>
+</table>
+
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div>
+    <strong>طريقة سهلة للتذكر:</strong> أول رقمين = القيمة الأساسية. الرقم الثالث = عدد الأصفار المضافة.<br>
+    <strong>مثال:</strong> 472 = 47 + صفرين = 4700 Ω = 4.7 kΩ
+  </div>
+</div>
+
+<h3>🔍 كيف تفحص المقاومة؟</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">فحص المقاومة بالملتيميتر</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 خطوات فحص المقاومة:</span>
+<span class="comment"># ١. افصل الهاتف عن أي مصدر طاقة</span>
+<span class="comment"># ٢. اضبط الملتيميتر على Resistance (Ω)</span>
+<span class="comment"># ٣. ضع طرفاً على كل جانب من المقاومة</span>
+
+<span class="comment"># النتائج:</span>
+<span class="output"># - القيمة تقريباً نفس المكتوب (±5%) = سليمة ✅</span>
+<span class="err"># - OL (Open Line) = المقاومة مقطوعة (تالفة) ❌</span>
+<span class="err"># - 0Ω (Short) = المقاومة محروقة وقصرت ❌</span>
+<span class="err"># - قيمة مختلفة جداً = تالفة ❌</span>
+
+<span class="comment"># ⚠️ لا تقس المقاومة وهي متصلة بالدائرة!
+# المقاومات الأخرى في الدائرة تؤثر على القراءة.
+# للحصول على قراءة دقيقة: افصل أحد طرفي المقاومة عن البوردة.</span></pre>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٥: فحص مسار الشحن -->
+<!-- ================================================================ -->
+<h2>🔍 فحص مسار الشحن — تتبع الكهرباء من USB إلى البطارية</h2>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>لماذا هذا مهم؟</strong> عندما يقول العميل "الهاتف لا يشحن"، أنت تحتاج أن تعرف <strong>أين بالضبط</strong> توقفت الكهرباء. هل المشكلة في منفذ USB؟ في IC الشحن؟ في البطارية؟ تتبع المسار خطوة بخطوة.
+  </div>
+</div>
+
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(56,189,248,0.04),rgba(129,140,248,0.04)); border-color:rgba(56,189,248,0.2);">
+  <h3 style="margin-top:0; color:var(--c-primary);">🗺️ مسار الشحن الكامل</h3>
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>الشاحن (5V)</strong> ← يدخل عبر منفذ USB.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>دبابيس VBUS في منفذ USB</strong> ← أقصى دبابيس في المنفذ. يجب أن تقرأ 5V عند توصيل الشاحن. <strong>إذا 0V:</strong> الشاحن أو الكابل أو المنفذ تالف.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>مقاومة فيوز (0Ω)</strong> ← تحمي الدائرة. إذا انحرقت = الدائرة مفتوحة. قس Continuity عليها.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text"><strong>IC الشحن</strong> ← يستقبل 5V ويحولها إلى 4.2V مناسبة للبطارية. هذا هو قلب عملية الشحن.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">5</div>
+    <div class="text"><strong>ملف (Coil) + مكثف</strong> ← ينعّم الجهد قبل إرساله للبطارية.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">6</div>
+    <div class="text"><strong>فيصل البطارية (VBAT)</strong> ← آخر نقطة. يجب أن تقرأ 3.7-4.2V. <strong>إذا 0V:</strong> IC الشحن لا يرسل جهداً.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">7</div>
+    <div class="text"><strong>البطارية</strong> ← تخزن الطاقة. إذا كان VBAT = 4.2V والبطارية لا تشحن = البطارية تالفة.</div>
+  </div>
+</div>
+
+<h3>🩺 سلم فحص مسار الشحن (عندما الهاتف لا يشحن):</h3>
+<div class="diagram-box">
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">1</div>
+    <div class="text"><strong>تأكد من الشاحن والكابل.</strong> جربهم على هاتف آخر. إذا لا يعملون = غيّرهم. إذا يعملون = تابع.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">2</div>
+    <div class="text"><strong>نظف منفذ USB.</strong> استخدم فرشاة + كحول. أزل أي غبار أو زغب. هذه الخطوة تحل ٣٠٪ من مشاكل الشحن.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">3</div>
+    <div class="text"><strong>قس VBUS.</strong> اضبط الملتيميتر على DC 20V. ضع الأسود على GND. ضع الأحمر على أكبر دبوس في منفذ USB. يجب أن يقرأ 5V. <strong>إذا 0V:</strong> المنفذ مكسور أو غير متصل.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">4</div>
+    <div class="text"><strong>افتح الهاتف. قس VBAT.</strong> ضع الأسود على GND. ضع الأحمر على الطرف + في فيصل البطارية. <strong>إذا 0V:</strong> IC الشحن تالف أو هناك قطع في المسار.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">5</div>
+    <div class="text"><strong>افحص IC الشحن بصرياً.</strong> هل فيه حرق؟ انتفاخ؟ أرجل متآكلة؟ إذا وجدت شيئاً = استبدله.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">6</div>
+    <div class="text"><strong>افحص المكثفات حول IC الشحن.</strong> أي مكثف يعطي صفارة (شورت) = تالف. استبدله أولاً قبل IC.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">7</div>
+    <div class="text"><strong>إذا كل شيء سليم:</strong> استبدل IC الشحن. هذا يحل ٩٠٪ من مشاكل الشحن المتبقية.</div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٦: فحص مسار الإقلاع -->
+<!-- ================================================================ -->
+<h2>🚀 فحص مسار الإقلاع — كيف يشتغل الهاتف؟</h2>
+
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(52,211,153,0.04),rgba(56,189,248,0.04)); border-color:rgba(52,211,153,0.2);">
+  <h3 style="margin-top:0; color:var(--c-success);">🗺️ مسار الإقلاع الكامل</h3>
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>البطارية (3.7-4.2V)</strong> ← مصدر الطاقة.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>PMIC</strong> ← يستقبل VBAT ويحوله إلى جهود متعددة: 1.8V, 3.3V, 0.8V (CPU), 1.2V (RAM).</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>Crystal Oscillator (32.768kHz)</strong> ← كريستالة صغيرة تعطي نبضات الساعة للمعالج. بدونها، المعالج لا يعمل.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text"><strong>Boot ROM (داخل المعالج)</strong> ← أول كود يعمل. يفحص Bootloader.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">5</div>
+    <div class="text"><strong>Bootloader (SBL/ABOOT)</strong> ← يتحقق من Kernel.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">6</div>
+    <div class="text"><strong>Kernel</strong> ← يبدأ نظام أندرويد.</div>
+  </div>
+</div>
+
+<h3>🩺 سلم فحص مسار الإقلاع (عندما الهاتف ميت تماماً):</h3>
+<div class="diagram-box">
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">1</div>
+    <div class="text"><strong>تأكد من البطارية.</strong> قسها بالملتيميتر. يجب أن تكون 3.7V+. إذا 0V = بطارية تالفة. إذا 3.7V+ = تابع.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">2</div>
+    <div class="text"><strong>قس VBAT على فيصل البطارية في البوردة.</strong> يجب أن يصل جهد البطارية للبوردة. إذا 0V = فيصل تالف أو مسار مقطوع.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">3</div>
+    <div class="text"><strong>افحص PMIC بصرياً.</strong> هل فيه حرق أو انتفاخ؟ إذا نعم = استبدله.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">4</div>
+    <div class="text"><strong>قس جهود خرج PMIC.</strong> على المكثفات حوله، يجب أن تجد 1.8V و 3.3V. إذا 0V = PMIC لا يعمل.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">5</div>
+    <div class="text"><strong>افحص Crystal Oscillator.</strong> إذا كان تالفاً، المعالج لن يقلع. يحتاج استبدال (صعب).</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">6</div>
+    <div class="text"><strong>إذا كل ما سبق سليم:</strong> المشكلة في المعالج أو eMMC. هذه تحتاج أدوات متقدمة (Reball/استبدال).</div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٧: جدول أعطال ICs الشائعة -->
+<!-- ================================================================ -->
+<h2>📋 جدول أعطال الـ ICs الشائعة — التشخيص والحلول</h2>
+
+<table class="data-table">
+  <tr>
+    <th>الـ IC</th>
+    <th>الأعراض</th>
+    <th>كيف تتأكد؟</th>
+    <th>الحل</th>
+    <th>الصعوبة</th>
+  </tr>
+  <tr>
+    <td><strong>PMIC</strong></td>
+    <td>هاتف ميت تماماً، Bootloop، لا شحن، سخونة في منتصف البوردة</td>
+    <td>قس جهود الخرج على المكثفات حوله. إذا 1.8V و 3.3V مفقودين = PMIC تالف</td>
+    <td>Reball (إعادة لحام) أو استبدال كامل. يحتاج محطة هواء ساخن.</td>
+    <td>🔥🔥🔥 متوسطة</td>
+  </tr>
+  <tr>
+    <td><strong>Charging IC</strong></td>
+    <td>لا يشحن، يشحن ببطء، بطارية ساخنة أثناء الشحن، يشتغل على الشاحن فقط</td>
+    <td>قس VBUS (5V) و VBAT. إذا VBUS=5V و VBAT=0V = IC تالف</td>
+    <td>استبدال IC الشحن. أسهل من PMIC.</td>
+    <td>🔥🔥 سهل نسبياً</td>
+  </tr>
+  <tr>
+    <td><strong>Touch IC</strong></td>
+    <td>Ghost Touch، لمس لا يستجيب، لمس عشوائي، لمس في منطقة واحدة</td>
+    <td>جرب شاشة معروفة. إذا اشتغل اللمس = IC في الشاشة القديمة. إذا لم يشتغل = IC على البوردة.</td>
+    <td>Reball أو استبدال IC على البوردة.</td>
+    <td>🔥🔥🔥 متوسطة</td>
+  </tr>
+  <tr>
+    <td><strong>Audio IC</strong></td>
+    <td>لا صوت، صوت مشوش، مايك لا يعمل، صوت في سماعة واحدة</td>
+    <td>جرب Bluetooth. إذا اشتغل الصوت على BT = Audio IC تالف.</td>
+    <td>Reball أو استبدال Audio IC.</td>
+    <td>🔥🔥🔥 متوسطة</td>
+  </tr>
+  <tr>
+    <td><strong>WiFi/BT IC</strong></td>
+    <td>WiFi لا يعمل، Bluetooth لا يعمل، الزر يظل رمادياً</td>
+    <td>إذا WiFi و Bluetooth معطلين معاً = WiFi/BT IC تالف. إذا WiFi فقط = مشكلة برمجية.</td>
+    <td>استبدال IC + استعادة MAC Address الأصلي.</td>
+    <td>🔥🔥🔥🔥 صعبة</td>
+  </tr>
+  <tr>
+    <td><strong>Modem IC</strong></td>
+    <td>لا شبكة، IMEI = 0 (بعد تفليش CP)، لا يجد شبكات عند البحث اليدوي</td>
+    <td>تأكد أولاً أن Baseband موجود وأنك فلشت CP. إذا استمر = IC تالف.</td>
+    <td>Reball أو استبدال Modem IC. غالباً يحتاج استبدال.</td>
+    <td>🔥🔥🔥🔥🔥 صعبة جداً</td>
+  </tr>
+  <tr>
+    <td><strong>eMMC/UFS</strong></td>
+    <td>بطء، تعليق، لا يقلع، فشل التفليش دائماً، "failed to mount /data"</td>
+    <td>جرب فلاش ROM. إذا فشل دائماً عند كتابة system أو data = eMMC تالف.</td>
+    <td>استبدال شريحة eMMC/UFS. يحتاج مبرمجة لنسخ البيانات.</td>
+    <td>🔥🔥🔥🔥🔥🔥 خبير فقط</td>
+  </tr>
+  <tr>
+    <td><strong>CPU/GPU</strong></td>
+    <td>هاتف ميت، شورت على VCC_CORE، سخونة في المعالج</td>
+    <td>قس VCC_CORE (0.8-1.2V). إذا 0V أو شورت = CPU تالف.</td>
+    <td>Reball CPU. إذا لم ينفع = استبدال (غالباً غير مجدٍ).</td>
+    <td>🔥🔥🔥🔥🔥🔥 خبير فقط</td>
+  </tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- القسم ٨: Reball vs Replace -->
+<!-- ================================================================ -->
+<h2>🔧 Reball (إعادة اللحام) أم Replace (استبدال)؟</h2>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>ما هو Reball؟</strong> إزالة الـ IC من البوردة، تنظيفه، وضع كرات لحام جديدة (BGA Balls)، ثم إعادة تركيبه. هذه العملية تصلح مشاكل "اللحام البارد" (Cold Solder) حيث تنفصل أرجل الـ IC عن البوردة بسبب الحرارة أو الصدمات.
+  </div>
+</div>
+
+<h3>متى تختار Reball ومتى تختار Replace؟</h3>
+<table class="data-table">
+  <tr>
+    <th>الحالة</th>
+    <th>Reball</th>
+    <th>Replace</th>
+    <th>السبب</th>
+  </tr>
+  <tr>
+    <td><strong>هاتف سقط وصار Bootloop</strong></td>
+    <td>✅ جرب أولاً</td>
+    <td>إذا فشل</td>
+    <td>السقوط يسبب Cold Solder. Reball يصلحه ٧٠٪ من الحالات.</td>
+  </tr>
+  <tr>
+    <td><strong>هاتف مات فجأة بدون سبب</strong></td>
+    <td>✅ جرب</td>
+    <td>إذا فشل</td>
+    <td>قد يكون Cold Solder أو IC تالف داخلياً.</td>
+  </tr>
+  <tr>
+    <td><strong>هاتف سخن جداً وانطفأ</strong></td>
+    <td>❌ لا</td>
+    <td>✅ نعم</td>
+    <td>الحرارة العالية تدمر IC داخلياً. Reball لن ينفع.</td>
+  </tr>
+  <tr>
+    <td><strong>هاتف فيه ماء وتآكل</strong></td>
+    <td>❌ لا</td>
+    <td>✅ نعم</td>
+    <td>التآكل يأكل أرجل IC. تنظيف + استبدال هو الحل.</td>
+  </tr>
+  <tr>
+    <td><strong>شورت على VCC_CORE</strong></td>
+    <td>❌ لا</td>
+    <td>✅ نعم</td>
+    <td>الشورت يعني IC تالف داخلياً.</td>
+  </tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- القسم ٩: نصائح ذهبية -->
+<!-- ================================================================ -->
+<h2>💎 نصائح ذهبية في الهاردوير</h2>
+
+<div class="alert alert-success">
+  <span class="alert-icon">✅</span>
+  <div>
+    <strong>قواعد لا تنساها:</strong>
+    <ol style="margin-top:0.5rem; padding-right:1.2rem; line-height:2.2;">
+      <li><strong>افصل البطارية أولاً.</strong> قبل أي لمسة للبوردة. هذه القاعدة أنقذت آلاف الهواتف من الموت.</li>
+      <li><strong>استخدم Continuity Mode دائماً.</strong> هو أسرع طريقة لاكتشاف الشورت. ٨٠٪ من مشاكل الهاردوير تبدأ بشورت.</li>
+      <li><strong>المكثف هو المشتبه به الأول.</strong> إذا وجدت شورتاً عند IC، افحص المكثفات حوله قبل أن تتهم الـ IC.</li>
+      <li><strong>لا تقس المقاومة على الدائرة.</strong> المقاومات الأخرى تؤثر على القراءة. افصل طرفاً واحداً على الأقل.</li>
+      <li><strong>استثمر في ملتيميتر جيد.</strong> Fluke أو Uni-T. ليس ذلك الرخيص ب ٥ دولار. الفرق في الدقة والحماية.</li>
+      <li><strong>استثمر في ميكروسكوب.</strong> العين المجردة لا ترى ٨٠٪ من مشاكل البوردة. Cold Solder، تآكل، قطع — كلها تحتاج تكبير.</li>
+      <li><strong>لا تيأس من الهاتف الميت.</strong> ٦٠٪ من الهواتف "الميتة" تصلح بـ Reball أو استبدال IC شحن أو PMIC.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١٠: سيناريوهات واقعية -->
+<!-- ================================================================ -->
+<h2>🎬 سيناريوهات واقعية</h2>
+
+<h3>السيناريو ١: هاتف سقط ولا يشتغل</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(248,113,113,0.04),rgba(251,191,36,0.04)); border-color:rgba(248,113,113,0.2);">
+  <h4 style="margin-top:0; color:var(--c-danger);">🧊 الموقف:</h4>
+  <p>العميل: "وقع الهاتف مني. كان يشتغل بعد السقوط بس صار يفصل. والآن ما يشتغل أبداً."</p>
+
+  <h4 style="color:var(--c-warning);">🤔 التشخيص:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>هذا Cold Solder كلاسيكي.</strong> السقوط سبب انفصالاً جزئياً في لحام IC (غالباً PMIC أو CPU).</li>
+    <li>في البداية كان الاتصال متقطعاً (يفصل). الآن انفصل تماماً (لا يشتغل).</li>
+    <li><strong>قس البطارية:</strong> يجب أن تكون 3.7V+. إذا 0V = استبدلها.</li>
+    <li><strong>قس VBAT على البوردة:</strong> يجب أن يصل الجهد. إذا 0V = فيصل تالف.</li>
+    <li><strong>قس جهود PMIC:</strong> غالباً ستجدها 0V لأن PMIC منفصل عن البوردة.</li>
+  </ol>
+
+  <h4 style="color:var(--c-success);">✅ الحل:</h4>
+  <p>Reball PMIC أولاً. إذا لم ينفع: Reball CPU. في ٧٠٪ من حالات السقوط، Reball PMIC وحده يحل المشكلة.</p>
+</div>
+
+<h3>السيناريو ٢: هاتف لا يشحن بعد استخدام شاحن سيارة رخيص</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(251,191,36,0.04),rgba(56,189,248,0.04)); border-color:rgba(251,191,36,0.2);">
+  <h4 style="margin-top:0; color:var(--c-warning);">📡 الموقف:</h4>
+  <p>العميل: "شحنت الهاتف في السيارة بشاحن رخيص. الآن ما يشحن أبداً. جربت ٣ شواحن مختلفة."</p>
+
+  <h4 style="color:var(--c-warning);">🤔 التشخيص:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>شاحن السيارة الرخيص أرسل جهداً عالياً</strong> (قد يصل إلى 12V بدلاً من 5V).</li>
+    <li>هذا الجهد العالي <strong>أحرق IC الشحن</strong> فوراً.</li>
+    <li>أحياناً يحرق أيضاً <strong>المكثفات</strong> و<strong>الفيوز</strong> في مسار الشحن.</li>
+    <li><strong>قس VBUS:</strong> قد تجد 5V (المنفذ سليم). <strong>قس VBAT:</strong> 0V (IC الشحن لا يعمل).</li>
+  </ol>
+
+  <h4 style="color:var(--c-success);">✅ الحل:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li>افحص الفيوز أولاً (مقاومة 0Ω قرب منفذ USB). إذا انحرقت = استبدلها.</li>
+    <li>افحص المكثفات حول IC الشحن. أي واحد شورت = استبدله.</li>
+    <li>إذا المكثفات سليمة = استبدل IC الشحن.</li>
+    <li>نصيحة للعميل: "لا تستخدم شواحن رخيصة. ثمن IC الشحن + التركيب = ٣ أضعاف ثمن شاحن أصلي."</li>
+  </ol>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١١: خلاصة -->
+<!-- ================================================================ -->
+<h2>🎯 خلاصة الهاردوير الأساسي</h2>
+
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(52,211,153,0.06),rgba(56,189,248,0.06)); border-color:rgba(52,211,153,0.3);">
+  <h3 style="margin-top:0; color:var(--c-success);">القواعد الذهبية في الهاردوير</h3>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">1</div>
+    <div class="text"><strong>ابدأ بالملتيميتر.</strong> Continuity و DC Voltage هما وضعاك الأساسيان. ٩٠٪ من التشخيص بهما.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">2</div>
+    <div class="text"><strong>اتبع المسار.</strong> لكل مشكلة مسار كهربائي. الشحن له مسار. الإقلاع له مسار. اتبع الجهد من المصدر للهدف.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">3</div>
+    <div class="text"><strong>المكثف أولاً.</strong> إذا وجدت شورتاً، افحص المكثفات قبل أن تتهم الـ IC. المكثف أسهل وأرخص في الاستبدال.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">4</div>
+    <div class="text"><strong>اعرف حدودك.</strong> Reball CPU يحتاج خبرة ومعدات. إذا كنت مبتدئاً، ابدأ بـ IC الشحن وTouch IC.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">5</div>
+    <div class="text"><strong>استثمر في أدواتك.</strong> ملتيميتر جيد + ميكروسكوب + محطة هواء ساخن = ثالوث النجاح في الهاردوير.</div>
+  </div>
+</div>
+
+<div class="alert alert-info">
+  <span class="alert-icon">📚</span>
+  <div><strong>في الفصل القادم (الفصل ٩: أدوات ومعدات):</strong> سنتعرف على كل الأدوات التي يحتاجها فني الصيانة — من المفكات إلى محطات اللحام إلى الميكروسكوبات.</div>
+</div>
+
+<div class="next-prev">
+  <a href="chapter7.html" class="prev">← الفصل 7: مشاكل الشاشة</a>
+  <a href="chapter9.html" class="next">الفصل 9: أدوات ومعدات →</a>
+</div>
+
+</main>
+
+</body>
+</html>

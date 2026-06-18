@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الفصل 4: التفليش | أكاديمية صيانة الهواتف</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg: #0f172a; --c-surface: #1e293b; --c-surface2: #334155;
+  --c-primary: #38bdf8; --c-secondary: #818cf8; --c-accent: #f472b6;
+  --c-success: #34d399; --c-warning: #fbbf24; --c-danger: #f87171;
+  --c-text: #f1f5f9; --c-text2: #94a3b8; --c-border: #334155;
+  --glow: 0 0 20px rgba(56,189,248,0.15);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Tajawal', sans-serif; background: var(--c-bg); color: var(--c-text); line-height: 1.9; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(15,23,42,0.92); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--c-border); padding: 0.75rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { font-weight: 800; font-size: 1.2rem; color: var(--c-primary); text-decoration: none; }
+.nav-back { color: var(--c-text2); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.nav-back:hover { color: var(--c-primary); }
+
+main { max-width: 1000px; margin: 0 auto; padding: 6rem 2rem 3rem; }
+
+.chapter-header {
+  text-align: center; margin-bottom: 3rem; padding: 2.5rem 2rem;
+  background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(129,140,248,0.1));
+  border-radius: 20px; border: 1px solid rgba(56,189,248,0.2);
+}
+.chapter-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 55px; height: 55px; background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; font-weight: 900; border-radius: 14px; font-size: 1.4rem; margin-bottom: 1rem;
+}
+.chapter-header h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 0.75rem; }
+.chapter-header p { color: var(--c-text2); font-size: 1.1rem; }
+
+h2 {
+  font-size: 1.8rem; font-weight: 800; margin: 3.5rem 0 2rem;
+  padding-right: 1rem; border-right: 4px solid var(--c-primary);
+  color: var(--c-text);
+}
+h3 { font-size: 1.3rem; font-weight: 700; margin: 2.5rem 0 1.2rem; color: var(--c-primary); }
+h4 { font-size: 1.1rem; font-weight: 700; margin: 2rem 0 1rem; color: var(--c-warning); }
+p { color: var(--c-text2); margin-bottom: 1rem; font-size: 1.05rem; line-height: 2; }
+
+.code-block {
+  background: #0d1117; border: 1px solid #30363d; border-radius: 14px;
+  overflow: hidden; margin: 2rem 0; direction: ltr; text-align: left;
+}
+.code-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.7rem 1.2rem; background: #161b22; border-bottom: 1px solid #30363d;
+}
+.code-title { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #8b949e; }
+.code-dots { display: flex; gap: 7px; }
+.code-dot { width: 11px; height: 11px; border-radius: 50%; }
+.code-dot.r { background: #ff5f56; } .code-dot.y { background: #ffbd2e; } .code-dot.g { background: #27c93f; }
+pre {
+  padding: 1.4rem; overflow-x: auto; font-family: 'Fira Code', monospace;
+  font-size: 0.88rem; line-height: 1.9; color: #e6edf3;
+}
+pre .comment { color: #8b949e; }
+pre .keyword { color: #ff7b72; }
+pre .string { color: #a5d6ff; }
+pre .func { color: #d2a8ff; }
+pre .num { color: #79c0ff; }
+pre .cmd { color: #7ee787; }
+pre .output { color: #a5d6ff; }
+pre .err { color: #ff7b72; }
+pre .warn { color: #fbbf24; }
+
+.data-table {
+  width: 100%; border-collapse: collapse; margin: 2rem 0;
+  background: var(--c-surface); border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--c-border);
+}
+.data-table th {
+  background: var(--c-surface2); padding: 1.1rem 1.3rem; text-align: right;
+  font-weight: 700; color: var(--c-primary); font-size: 0.9rem;
+}
+.data-table td {
+  padding: 1rem 1.3rem; border-top: 1px solid var(--c-border);
+  color: var(--c-text2); font-size: 0.92rem; line-height: 1.8;
+}
+.data-table tr:hover td { background: rgba(56,189,248,0.04); }
+
+.alert {
+  padding: 1.2rem 1.5rem; border-radius: 14px; margin: 2rem 0;
+  display: flex; align-items: flex-start; gap: 0.9rem; border: 1px solid;
+  font-size: 1rem;
+}
+.alert-info { background: rgba(56,189,248,0.06); border-color: rgba(56,189,248,0.25); color: var(--c-primary); }
+.alert-warn { background: rgba(251,191,36,0.06); border-color: rgba(251,191,36,0.25); color: var(--c-warning); }
+.alert-danger { background: rgba(248,113,113,0.06); border-color: rgba(248,113,113,0.25); color: var(--c-danger); }
+.alert-success { background: rgba(52,211,153,0.06); border-color: rgba(52,211,153,0.25); color: var(--c-success); }
+.alert-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+
+.diagram-box {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 18px; padding: 2rem; margin: 2rem 0;
+}
+.diagram-step {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem 1.2rem; margin: 0.5rem 0; border-radius: 12px;
+  background: rgba(56,189,248,0.04); border: 1px solid rgba(56,189,248,0.12);
+}
+.diagram-step .num {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.95rem; flex-shrink: 0;
+}
+.diagram-step .text { font-size: 0.95rem; color: var(--c-text); line-height: 1.7; }
+.diagram-arrow { text-align: center; font-size: 1.6rem; color: var(--c-primary); margin: 0.2rem 0; }
+
+.brand-card {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 18px; padding: 2rem; margin: 2rem 0;
+  border-right: 5px solid var(--c-primary);
+}
+.brand-card.samsung { border-right-color: #1428a0; }
+.brand-card.xiaomi { border-right-color: #ff6900; }
+.brand-card.oneplus { border-right-color: #f50514; }
+.brand-card.huawei { border-right-color: #cf0a2c; }
+.brand-card h3 { margin-top: 0 !important; }
+
+.img-wrap {
+  border-radius: 16px; overflow: hidden; margin: 2rem 0;
+  border: 1px solid var(--c-border); background: var(--c-surface);
+}
+.img-wrap img { width: 100%; height: auto; display: block; }
+.img-caption {
+  padding: 0.85rem 1.2rem; text-align: center; color: var(--c-text2);
+  font-size: 0.88rem; background: var(--c-surface); border-top: 1px solid var(--c-border);
+}
+
+.next-prev {
+  display: flex; justify-content: space-between; margin-top: 4rem;
+  padding-top: 2.5rem; border-top: 1px solid var(--c-border);
+}
+.next-prev a {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.9rem 1.8rem; border-radius: 14px;
+  text-decoration: none; font-weight: 700; transition: all 0.3s;
+}
+.next-prev .prev { color: var(--c-text2); border: 1px solid var(--c-border); }
+.next-prev .prev:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.next-prev .next {
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; box-shadow: 0 4px 15px rgba(56,189,248,0.3);
+}
+.next-prev .next:hover { transform: translateX(-3px); }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar-thumb { background: var(--c-surface2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-primary); }
+
+@media (max-width: 768px) {
+  main { padding: 5rem 1rem 2rem; }
+  .chapter-header h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">📱 أكاديمية صيانة الهواتف</a>
+  <a href="index.html" class="nav-back">← العودة للرئيسية</a>
+</nav>
+
+<main>
+
+<div class="chapter-header">
+  <div class="chapter-num">04</div>
+  <h1>التفليش</h1>
+  <p>Samsung Odin · Xiaomi Mi Flash · OnePlus · Huawei · أدوات عامة — شرح تفصيلي خطوة بخطوة</p>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١: تحذيرات قبل البدء -->
+<!-- ================================================================ -->
+<h2>⚠️ تحذيرات قبل البدء بأي تفليش</h2>
+
+<div class="alert alert-danger">
+  <span class="alert-icon">🚨</span>
+  <div>
+    <strong>قواعد ذهبية — احفظها قبل أن تلمس أي هاتف:</strong>
+    <ol style="margin-top:0.5rem; padding-right:1.2rem; line-height:2.2;">
+      <li><strong>احفظ نسخة احتياطية من EFS</strong> قبل أي تفليش. إذا تلف EFS، ستفقد IMEI للأبد ولن يعود الهاتف يلتقط شبكة. استخدم: <code>adb shell su -c "dd if=/dev/block/bootdevice/by-name/efs of=/sdcard/efs.img"</code></li>
+      <li><strong>تأكد من أن البطارية > 50%</strong>. إذا فصل الهاتف أثناء التفليش بسبب نفاد البطارية = Hard Brick.</li>
+      <li><strong>استخدم كابل USB أصلي</strong>. الكابلات التجارية الرخيصة قد تنقطع أثناء التفليش.</li>
+      <li><strong>لا تفصل الهاتف أبداً</strong> أثناء التفليش. انتظر حتى ترى "PASS" أو "Success".</li>
+      <li><strong>ROM الصحيح لموديل جهازك بالضبط.</strong> SM-G973F يختلف عن SM-G973U. تفليش ROM خاطئ = Brick دائم.</li>
+      <li><strong>أغلق برامج الحماية (Antivirus)</strong> التي قد تتعارض مع أدوات التفليش مثل Odin.</li>
+      <li><strong>لا تستخدم Re-partition</strong> في Odin إلا إذا كان لديك PIT file صحيح.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٢: Samsung Odin -->
+<!-- ================================================================ -->
+<h2>📱 Samsung — التفليش عبر Odin</h2>
+
+<div class="brand-card samsung">
+  <h3 style="color:#1428a0;">🔷 Samsung Odin — الأداة الرسمية</h3>
+  <p><strong>Odin</strong> هو أداة تفليش خاصة بسامسونج، تعمل على Windows فقط. الملفات تأتي بصيغة <code>.tar</code> أو <code>.tar.md5</code> (الامتداد md5 يعني أن الملف موقع رقمياً وتم التحقق من سلامته).</p>
+
+  <h4>📥 من أين تحمل Odin؟</h4>
+  <p>حمّل أحدث إصدار من <strong>Odin3</strong> من موقع SamMobile أو XDA Developers. تجنب المواقع المشبوهة. الإصدارات الشائعة: Odin3 v3.13.1، v3.14.1، v3.14.4.</p>
+
+  <h4>📥 من أين تحمل ROM سامسونج؟</h4>
+  <p>أفضل المصادر:</p>
+  <ul style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>SamMobile:</strong> <a href="https://www.sammobile.com/firmwares/" target="_blank" style="color:var(--c-primary);">sammobile.com/firmwares</a> — أكبر مكتبة ROMs سامسونج (بطيء لكن موثوق)</li>
+    <li><strong>SamFW:</strong> <a href="https://samfw.com/" target="_blank" style="color:var(--c-primary);">samfw.com</a> — أسرع في التحميل</li>
+    <li><strong>Frija:</strong> أداة تحميل ROMs سامسونج بسرعة عالية</li>
+  </ul>
+
+  <div class="img-wrap">
+    <img src="images/10_Samsung_Odin_Official_Odin_Download.png" alt="Samsung Odin">
+    <div class="img-caption">واجهة Samsung Odin — لاحظ أقسام BL, AP, CP, CSC في اليسار</div>
+  </div>
+
+  <h4>📋 الأقسام في Odin بالتفصيل:</h4>
+  <table class="data-table">
+    <tr>
+      <th>القسم</th>
+      <th>الملف</th>
+      <th>ماذا يحتوي؟</th>
+      <th>متى يكون ضرورياً؟</th>
+    </tr>
+    <tr>
+      <td><strong>BL</strong></td>
+      <td><code>BL_xxx.tar.md5</code></td>
+      <td>Bootloader (محمّل الإقلاع)</td>
+      <td>إذا الهاتف لا يدخل Download Mode أو فيه مشكلة إقلاع</td>
+    </tr>
+    <tr>
+      <td><strong>AP</strong></td>
+      <td><code>AP_xxx.tar.md5</code></td>
+      <td>System + Kernel + Recovery (الملف الأكبر، قد يصل لـ 6GB)</td>
+      <td>دائماً مطلوب — هذا هو نظام أندرويد نفسه</td>
+    </tr>
+    <tr>
+      <td><strong>CP</strong></td>
+      <td><code>CP_xxx.tar.md5</code></td>
+      <td>Modem / Baseband (برنامج الشبكة)</td>
+      <td>إذا فيه مشكلة شبكة أو Baseband غير معروف</td>
+    </tr>
+    <tr>
+      <td><strong>CSC</strong></td>
+      <td><code>CSC_xxx.tar.md5</code></td>
+      <td>إعدادات المنطقة وشركة الاتصال <strong>(يمسح البيانات!)</strong></td>
+      <td>لتفليش نظيف مع مسح كل شيء</td>
+    </tr>
+    <tr>
+      <td><strong>HOME_CSC</strong></td>
+      <td><code>HOME_CSC_xxx.tar.md5</code></td>
+      <td>نفس CSC لكن <strong>بدون مسح البيانات</strong></td>
+      <td>إذا تريد الاحتفاظ ببيانات المستخدم</td>
+    </tr>
+  </table>
+
+  <div class="alert alert-warn">
+    <span class="alert-icon">⚠️</span>
+    <div><strong>الفرق بين CSC و HOME_CSC:</strong> CSC يمسح كل شيء ويعيد الهاتف لحالة المصنع. HOME_CSC يحتفظ ببياناتك. إذا كنت تصلح مشكلة برمجية، استخدم CSC لضمان تنظيف كامل.</div>
+  </div>
+
+  <h4>🚀 خطوات التفليش بالتفصيل:</h4>
+  <div class="diagram-box">
+    <div class="diagram-step">
+      <div class="num">1</div>
+      <div class="text"><strong>حمّل ROM الصحيح</strong> لموديل جهازك. تأكد من رقم الموديل (مثلاً SM-A505F). فك ضغط الملف المضغوط — ستحصل على ٤ أو ٥ ملفات تبدأ بـ BL، AP، CP، CSC.</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">2</div>
+      <div class="text"><strong>ادخل Download Mode:</strong> أطفئ الهاتف تماماً. اضغط معاً: <strong>زر خفض الصوت + زر Bixby/Home + زر التشغيل</strong>. عندما تظهر شاشة زرقاء/فيروزية، اضغط <strong>زر رفع الصوت</strong> للتأكيد. سيظهر "Downloading... Do not turn off target".</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">3</div>
+      <div class="text"><strong>شغّل Odin كمسؤول</strong> (Run as Administrator). وصّل الهاتف بالكمبيوتر. يجب أن تظهر عبارة <strong>Added!!</strong> في سجل Odin، ويتحول مربع <strong>ID:COM</strong> إلى اللون <strong>الأزرق</strong> مع رقم المنفذ (مثلاً 0:[COM3]). إذا لم يظهر شيء: ثبّت Samsung USB Drivers.</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">4</div>
+      <div class="text"><strong>أضف الملفات:</strong> اضغط على كل زر وأضف الملف المناسب:<br>
+        • BL → اختر ملف BL_xxx<br>
+        • AP → اختر ملف AP_xxx (سيستغرق تحميله دقائق لأنه كبير)<br>
+        • CP → اختر ملف CP_xxx<br>
+        • CSC → اختر CSC_xxx (أو HOME_CSC إذا تريد الاحتفاظ بالبيانات)</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">5</div>
+      <div class="text"><strong>تأكد من خيارات Odin:</strong> في تبويب Options، تأكد من:<br>
+        • <strong>Auto Reboot</strong> ✅ مفعّلة (يعيد التشغيل تلقائياً)<br>
+        • <strong>F. Reset Time</strong> ✅ مفعّلة<br>
+        • <strong>Re-Partition</strong> ❌ <strong>غير مفعّلة أبداً</strong> إلا مع PIT file</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">6</div>
+      <div class="text"><strong>اضغط Start!</strong> سيبدأ التفليش. يظهر تقدم في Odin وفي الهاتف. <strong>لا تلمس الكابل!</strong> انتظر حتى يظهر <strong>PASS!</strong> بالأخضر في الأعلى. الهاتف سيعيد التشغيل تلقائياً.</div>
+    </div>
+  </div>
+
+  <h4>❌ أخطاء Odin الشائعة وحلولها:</h4>
+  <table class="data-table">
+    <tr><th>الخطأ</th><th>المعنى</th><th>الحل</th></tr>
+    <tr>
+      <td><code>FAIL! (Auth)</code></td>
+      <td>ملف ROM غير متوافق أو تالف</td>
+      <td>حمّل ROM من مصدر آخر. تأكد من الموديل الصحيح.</td>
+    </tr>
+    <tr>
+      <td><code>FAIL! (Write) Operation failed</code></td>
+      <td>فشل في الكتابة على الذاكرة</td>
+      <td>جرب كابل USB آخر، منفذ USB آخر، أو إصدار Odin أقدم.</td>
+    </tr>
+    <tr>
+      <td><code>Complete(Write) operation failed</code></td>
+      <td>انقطع الاتصال أثناء الكتابة</td>
+      <td>لا تحرك الهاتف أو الكابل. جرب كابل أصلي.</td>
+    </tr>
+    <tr>
+      <td><code>All threads completed. (succeed 0 / failed 1)</code></td>
+      <td>فشل كامل</td>
+      <td>أعد تشغيل الكمبيوتر والهاتف. جرب منفذ USB 2.0 (وليس 3.0).</td>
+    </tr>
+    <tr>
+      <td>ID:COM لا يظهر بالأزرق</td>
+      <td>الهاتف غير متعرف عليه</td>
+      <td>ثبّت Samsung USB Drivers. جرب كابل آخر.</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٣: Xiaomi Mi Flash -->
+<!-- ================================================================ -->
+<h2>🔶 Xiaomi — التفليش عبر Mi Flash Tool</h2>
+
+<div class="brand-card xiaomi">
+  <h3 style="color:#ff6900;">🔶 Xiaomi Mi Flash Tool</h3>
+  <p><strong>أهم شيء:</strong> يجب فتح Bootloader أولاً قبل التفليش. عملية فتح Bootloader في شاومي تستغرق <strong>١٦٨ ساعة (٧ أيام)</strong> انتظار. لا يمكن تجاوز هذه المدة.</p>
+
+  <h4>📥 المتطلبات:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>Mi Unlock Tool:</strong> من <a href="https://en.miui.com/unlock/" target="_blank" style="color:var(--c-primary);">en.miui.com/unlock</a> — يفتح Bootloader</li>
+    <li><strong>Mi Flash Tool:</strong> أداة التفليش الرسمية</li>
+    <li><strong>ROM بصيغة Fastboot:</strong> من <a href="https://xiaomifirmwareupdater.com/" target="_blank" style="color:var(--c-primary);">xiaomifirmwareupdater.com</a> — اختر "Fastboot ROM" وليس "Recovery ROM"</li>
+  </ol>
+
+  <div class="img-wrap">
+    <img src="images/5_Mi_Flash_Tool_2018_Hello_Mi_Flash.png" alt="Mi Flash Tool">
+    <div class="img-caption">واجهة Mi Flash Tool — اختر clean all أو save user data</div>
+  </div>
+
+  <h4>🚀 خطوات التفليش بالتفصيل:</h4>
+  <div class="diagram-box">
+    <div class="diagram-step">
+      <div class="num">1</div>
+      <div class="text"><strong>افتح Bootloader:</strong> سجل في Mi Account على الهاتف. استخدم Mi Unlock Tool على الكمبيوتر. ستصلك رسالة "انتظر ١٦٨ ساعة". بعد انتهاء المدة، افتح الأداة مرة أخرى وافتح Bootloader.</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">2</div>
+      <div class="text"><strong>حمّل ROM Fastboot:</strong> من xiaomifirmwareupdater.com. اختر جهازك، ثم اختر "Fastboot" كنوع التحميل. الملف سيكون بصيغة <code>.tgz</code> أو <code>.tar.gz</code>. <strong>فك الضغط مرتين</strong> حتى تحصل على مجلد يحتوي على <code>flash_all.bat</code> وملفات <code>.img</code>.</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">3</div>
+      <div class="text"><strong>ادخل Fastboot Mode:</strong> أطفئ الهاتف. اضغط <strong>زر خفض الصوت + زر التشغيل</strong> معاً حتى يظهر الأرنب الشهير (Fastboot).</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">4</div>
+      <div class="text"><strong>شغّل Mi Flash Tool.</strong> اضغط <strong>Select</strong> واختر مجلد ROM (المجلد الذي يحتوي على flash_all.bat). اضغط <strong>Refresh</strong> — يجب أن يظهر جهازك في القائمة.</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">5</div>
+      <div class="text"><strong>اختر وضع التفليش</strong> في الأسفل:<br>
+        • <strong>clean all</strong> = يمسح كل شيء ويفلش (للتنظيف الكامل) ✅ الأفضل<br>
+        • <strong>save user data</strong> = يفلش بدون مسح البيانات (قد يسبب مشاكل)<br>
+        • <strong>clean all and lock</strong> = يمسح ويقفل Bootloader (خطر!)</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">6</div>
+      <div class="text"><strong>اضغط Flash!</strong> يبدأ التفليش. تظهر النسبة على الهاتف. انتظر حتى ينتهي. الهاتف سيعيد التشغيل تلقائياً.</div>
+    </div>
+  </div>
+
+  <h4>أوضاع التفليش في شاومي:</h4>
+  <table class="data-table">
+    <tr>
+      <th>الوضع</th>
+      <th>كيف تدخله؟</th>
+      <th>الاستخدام</th>
+      <th>الأداة</th>
+    </tr>
+    <tr>
+      <td><strong>Fastboot</strong></td>
+      <td>خفض صوت + باور</td>
+      <td>الطريقة العادية للتفليش</td>
+      <td>Mi Flash Tool</td>
+    </tr>
+    <tr>
+      <td><strong>EDL (9008)</strong></td>
+      <td>Test Points على البوردة</td>
+      <td>Hard Brick / Bootloader مقفول</td>
+      <td>QPST / QFIL</td>
+    </tr>
+    <tr>
+      <td><strong>Recovery</strong></td>
+      <td>رفع صوت + باور</td>
+      <td>تفليش ZIP (MIUI Recovery)</td>
+      <td>Apply update</td>
+    </tr>
+  </table>
+
+  <div class="alert alert-warn">
+    <span class="alert-icon">⚠️</span>
+    <div><strong>تنبيه مهم:</strong> إذا اخترت <strong>clean all and lock</strong> وأنت تستخدم ROM غير رسمي (مثل ROM عالمي على جهاز صيني)، سيتحول الهاتف إلى Brick! لا تستخدم هذا الخيار إلا مع ROM الرسمي المطابق لجهازك.</div>
+  </div>
+
+  <h4>❌ أخطاء Mi Flash الشائعة:</h4>
+  <table class="data-table">
+    <tr><th>الخطأ</th><th>المعنى</th><th>الحل</th></tr>
+    <tr>
+      <td><code>error: FAILED (remote: Flashing is not allowed)</code></td>
+      <td>Bootloader مقفول</td>
+      <td>افتح Bootloader أولاً</td>
+    </tr>
+    <tr>
+      <td><code>error: MISSING_IMAGES</code></td>
+      <td>ROM ناقص أو لم يفك ضغطه صح</td>
+      <td>تأكد من فك الضغط مرتين. المجلد يجب أن يحتوي على flash_all.bat</td>
+    </tr>
+    <tr>
+      <td><code>ACK count don't match</code></td>
+      <td>مشكلة في منفذ USB</td>
+      <td>جرب منفذ USB 2.0 مباشرة على اللوحة الأم</td>
+    </tr>
+    <tr>
+      <td><code>cannot receive hello packet</code></td>
+      <td>الهاتف غير متعرف عليه</td>
+      <td>أعد تشغيل الهاتف للـ Fastboot. ثبّت Google USB Driver.</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٤: OnePlus -->
+<!-- ================================================================ -->
+<h2>🔴 OnePlus — التفليش عبر Fastboot</h2>
+
+<div class="brand-card oneplus">
+  <h3 style="color:#f50514;">🔴 OnePlus — أسهل شركة في التفليش</h3>
+  <p>OnePlus من أسهل الشركات في التفليش. Bootloader سهل الفتح، وROMs متاحة رسمياً من الموقع. لا تحتاج انتظار ٧ أيام مثل شاومي.</p>
+
+  <h4>📥 من أين تحمل ROM OnePlus؟</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>الموقع الرسمي:</strong> <a href="https://www.oneplus.com/support/softwareupgrade" target="_blank" style="color:var(--c-primary);">oneplus.com/support/softwareupgrade</a> — ROMs رسمية</li>
+    <li><strong>Oxygen Updater:</strong> تطبيق أندرويد لتحميل آخر التحديثات</li>
+    <li><strong>XDA Developers:</strong> ROMs مخصصة (Custom ROMs)</li>
+  </ol>
+
+  <h4>🚀 خطوات التفليش بالتفصيل:</h4>
+  <div class="diagram-box">
+    <div class="diagram-step">
+      <div class="num">1</div>
+      <div class="text"><strong>افتح Bootloader:</strong> اذهب للإعدادات > خيارات المطور > فعّل <strong>OEM Unlocking</strong> و <strong>USB Debugging</strong>. ثم في الكمبيوتر:
+        <pre style="margin-top:0.5rem;"><span class="cmd">adb</span> reboot bootloader
+<span class="cmd">fastboot</span> flashing unlock</pre>
+        سيظهر تأكيد على الهاتف. استخدم أزرار الصوت للتنقل وزر الباور للتأكيد. <strong>⚠️ سيمسح كل البيانات!</strong></div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">2</div>
+      <div class="text"><strong>حمّل Factory Image</strong> من الموقع الرسمي. فك ضغط الملف. ستحصل على مجلد يحتوي على <code>flash-all.bat</code> (لويندوز) و <code>flash-all.sh</code> (للينكس/ماك) وملفات <code>.img</code>.</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">3</div>
+      <div class="text"><strong>ادخل Fastboot:</strong> أطفئ الهاتف. اضغط <strong>زر رفع الصوت + زر التشغيل</strong> معاً حتى يظهر "Fastboot Mode". أو استخدم <code>adb reboot bootloader</code>.</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">4</div>
+      <div class="text"><strong>شغّل flash-all:</strong> في ويندوز، اضغط ضغطتين على <code>flash-all.bat</code>. في لينكس/ماك، افتح Terminal واكتب <code>./flash-all.sh</code>. ستبدأ عملية التفليش تلقائياً.</div>
+    </div>
+  </div>
+
+  <h4>📋 أوامر Fastboot اليدوية لـ OnePlus:</h4>
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-title">OnePlus — تفليش يدوي (إذا لم يعمل flash-all)</span>
+      <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+    </div>
+    <pre><span class="comment"># تأكد أنك في Fastboot</span>
+<span class="cmd">fastboot</span> devices
+<span class="output">ABC123    fastboot</span>
+
+<span class="comment"># فتح Bootloader (إذا لم يكن مفتوحاً)</span>
+<span class="cmd">fastboot</span> flashing unlock
+
+<span class="comment"># تفليش كل الأقسام يدوياً</span>
+<span class="cmd">fastboot</span> flash boot boot.img
+<span class="cmd">fastboot</span> flash dtbo dtbo.img
+<span class="cmd">fastboot</span> flash vbmeta vbmeta.img
+<span class="cmd">fastboot</span> flash recovery recovery.img
+<span class="cmd">fastboot</span> flash system system.img
+<span class="cmd">fastboot</span> flash vendor vendor.img
+<span class="cmd">fastboot</span> flash product product.img
+
+<span class="comment"># مسح البيانات (اختياري — لحل مشاكل الإقلاع)</span>
+<span class="cmd">fastboot</span> erase userdata
+
+<span class="comment"># إعادة التشغيل</span>
+<span class="cmd">fastboot</span> reboot</pre>
+  </div>
+
+  <h4>🔄 OnePlus و MSM Download Tool:</h4>
+  <p>إذا كان الهاتف في حالة <strong>Hard Brick</strong> (لا يدخل Fastboot ولا Recovery)، فأنت تحتاج <strong>MSM Download Tool</strong>. هذه أداة خاصة بـ Qualcomm تعيد الهاتف من الموت التام عبر EDL Mode.</p>
+  <ul style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li>تحتاج EDL Cable أو Test Points على البوردة للدخول إلى EDL Mode</li>
+    <li>الأداة غير متاحة رسمياً — تحتاج للبحث عنها في XDA Developers لطراز جهازك</li>
+    <li>بعد الدخول لـ EDL، الأداة تفلش ROM المصنع بالكامل</li>
+  </ul>
+
+  <div class="alert alert-danger">
+    <span class="alert-icon">🚨</span>
+    <div><strong>تحذير:</strong> إذا قفلت Bootloader بعد تفليش ROM غير رسمي (Custom ROM)، الهاتف سيتحول إلى Brick وقد لا يعود يعمل أبداً. دائماً أعد ROM الرسمي قبل قفل Bootloader.</div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٥: Huawei -->
+<!-- ================================================================ -->
+<h2>🔴 Huawei — التفليش</h2>
+
+<div class="brand-card huawei">
+  <h3 style="color:#cf0a2c;">🔴 Huawei — الأصعب حالياً</h3>
+  <p><strong>منذ ٢٠١٨، Huawei أغلقت Bootloader رسمياً</strong> ولم تعد تقدم أكواد فتح. هذا جعل التفليش صعباً جداً. الحلول المتاحة محدودة ومعظمها مدفوع.</p>
+
+  <div class="alert alert-danger">
+    <span class="alert-icon">🚨</span>
+    <div><strong>تحذير مهم:</strong> أي موقع أو أداة تدعي فتح Bootloader لـ Huawei مجاناً = <strong>احتيال ٩٩٪</strong>. الطرق الوحيدة الفعالة هي أدوات مدفوعة مثل DC-Phoenix أو HCU Client.</div>
+  </div>
+
+  <h4>📊 الحلول المتاحة حسب الحالة:</h4>
+  <table class="data-table">
+    <tr>
+      <th>الحالة</th>
+      <th>الحل</th>
+      <th>التكلفة</th>
+      <th>الصعوبة</th>
+    </tr>
+    <tr>
+      <td><strong>Bootloader مفتوح مسبقاً</strong> (نادر)</td>
+      <td>استخدم Fastboot عادي مثل أي جهاز آخر</td>
+      <td>مجاني</td>
+      <td>سهل ✅</td>
+    </tr>
+    <tr>
+      <td><strong>Bootloader مغلق، الجهاز شغال</strong></td>
+      <td>DC-Phoenix أو HCU Client لقراءة كود فتح Bootloader</td>
+      <td>مدفوع (~٢٠-٥٠ يورو)</td>
+      <td>متوسط ⚠️</td>
+    </tr>
+    <tr>
+      <td><strong>Bootloader مغلق، FRP Lock</strong></td>
+      <td>أدوات FRP Bypass خاصة بـ Huawei</td>
+      <td>مدفوع غالباً</td>
+      <td>متوسط ⚠️</td>
+    </tr>
+    <tr>
+      <td><strong>Hard Brick</strong> (لا يستجيب)</td>
+      <td>Test Points + EDL Mode + Board Firmware</td>
+      <td>يحتاج معدات</td>
+      <td>متقدم جداً 🔥</td>
+    </tr>
+  </table>
+
+  <h4>🛠️ أدوات Huawei الشائعة:</h4>
+  <table class="data-table">
+    <tr>
+      <th>الأداة</th>
+      <th>الوظيفة</th>
+      <th>السعر</th>
+    </tr>
+    <tr>
+      <td><strong>DC-Phoenix</strong></td>
+      <td>تفليش + فتح Bootloader + إصلاح IMEI</td>
+      <td>~٣٠ يورو</td>
+    </tr>
+    <tr>
+      <td><strong>HCU Client</strong></td>
+      <td>قراءة كود فتح Bootloader</td>
+      <td>~٢٠ يورو</td>
+    </tr>
+    <tr>
+      <td><strong>SigmaKey</strong></td>
+      <td>إصلاح IMEI + فتح شبكة</td>
+      <td>~١٠٠ يورو</td>
+    </tr>
+    <tr>
+      <td><strong>HiSuite</strong></td>
+      <td>أداة رسمية للتحديث والإصلاح البسيط</td>
+      <td>مجاني</td>
+    </tr>
+  </table>
+
+  <h4>طريقة استخدام HiSuite (الرسمي):</h4>
+  <div class="diagram-box">
+    <div class="diagram-step">
+      <div class="num">1</div>
+      <div class="text">حمّل HiSuite من موقع Huawei الرسمي</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">2</div>
+      <div class="text">وصّل الهاتف. إذا لم يتعرف عليه: ادخل Recovery > اختر Update mode</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">3</div>
+      <div class="text">في HiSuite: اضغط System Recovery > Download and Recovery</div>
+    </div>
+    <div class="diagram-arrow">⬇</div>
+    <div class="diagram-step">
+      <div class="num">4</div>
+      <div class="text">سيحمل آخر ROM رسمي ويفلشه تلقائياً</div>
+    </div>
+  </div>
+
+  <div class="alert alert-info">
+    <span class="alert-icon">💡</span>
+    <div>HiSuite يحل ٥٠٪ من مشاكل Huawei البسيطة. إذا لم ينفع، تحتاج لأدوات مدفوعة.</div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٦: أدوات تفليش عامة -->
+<!-- ================================================================ -->
+<h2>🛠️ أدوات تفليش عامة (لكل الشركات)</h2>
+
+<!-- SP Flash Tool -->
+<h3>١. SP Flash Tool — أجهزة MediaTek</h3>
+<div class="brand-card" style="border-right-color: #ff9800;">
+  <h4 style="margin-top:0; color:#ff9800;">📱 SP Flash Tool</h4>
+  <p>أداة تفليش لأجهزة <strong>MediaTek</strong> (معالجات MTK). تستخدم مع Xiaomi Redmi القديمة، Oppo، Vivo، Realme، Infinix، Tecno.</p>
+
+  <h4>المتطلبات:</h4>
+  <ul style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>SP Flash Tool:</strong> آخر إصدار من <a href="https://spflashtool.com/" target="_blank" style="color:var(--c-primary);">spflashtool.com</a></li>
+    <li><strong>Scatter File:</strong> ملف <code>MTxxxx_Android_scatter.txt</code> يأتي مع ROM</li>
+    <li><strong>ROM:</strong> بصيغة مجلد يحتوي على scatter + ملفات img</li>
+    <li><strong>MTK VCOM Drivers:</strong> تعريفات MediaTek (تحتاج تعطيل Driver Signature في ويندوز)</li>
+  </ul>
+
+  <div class="alert alert-danger">
+    <span class="alert-icon">🚨</span>
+    <div><strong>خطر كبير!</strong> إذا اخترت خيار <strong>Format All + Download</strong> بدلاً من <strong>Download Only</strong>، ستمسح كل شيء بما فيها IMEI و NVRAM! لا تستخدم Format All إلا في حالات Hard Brick القصوى.</div>
+  </div>
+
+  <h4>أوضاع التفليش في SP Flash Tool:</h4>
+  <table class="data-table">
+    <tr><th>الوضع</th><th>ماذا يفعل</th><th>متى تستخدمه</th></tr>
+    <tr>
+      <td><strong>Download Only</strong></td>
+      <td>يفلش الأقسام المحددة فقط</td>
+      <td>الاستخدام العادي ✅ الأكثر أماناً</td>
+    </tr>
+    <tr>
+      <td><strong>Firmware Upgrade</strong></td>
+      <td>يفلش كل شيء مع الحفاظ على البيانات</td>
+      <td>تحديث النظام</td>
+    </tr>
+    <tr>
+      <td><strong>Format All + Download</strong></td>
+      <td>يمسح كل شيء ثم يفلش</td>
+      <td>Hard Brick فقط ⚠️ يمسح IMEI!</td>
+    </tr>
+  </table>
+</div>
+
+<!-- QPST / QFIL -->
+<h3>٢. QPST / QFIL — أجهزة Qualcomm</h3>
+<div class="brand-card" style="border-right-color: #2196F3;">
+  <h4 style="margin-top:0; color:#2196F3;">💻 QPST / QFIL (Qualcomm Product Support Tools)</h4>
+  <p>أداة تفليش لأجهزة <strong>Qualcomm</strong>. تستخدم مع Samsung (بعض الموديلات)، Xiaomi، OnePlus، LG، Motorola. تعمل عبر <strong>EDL Mode (Emergency Download Mode)</strong> — منفذ COM رقم 9008.</p>
+
+  <h4>المتطلبات:</h4>
+  <ul style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>QPST Tool:</strong> من <a href="https://qpstool.com/" target="_blank" style="color:var(--c-primary);">qpstool.com</a></li>
+    <li><strong>Qualcomm HS-USB QDLoader 9008 Driver:</strong> تعريف EDL Mode</li>
+    <li><strong>Programmer File:</strong> ملف <code>prog_emmc_firehose_xxx.mbn</code> خاص بطراز الجهاز</li>
+    <li><strong>Raw Program / XML Files:</strong> ملفات التفليش</li>
+  </ul>
+
+  <h4>كيف تدخل EDL Mode؟</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>Test Points:</strong> قصر (Short) نقطتين محددتين على البوردة — هذه هي الطريقة الأكيدة</li>
+    <li><strong>EDL Cable:</strong> كابل USB خاص يحتوي على زر EDL</li>
+    <li><strong>أمر ADB:</strong> <code>adb reboot edl</code> (إذا كان الهاتف شغالاً)</li>
+    <li><strong>أمر Fastboot:</strong> <code>fastboot oem edl</code> (بعض الأجهزة)</li>
+  </ol>
+
+  <div class="alert alert-warn">
+    <span class="alert-icon">⚠️</span>
+    <div>Programmer File يجب أن يكون <strong>مطابقاً لطراز جهازك بالضبط</strong>. استخدام ملف خاطئ = Brick دائم.</div>
+  </div>
+</div>
+
+<!-- أدوات أخرى -->
+<h3>٣. أدوات إضافية</h3>
+<table class="data-table">
+  <tr>
+    <th>الأداة</th>
+    <th>الشركة</th>
+    <th>نوع الملفات</th>
+    <th>ملاحظات</th>
+  </tr>
+  <tr>
+    <td><strong>LG Flash Tool</strong></td>
+    <td>LG</td>
+    <td>KDZ</td>
+    <td>يدعم معظم أجهزة LG. استخدم LGUP لأجهزة ٢٠١٦+</td>
+  </tr>
+  <tr>
+    <td><strong>RSD Lite</strong></td>
+    <td>Motorola</td>
+    <td>XML + img</td>
+    <td>لأجهزة موتورولا القديمة</td>
+  </tr>
+  <tr>
+    <td><strong>Heimdall</strong></td>
+    <td>Samsung</td>
+    <td>tar, img</td>
+    <td>بديل مفتوح المصدر لـ Odin على Linux/macOS</td>
+  </tr>
+  <tr>
+    <td><strong>Flashfire</strong></td>
+    <td>متعددة</td>
+    <td>ZIP, img</td>
+    <td>تطبيق أندرويد للتفليش بدون كمبيوتر (يتطلب Root)</td>
+  </tr>
+  <tr>
+    <td><strong>TWRP</strong></td>
+    <td>متعددة</td>
+    <td>ZIP, img</td>
+    <td>Custom Recovery للتفليش والنسخ الاحتياطي</td>
+  </tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- القسم ٧: مقارنة بين أوضاع التفليش -->
+<!-- ================================================================ -->
+<h2>📊 مقارنة بين أوضاع التفليش المختلفة</h2>
+
+<table class="data-table">
+  <tr>
+    <th>الوضع</th>
+    <th>الشركات</th>
+    <th>كيف تدخله؟</th>
+    <th>متى يكون ضرورياً؟</th>
+    <th>درجة الصعوبة</th>
+  </tr>
+  <tr>
+    <td><strong>Download Mode</strong></td>
+    <td>Samsung</td>
+    <td>خفض صوت + باور + Bixby</td>
+    <td>للتفليش العادي عبر Odin</td>
+    <td>سهل ✅</td>
+  </tr>
+  <tr>
+    <td><strong>Fastboot Mode</strong></td>
+    <td>Xiaomi, OnePlus, Pixel, Motorola</td>
+    <td>خفض صوت + باور</td>
+    <td>للتفليش عبر Fastboot</td>
+    <td>سهل ✅</td>
+  </tr>
+  <tr>
+    <td><strong>Recovery Mode</strong></td>
+    <td>كل الشركات</td>
+    <td>رفع صوت + باور</td>
+    <td>للمسح والتفليش عبر sideload</td>
+    <td>سهل ✅</td>
+  </tr>
+  <tr>
+    <td><strong>EDL Mode (9008)</strong></td>
+    <td>Qualcomm</td>
+    <td>Test Points على البوردة</td>
+    <td>Hard Brick / إصلاح عميق</td>
+    <td>متقدم 🔥</td>
+  </tr>
+  <tr>
+    <td><strong>BROM Mode</strong></td>
+    <td>MediaTek</td>
+    <td>Test Points على البوردة</td>
+    <td>Hard Brick / Format كامل</td>
+    <td>متقدم 🔥</td>
+  </tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- القسم ٨: سيناريوهات واقعية -->
+<!-- ================================================================ -->
+<h2>🎬 سيناريوهات واقعية في التفليش</h2>
+
+<!-- سيناريو ١ -->
+<h3>السيناريو ١: فشل تفليش Samsung وظهر FAIL</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(248,113,113,0.04),rgba(251,191,36,0.04)); border-color:rgba(248,113,113,0.2);">
+  <h4 style="margin-top:0; color:var(--c-danger);">🧊 الموقف:</h4>
+  <p>بدأت تفليش Samsung Galaxy A50. في منتصف التفليش، ظهر FAIL! بالأحمر في Odin. الهاتف الآن لا يشتغل ويظهر "An error has occurred while updating the device software".</p>
+
+  <h4 style="color:var(--c-warning);">🤔 التشخيص والحل:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>لا داعي للقلق!</strong> هذه الحالة تسمى "Soft Brick" — الهاتف ما زال في Download Mode</li>
+    <li><strong>أعد تشغيل Odin كمسؤول</strong> (Run as Administrator)</li>
+    <li><strong>جرب منفذ USB 2.0</strong> مباشرة على اللوحة الأم (وليس USB 3.0)</li>
+    <li><strong>جرب كابل USB أصلي</strong> من سامسونج</li>
+    <li><strong>جرب إصداراً أقدم من Odin</strong> (مثلاً v3.13.1 بدلاً من v3.14.4)</li>
+    <li><strong>أعد تحميل ROM</strong> من مصدر آخر — قد يكون الملف تالفاً</li>
+    <li><strong>إذا استمر الفشل:</strong> جرب تفليش BL + AP + CP فقط بدون CSC</li>
+  </ol>
+</div>
+
+<!-- سيناريو ٢ -->
+<h3>السيناريو ٢: Xiaomi لا يظهر في Mi Flash</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(56,189,248,0.04),rgba(129,140,248,0.04)); border-color:rgba(56,189,248,0.2);">
+  <h4 style="margin-top:0; color:var(--c-primary);">🔄 الموقف:</h4>
+  <p>دخلت Fastboot في Xiaomi. ضغطت Refresh في Mi Flash لكن الهاتف لا يظهر في القائمة.</p>
+
+  <h4 style="color:var(--c-warning);">🤔 التشخيص والحل:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>تأكد أن Bootloader مفتوح.</strong> اكتب <code>fastboot oem device-info</code>. إذا "Device unlocked: false" = تحتاج فتحه أولاً</li>
+    <li><strong>تأكد من تعريفات USB.</strong> في Device Manager، يجب أن يظهر "Android Bootloader Interface" وليس "Unknown Device"</li>
+    <li><strong>جرب تشغيل Mi Flash كمسؤول</strong></li>
+    <li><strong>انسخ مجلد ROM إلى C:\ROM</strong> (مسار قصير بدون فراغات أو أحرف عربية)</li>
+    <li><strong>تأكد أن المجلد يحتوي على flash_all.bat</strong>. إذا كان يحتوي على flash_all.sh فقط = أنت حملت ROM للينكس. حمّل ROM لويندوز.</li>
+    <li><strong>إذا لم ينفع:</strong> استخدم Mi Flash Pro بدلاً من Mi Flash العادي</li>
+  </ol>
+</div>
+
+<!-- سيناريو ٣ -->
+<h3>السيناريو ٣: Hard Brick — الهاتف ميت تماماً</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(248,113,113,0.04),rgba(244,114,182,0.04)); border-color:rgba(248,113,113,0.2);">
+  <h4 style="margin-top:0; color:var(--c-danger);">💀 الموقف:</h4>
+  <p>بعد تفليش فاشل، الهاتف لا يستجيب أبداً. لا شحن، لا شاشة، لا Download Mode، لا Fastboot. الهاتف ميت تماماً. عندما توصله بالكمبيوتر، يظهر في Device Manager كـ "Qualcomm HS-USB QDLoader 9008" أو "MediaTek USB Port".</p>
+
+  <h4 style="color:var(--c-warning);">🤔 التشخيص والحل:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>هذا Hard Brick.</strong> لكن لا تقلق — طالما الكمبيوتر يتعرف عليه، يمكن إصلاحه.</li>
+    <li><strong>لـ Qualcomm (9008):</strong> تحتاج QFIL + Programmer File + ROM. لا تحتاج Test Points لأن الهاتف دخل EDL تلقائياً.</li>
+    <li><strong>لـ MediaTek:</strong> تحتاج SP Flash Tool + Scatter File + ROM. الهاتف في BROM Mode تلقائياً.</li>
+    <li><strong>لـ Samsung:</strong> إذا لم يدخل Download Mode، تحتاج EDL Cable أو Test Points لإجباره على الدخول.</li>
+    <li><strong>خطوات الإصلاح:</strong>
+      <ol>
+        <li>حمل ROM المصنع الكامل (Factory Image)</li>
+        <li>حمل Programmer File المناسب (لـ Qualcomm)</li>
+        <li>في QFIL: اختر Flat Build > حدد Programmer File > حدد Raw Program / XML</li>
+        <li>اضغط Download</li>
+      </ol>
+    </li>
+    <li><strong>إذا فشل:</strong> قد تكون الذاكرة eMMC/UFS تالفة وتحتاج استبدال. هذه تحتاج فني متقدم.</li>
+  </ol>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٩: قائمة تحقق قبل التفليش -->
+<!-- ================================================================ -->
+<h2>📋 قائمة التحقق النهائية قبل التفليش</h2>
+
+<p>اطبع هذه القائمة وعلقها في ورشتك. راجع كل نقطة قبل أن تضغط زر Start:</p>
+
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(251,191,36,0.06),rgba(248,113,113,0.06)); border-color:rgba(251,191,36,0.25);">
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-warning),var(--c-danger));">1</div>
+    <div class="text"><strong>هل ROM مطابق لطراز الجهاز بالضبط؟</strong> SM-G973F ≠ SM-G973U. تفليش ROM خاطئ = Brick دائم. تأكد من رقم الموديل في الإعدادات أو خلف الهاتف أو على البوردة.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-warning),var(--c-danger));">2</div>
+    <div class="text"><strong>هل البطارية > 50%؟</strong> إذا كانت أقل، اشحن الهاتف أولاً. انقطاع التيار أثناء التفليش = Hard Brick.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-warning),var(--c-danger));">3</div>
+    <div class="text"><strong>هل حفظت نسخة EFS احتياطية؟</strong> <code>adb shell su -c "dd if=/dev/block/bootdevice/by-name/efs of=/sdcard/efs.img"</code> — هذا أهم أمر في الصيانة كلها. بدون EFS = IMEI ضائع للأبد.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-warning),var(--c-danger));">4</div>
+    <div class="text"><strong>هل الكابل USB أصلي؟</strong> الكابلات التجارية الرخيصة قد تنقطع أثناء التفليش. استخدم الكابل الأصلي الذي يأتي مع الهاتف.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-warning),var(--c-danger));">5</div>
+    <div class="text"><strong>هل منفذ USB موثوق؟</strong> استخدم منفذ USB 2.0 مباشرة على اللوحة الأم (المنافذ الخلفية في الكمبيوتر المكتبي). تجنب USB 3.0 (الأزرق) ومنافذ USB Hub.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-warning),var(--c-danger));">6</div>
+    <div class="text"><strong>هل أغلقت برامج الحماية؟</strong> بعض برامج Antivirus تتعارض مع Odin و SP Flash Tool. أغلقها مؤقتاً.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-warning),var(--c-danger));">7</div>
+    <div class="text"><strong>هل تعرف وضع التفليش المناسب؟</strong> Download Only ≠ Format All. CSC ≠ HOME_CSC. clean all ≠ save user data. تأكد أنك اخترت الوضع الصحيح.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-warning),var(--c-danger));">8</div>
+    <div class="text"><strong>هل أنت مستعد للأسوأ؟</strong> هل تعرف ماذا تفعل إذا فشل التفليش؟ هل لديك EDL Cable؟ هل تعرف Test Points؟ كن مستعداً دائماً.</div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١٠: نصائح ذهبية -->
+<!-- ================================================================ -->
+<h2>💎 نصائح ذهبية للتفليش الآمن</h2>
+
+<div class="alert alert-success">
+  <span class="alert-icon">✅</span>
+  <div>
+    <strong>قواعد لا تنساها:</strong>
+    <ol style="margin-top:0.5rem; padding-right:1.2rem; line-height:2.2;">
+      <li><strong>لا تكن أول من يجرب.</strong> قبل تفليش أي ROM، ابحث في XDA أو يوتيوب عن تجارب الآخرين مع نفس الموديل.</li>
+      <li><strong>احفظ نسخة EFS في مكانين.</strong> على الكمبيوتر + على Google Drive أو USB خارجي.</li>
+      <li><strong>إذا كنت متعباً أو مستعجلاً، لا تفلش.</strong> التفليش يحتاج تركيز. خطأ واحد = Brick.</li>
+      <li><strong>استخدم اللابتوب على بطاريته أو UPS.</strong> انقطاع الكهرباء أثناء التفليش = Hard Brick.</li>
+      <li><strong>صور كل خطوة.</strong> عندما تفتح هاتفاً للوصول لـ Test Points، صور كل شيء لتعرف كيف تعيده.</li>
+      <li><strong>لا تغلق Bootloader بعد تفليش ROM غير رسمي.</strong> إذا كان ROM غير موقع رسمياً، قفل Bootloader = Brick دائم.</li>
+      <li><strong>استخدم مجلدات بمسارات بسيطة.</strong> <code>C:\ROM</code> وليس <code>C:\Users\اسمك\Downloads\هاتف شاومي\الروم الجديد</code>.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١١: جدول مرجعي سريع -->
+<!-- ================================================================ -->
+<h2>📊 جدول مرجعي سريع — ماذا تستخدم لكل شركة؟</h2>
+
+<table class="data-table">
+  <tr>
+    <th>الشركة</th>
+    <th>الأداة الرئيسية</th>
+    <th>وضع التفليش</th>
+    <th>نوع الملفات</th>
+    <th>فتح Bootloader</th>
+  </tr>
+  <tr>
+    <td><strong>Samsung</strong></td>
+    <td>Odin3</td>
+    <td>Download Mode</td>
+    <td>.tar.md5</td>
+    <td>غير مطلوب للتفليش الرسمي</td>
+  </tr>
+  <tr>
+    <td><strong>Xiaomi</strong></td>
+    <td>Mi Flash Tool</td>
+    <td>Fastboot / EDL</td>
+    <td>.tgz (Fastboot ROM)</td>
+    <td>مطلوب — انتظار ١٦٨ ساعة</td>
+  </tr>
+  <tr>
+    <td><strong>OnePlus</strong></td>
+    <td>Fastboot / MSM Tool</td>
+    <td>Fastboot / EDL</td>
+    <td>.img (Factory Image)</td>
+    <td>مطلوب — فتح فوري</td>
+  </tr>
+  <tr>
+    <td><strong>Huawei</strong></td>
+    <td>DC-Phoenix / HiSuite</td>
+    <td>Fastboot / Upgrade Mode</td>
+    <td>.img / .APP</td>
+    <td>مغلق رسمياً — أدوات مدفوعة</td>
+  </tr>
+  <tr>
+    <td><strong>MediaTek</strong></td>
+    <td>SP Flash Tool</td>
+    <td>BROM / Preloader</td>
+    <td>Scatter + .img</td>
+    <td>غير مطلوب عادة</td>
+  </tr>
+  <tr>
+    <td><strong>Qualcomm</strong></td>
+    <td>QPST / QFIL</td>
+    <td>EDL (9008)</td>
+    <td>Programmer + Raw XML</td>
+    <td>غير مطلوب في EDL</td>
+  </tr>
+  <tr>
+    <td><strong>LG</strong></td>
+    <td>LG Flash Tool / LGUP</td>
+    <td>Download Mode</td>
+    <td>.KDZ</td>
+    <td>غير مطلوب للتفليش الرسمي</td>
+  </tr>
+  <tr>
+    <td><strong>Motorola</strong></td>
+    <td>RSD Lite / Fastboot</td>
+    <td>Fastboot</td>
+    <td>.XML + .img</td>
+    <td>مطلوب — عبر موقع Motorola</td>
+  </tr>
+  <tr>
+    <td><strong>Google Pixel</strong></td>
+    <td>Fastboot / Android Flash Tool</td>
+    <td>Fastboot</td>
+    <td>.img (Factory Image)</td>
+    <td>مطلوب — فتح فوري</td>
+  </tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- القسم ١٢: أخطاء شائعة في كل أداة -->
+<!-- ================================================================ -->
+<h2>❌ قاموس الأخطاء الشائعة في التفليش</h2>
+
+<table class="data-table">
+  <tr>
+    <th>الأداة</th>
+    <th>الخطأ</th>
+    <th>المعنى</th>
+    <th>الحل السريع</th>
+  </tr>
+  <tr>
+    <td>Odin</td>
+    <td><code>FAIL! (Auth)</code></td>
+    <td>ROM غير متوافق مع الجهاز</td>
+    <td>حمّل ROM من مصدر آخر. تأكد من رقم الموديل.</td>
+  </tr>
+  <tr>
+    <td>Odin</td>
+    <td><code>All threads completed (succeed 0 / failed 1)</code></td>
+    <td>فشل كامل في التفليش</td>
+    <td>جرب كابل أصلي، منفذ USB 2.0، إصدار أقدم من Odin.</td>
+  </tr>
+  <tr>
+    <td>Mi Flash</td>
+    <td><code>FAILED (remote: Flashing is not allowed)</code></td>
+    <td>Bootloader مقفول</td>
+    <td>افتح Bootloader أولاً.</td>
+  </tr>
+  <tr>
+    <td>Mi Flash</td>
+    <td><code>ACK count don't match</code></td>
+    <td>مشكلة اتصال USB</td>
+    <td>جرب منفذ USB 2.0 مباشرة على اللوحة الأم.</td>
+  </tr>
+  <tr>
+    <td>SP Flash Tool</td>
+    <td><code>BROM ERROR : S_FT_ENABLE_DRAM_FAIL (0xFC0)</code></td>
+    <td>مشكلة في Preloader أو تعريف USB</td>
+    <td>ثبّت MTK VCOM Drivers. جرب كابل آخر.</td>
+  </tr>
+  <tr>
+    <td>SP Flash Tool</td>
+    <td><code>BROM ERROR : S_SECURITY_SECURE_USB_DL_DISABLED (0xC0020004)</code></td>
+    <td>Secure Boot مفعّل</td>
+    <td>تحتاج ROM موقع (Signed) أو أداة مدفوعة.</td>
+  </tr>
+  <tr>
+    <td>QPST/QFIL</td>
+    <td><code>Sahara Fail</code></td>
+    <td>فشل الاتصال بـ Programmer</td>
+    <td>تأكد أن Programmer File صحيح للموديل.</td>
+  </tr>
+  <tr>
+    <td>QPST/QFIL</td>
+    <td><code>Firehose Fail</code></td>
+    <td>Programmer لا يستجيب</td>
+    <td>أعد توصيل الهاتف. جرب منفذ USB آخر.</td>
+  </tr>
+  <tr>
+    <td>Fastboot</td>
+    <td><code>FAILED (remote: 'unknown command')</code></td>
+    <td>الأمر غير مدعوم</td>
+    <td>استخدم الأمر الصحيح لجهازك. بعض الأجهزة تستخدم flashing بدلاً من oem.</td>
+  </tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- القسم ١٣: الخلاصة -->
+<!-- ================================================================ -->
+<h2>🎯 خلاصة التفليش</h2>
+
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(52,211,153,0.06),rgba(56,189,248,0.06)); border-color:rgba(52,211,153,0.3);">
+  <h3 style="margin-top:0; color:var(--c-success);">التفليش في ٥ نقاط</h3>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">1</div>
+    <div class="text"><strong>اعرف جهازك.</strong> رقم الموديل الدقيق. نوع المعالج (Qualcomm/MediaTek/Kirin). حالة Bootloader.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">2</div>
+    <div class="text"><strong>حضّر الأدوات.</strong> حمل ROM الصحيح. ثبت التعريفات. جهز الكابل الأصلي. احفظ EFS.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">3</div>
+    <div class="text"><strong>ادخل وضع التفليش.</strong> Download Mode لسامسونج. Fastboot لشاومي وOnePlus. EDL للطوارئ.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">4</div>
+    <div class="text"><strong>اختر الوضع الصحيح.</strong> Download Only ≠ Format All. CSC ≠ HOME_CSC. clean all ≠ save user data.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">5</div>
+    <div class="text"><strong>اضغط Start وانتظر.</strong> لا تلمس الكابل. لا تفصل الهاتف. لا تغلق الكمبيوتر. انتظر PASS!</div>
+  </div>
+</div>
+
+<div class="alert alert-success">
+  <span class="alert-icon">✅</span>
+  <div><strong>تذكر:</strong> التفليش أداة قوية لكنها خطيرة. مع الممارسة والصبر، ستصبح خبيراً. لا تخف من الأخطاء — تعلم منها.</div>
+</div>
+
+<div class="alert alert-info">
+  <span class="alert-icon">📚</span>
+  <div><strong>في الفصل القادم (الفصل ٥: مشاكل الشبكة وIMEI):</strong> سنتعلم كيف نستعيد IMEI المفقود، نصلح Baseband، ونفك قفل الشبكة.</div>
+</div>
+
+<div class="next-prev">
+  <a href="chapter3.html" class="prev">← الفصل 3: التشخيص المنطقي</a>
+  <a href="chapter5.html" class="next">الفصل 5: مشاكل الشبكة وIMEI →</a>
+</div>
+
+</main>
+
+</body>
+</html>
