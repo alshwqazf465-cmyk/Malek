@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الفصل 12: تخطي حساب جوجل FRP | أكاديمية صيانة الهواتف</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg: #0f172a; --c-surface: #1e293b; --c-surface2: #334155;
+  --c-primary: #38bdf8; --c-secondary: #818cf8; --c-accent: #f472b6;
+  --c-success: #34d399; --c-warning: #fbbf24; --c-danger: #f87171;
+  --c-text: #f1f5f9; --c-text2: #94a3b8; --c-border: #334155;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Tajawal', sans-serif; background: var(--c-bg); color: var(--c-text); line-height: 1.9; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(15,23,42,0.92); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--c-border); padding: 0.75rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { font-weight: 800; font-size: 1.2rem; color: var(--c-primary); text-decoration: none; }
+.nav-back { color: var(--c-text2); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.nav-back:hover { color: var(--c-primary); }
+
+main { max-width: 1000px; margin: 0 auto; padding: 6rem 2rem 3rem; }
+
+.chapter-header {
+  text-align: center; margin-bottom: 3rem; padding: 2.5rem 2rem;
+  background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(129,140,248,0.1));
+  border-radius: 20px; border: 1px solid rgba(56,189,248,0.2);
+}
+.chapter-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 55px; height: 55px; background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; font-weight: 900; border-radius: 14px; font-size: 1.4rem; margin-bottom: 1rem;
+}
+.chapter-header h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 0.75rem; }
+.chapter-header p { color: var(--c-text2); font-size: 1.1rem; }
+
+h2 {
+  font-size: 1.8rem; font-weight: 800; margin: 3.5rem 0 2rem;
+  padding-right: 1rem; border-right: 4px solid var(--c-primary);
+  color: var(--c-text);
+}
+h3 { font-size: 1.3rem; font-weight: 700; margin: 2.5rem 0 1.2rem; color: var(--c-primary); }
+h4 { font-size: 1.1rem; font-weight: 700; margin: 2rem 0 1rem; color: var(--c-warning); }
+p { color: var(--c-text2); margin-bottom: 1rem; font-size: 1.05rem; line-height: 2; }
+
+.code-block {
+  background: #0d1117; border: 1px solid #30363d; border-radius: 14px;
+  overflow: hidden; margin: 2rem 0; direction: ltr; text-align: left;
+}
+.code-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.7rem 1.2rem; background: #161b22; border-bottom: 1px solid #30363d;
+}
+.code-title { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #8b949e; }
+.code-dots { display: flex; gap: 7px; }
+.code-dot { width: 11px; height: 11px; border-radius: 50%; }
+.code-dot.r { background: #ff5f56; } .code-dot.y { background: #ffbd2e; } .code-dot.g { background: #27c93f; }
+pre {
+  padding: 1.4rem; overflow-x: auto; font-family: 'Fira Code', monospace;
+  font-size: 0.88rem; line-height: 1.9; color: #e6edf3;
+}
+pre .comment { color: #8b949e; }
+pre .keyword { color: #ff7b72; }
+pre .string { color: #a5d6ff; }
+pre .func { color: #d2a8ff; }
+pre .num { color: #79c0ff; }
+pre .cmd { color: #7ee787; }
+pre .output { color: #a5d6ff; }
+pre .err { color: #ff7b72; }
+pre .warn { color: #fbbf24; }
+
+.data-table {
+  width: 100%; border-collapse: collapse; margin: 2rem 0;
+  background: var(--c-surface); border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--c-border);
+}
+.data-table th {
+  background: var(--c-surface2); padding: 1.1rem 1.3rem; text-align: right;
+  font-weight: 700; color: var(--c-primary); font-size: 0.9rem;
+}
+.data-table td {
+  padding: 1rem 1.3rem; border-top: 1px solid var(--c-border);
+  color: var(--c-text2); font-size: 0.92rem; line-height: 1.8;
+}
+.data-table tr:hover td { background: rgba(56,189,248,0.04); }
+
+.alert {
+  padding: 1.2rem 1.5rem; border-radius: 14px; margin: 2rem 0;
+  display: flex; align-items: flex-start; gap: 0.9rem; border: 1px solid;
+  font-size: 1rem;
+}
+.alert-info { background: rgba(56,189,248,0.06); border-color: rgba(56,189,248,0.25); color: var(--c-primary); }
+.alert-warn { background: rgba(251,191,36,0.06); border-color: rgba(251,191,36,0.25); color: var(--c-warning); }
+.alert-danger { background: rgba(248,113,113,0.06); border-color: rgba(248,113,113,0.25); color: var(--c-danger); }
+.alert-success { background: rgba(52,211,153,0.06); border-color: rgba(52,211,153,0.25); color: var(--c-success); }
+.alert-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+
+.diagram-box {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 18px; padding: 2rem; margin: 2rem 0;
+}
+.diagram-step {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem 1.2rem; margin: 0.5rem 0; border-radius: 12px;
+  background: rgba(56,189,248,0.04); border: 1px solid rgba(56,189,248,0.12);
+}
+.diagram-step .num {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.95rem; flex-shrink: 0;
+}
+.diagram-step .text { font-size: 0.95rem; color: var(--c-text); line-height: 1.7; }
+.diagram-arrow { text-align: center; font-size: 1.6rem; color: var(--c-primary); margin: 0.2rem 0; }
+
+.img-wrap {
+  border-radius: 16px; overflow: hidden; margin: 2rem 0;
+  border: 1px solid var(--c-border); background: var(--c-surface);
+}
+.img-wrap img { width: 100%; height: auto; display: block; }
+.img-caption {
+  padding: 0.85rem 1.2rem; text-align: center; color: var(--c-text2);
+  font-size: 0.88rem; background: var(--c-surface); border-top: 1px solid var(--c-border);
+}
+
+.next-prev {
+  display: flex; justify-content: space-between; margin-top: 4rem;
+  padding-top: 2.5rem; border-top: 1px solid var(--c-border);
+}
+.next-prev a {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.9rem 1.8rem; border-radius: 14px;
+  text-decoration: none; font-weight: 700; transition: all 0.3s;
+}
+.next-prev .prev { color: var(--c-text2); border: 1px solid var(--c-border); }
+.next-prev .prev:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.next-prev .next {
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; box-shadow: 0 4px 15px rgba(56,189,248,0.3);
+}
+.next-prev .next:hover { transform: translateX(-3px); }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar-thumb { background: var(--c-surface2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-primary); }
+
+@media (max-width: 768px) {
+  main { padding: 5rem 1rem 2rem; }
+  .chapter-header h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">📱 أكاديمية صيانة الهواتف</a>
+  <a href="index.html" class="nav-back">← العودة للرئيسية</a>
+</nav>
+
+<main>
+
+<div class="chapter-header">
+  <div class="chapter-num">12</div>
+  <h1>تخطي حساب جوجل بعد الفورمات</h1>
+  <p>FRP Bypass — كل الطرق المجانية والمدفوعة لتخطي حساب Google بعد Factory Reset</p>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١: ما هو FRP -->
+<!-- ================================================================ -->
+<h2>🔐 ما هو FRP؟ ولماذا يظهر بعد الفورمات؟</h2>
+
+<div class="img-wrap">
+  <img src="images/3_What_Is_Google_FRP_and_How_to_Bypass.png" alt="FRP Lock">
+  <div class="img-caption">شاشة FRP — تطلب حساب Google الذي كان على الجهاز قبل الفورمات</div>
+</div>
+
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div>
+    <strong>FRP = Factory Reset Protection</strong> (حماية إعادة ضبط المصنع). ظهرت من <strong>Android 5.1</strong> فما فوق. عندما تعمل Factory Reset من Recovery (وليس من داخل النظام)، يطلب منك الهاتف بعد الإقلاع <strong>حساب Google الذي كان مسجلاً على الهاتف قبل إعادة الضبط</strong>. هذا يمنع اللص من مسح الهاتف واستخدامه.
+  </div>
+</div>
+
+<h3>📋 متى يظهر FRP؟</h3>
+<ul style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+  <li>✅ عملت Factory Reset من <strong>Recovery Mode</strong></li>
+  <li>✅ عملت Factory Reset من <strong>Google Find My Device</strong> عن بعد</li>
+  <li>✅ مسحت الهاتف عبر <strong>ADB</strong> أو <strong>Fastboot</strong></li>
+  <li>❌ عملت Factory Reset من <strong>داخل النظام</strong> (الإعدادات > نسخ احتياطي > إعادة ضبط) — هذا لا يظهر FRP!</li>
+</ul>
+
+<div class="alert alert-success">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>كيف تتجنب FRP قبل الفورمات؟</strong> اذهب إلى الإعدادات > الحسابات > Google > <strong>احذف حساب Google</strong> أولاً. ثم اعمل Factory Reset. بهذه الطريقة لن يظهر FRP أبداً.
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٢: الطرق القانونية -->
+<!-- ================================================================ -->
+<h2>🟢 الطرق القانونية (الأفضل والأسهل)</h2>
+
+<table class="data-table">
+  <tr>
+    <th>الطريقة</th>
+    <th>الوصف</th>
+    <th>تمسح البيانات؟</th>
+    <th>معدل النجاح</th>
+  </tr>
+  <tr>
+    <td><strong>أدخل حساب Google الأصلي</strong></td>
+    <td>ببساطة أدخل البريد وكلمة المرور اللذين كانا على الجهاز</td>
+    <td>❌ لا</td>
+    <td>١٠٠٪ ✅</td>
+  </tr>
+  <tr>
+    <td><strong>استعادة كلمة مرور Google</strong></td>
+    <td>إذا نسيت كلمة المرور، استعدها من google.com/accounts/recovery</td>
+    <td>❌ لا</td>
+    <td>٨٠٪ ✅</td>
+  </tr>
+  <tr>
+    <td><strong>انتظر ٢٤-٧٢ ساعة</strong></td>
+    <td>إذا غيرت كلمة المرور مؤخراً، انتظر ٢٤ ساعة قبل استخدام الحساب الجديد</td>
+    <td>❌ لا</td>
+    <td>٧٠٪ ✅</td>
+  </tr>
+  <tr>
+    <td><strong>اتصل بالبائع</strong></td>
+    <td>إذا اشتريت الهاتف مستعملاً، اطلب من البائع حساب Google</td>
+    <td>❌ لا</td>
+    <td>متغير</td>
+  </tr>
+</table>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>معلومة مهمة:</strong> جوجل لديها "فترة سماح" ٢٤-٧٢ ساعة بعد تغيير كلمة المرور. إذا غيرت كلمة المرور ثم حاولت استخدامها لفتح FRP، قد لا تعمل. انتظر ٢٤ ساعة على الأقل.
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٣: الطريقة اليدوية القديمة -->
+<!-- ================================================================ -->
+<h2>🟡 الطرق اليدوية — Android 5 إلى 9</h2>
+
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div>هذه الطرق كانت تعمل على Android 5-9. في Android 10+، Google سدت معظم هذه الثغرات. لكني سأشرحها لأنها قد تعمل على بعض الأجهزة القديمة.</div>
+</div>
+
+<h3>📋 الطريقة ١: TalkBack Method (Android 5-6)</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">FRP Bypass — TalkBack Method (Android 5-6)</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 خطوات تخطي FRP عبر TalkBack:</span>
+
+<span class="comment"># ١. على شاشة الترحيب (Welcome)، اضغط مطولاً بإصبعين لتفعيل TalkBack</span>
+
+<span class="comment"># ٢. ارسم حرف L على الشاشة: اسحب لأسفل ثم لليمين في حركة واحدة</span>
+<span class="comment">#    هذا يفتح Global Context Menu</span>
+
+<span class="comment"># ٣. اختر "TalkBack Settings"</span>
+
+<span class="comment"># ٤. اختر "Help & Feedback"</span>
+
+<span class="comment"># ٥. اضغط على أي فيديو YouTube — هذا يفتح تطبيق YouTube</span>
+
+<span class="comment"># ٦. في YouTube: اضغط على أيقونة المشاركة > Chrome</span>
+
+<span class="comment"># ٧. في Chrome: اكتب هذا الرابط لتحميل تطبيق تجاوز FRP:
+#    bit.ly/frpbypass (أو ابحث عن "FRP Bypass APK")</span>
+
+<span class="comment"># ٨. ثبّت التطبيق > افتحه > اضغط على "Google Account Manager"</span>
+
+<span class="comment"># ٩. أضف حساباً جديداً > أعد التشغيل > تم!</span></pre>
+</div>
+
+<h3>📋 الطريقة ٢: Google Assistant Method (Android 7-8)</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">FRP Bypass — Google Assistant Method (Android 7-8)</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 خطوات تخطي FRP عبر Google Assistant:</span>
+
+<span class="comment"># ١. على شاشة تسجيل الدخول، اضغط على "إنشاء حساب جديد"</span>
+
+<span class="comment"># ٢. في شاشة الاسم، اضغط مطولاً على أي حقل نصي</span>
+
+<span class="comment"># ٣. من القائمة المنبثقة، اختر "Assist" أو "Google Assistant"</span>
+
+<span class="comment"># ٤. قل "Open Chrome" أو اكتبه</span>
+
+<span class="comment"># ٥. في Chrome: حمل تطبيق "QuickShortcutMaker"</span>
+
+<span class="comment"># ٦. افتح التطبيق > ابحث عن "Google Account Manager"</span>
+
+<span class="comment"># ٧. اختر "Type Email and Password"</span>
+
+<span class="comment"># ٨. أدخل حساباً جديداً > أعد التشغيل > تم!</span></pre>
+</div>
+
+<h3>📋 الطريقة ٣: كيبورد الإعدادات (Android 8-9)</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">FRP Bypass — Settings Keyboard Method (Android 8-9)</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 خطوات تخطي FRP عبر إعدادات الكيبورد:</span>
+
+<span class="comment"># ١. على شاشة WiFi، اختر أي شبكة</span>
+
+<span class="comment"># ٢. في حقل كلمة مرور WiFi، اضغط مطولاً</span>
+
+<span class="comment"># ٣. اختر "Settings" أو "Language" من القائمة</span>
+
+<span class="comment"># ٤. هذا يفتح إعدادات الكيبورد</span>
+
+<span class="comment"># ٥. ابحث عن "Help" أو "Feedback" أو "About"</span>
+
+<span class="comment"># ٦. افتح Chrome من هناك</span>
+
+<span class="comment"># ٧. حمل تطبيق FRP Bypass أو QuickShortcutMaker</span>
+
+<span class="comment"># ٨. أضف حساباً جديداً > تم!</span></pre>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٤: FRP Android 10+ -->
+<!-- ================================================================ -->
+<h2>🔴 FRP في Android 10+ — الواقع الصعب</h2>
+
+<div class="alert alert-danger">
+  <span class="alert-icon">🚨</span>
+  <div>
+    <strong>الحقيقة:</strong> في Android 10 فما فوق، Google سدت <strong>كل الثغرات اليدوية</strong> تقريباً. الطرق القديمة (TalkBack، Google Assistant، Keyboard) لم تعد تعمل على معظم الأجهزة الحديثة. الحلول المتاحة الآن هي:
+    <ul style="margin-top:0.5rem; padding-right:1.2rem;">
+      <li><strong>أدوات مدفوعة</strong> — الطريقة الوحيدة الموثوقة</li>
+      <li><strong>EDL Mode (Qualcomm)</strong> — مسح أقسام FRP</li>
+      <li><strong>Combination Firmware (Samsung)</strong> — تفليش نظام خاص</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٥: FRP Samsung — الطرق الخاصة -->
+<!-- ================================================================ -->
+<h2>🔷 تخطي FRP على أجهزة Samsung</h2>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>Samsung هي الأسهل في تخطي FRP</strong> لأنها تملك عدة طرق خاصة لا تتوفر لغيرها. إذا كان جهازك Samsung، جرب هذه الطرق أولاً.
+  </div>
+</div>
+
+<h3>📋 الطريقة ١: SamFw FRP Tool (مجاني — الأسهل)</h3>
+<div class="diagram-box">
+  <h4 style="margin-top:0; color:var(--c-success);">🟢 SamFw FRP Tool — أسهل طريقة لـ Samsung</h4>
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>حمل SamFw FRP Tool</strong> من <a href="https://samfw.com/" target="_blank" style="color:var(--c-primary);">samfw.com</a> (مجاني تماماً).</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>شغّل الأداة</strong> على الكمبيوتر. اختر طراز جهازك من القائمة.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>ادخل Download Mode:</strong> أطفئ الهاتف > خفض صوت + باور (أو خفض صوت + Bixby + باور).</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text"><strong>وصل الهاتف بالكمبيوتر.</strong> في SamFw Tool، اضغط على <strong>Remove FRP</strong>.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">5</div>
+    <div class="text"><strong>انتظر حتى ينتهي.</strong> الهاتف سيعيد التشغيل بدون FRP!</div>
+  </div>
+</div>
+
+<div class="alert alert-success">
+  <span class="alert-icon">✅</span>
+  <div>SamFw Tool تعمل على معظم أجهزة Samsung الحديثة (Android 10/11/12/13/14). وهي <strong>مجانية تماماً</strong>.</div>
+</div>
+
+<h3>📋 الطريقة ٢: Combination Firmware (طريقة المصنع)</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">Samsung — Combination Firmware Method</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ما هو Combination Firmware؟
+# هو نظام تشخيص خاص بسامسونج يستخدمه الفنيون في مراكز الصيانة.
+# هذا النظام لا يحتوي على FRP، ويمكنك من خلاله حذف حساب Google.</span>
+
+<span class="comment"># الخطوات:</span>
+<span class="comment"># ١. حمل Combination Firmware لطراز جهازك (ابحث في Google:
+#    "SM-XXXXX combination firmware")</span>
+
+<span class="comment"># ٢. فلشه عبر Odin:
+#    - ادخل Download Mode
+#    - في Odin، ضع ملف Combination في AP
+#    - اضغط Start</span>
+
+<span class="comment"># ٣. بعد الإقلاع، أنت في نظام تشخيص خالٍ من FRP</span>
+
+<span class="comment"># ٤. اذهب إلى الإعدادات > احذف حساب Google</span>
+
+<span class="comment"># ٥. فلش النظام الرسمي مرة أخرى</span>
+
+<span class="comment"># ⚠️ Combination Firmware خاص بكل طراز. لا تستخدم واحداً لطراز مختلف!</span></pre>
+</div>
+
+<h3>📋 الطريقة ٣: حساب Samsung (إذا كان مسجلاً)</h3>
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>إذا كان الهاتف مربوطاً بحساب Samsung:</strong> يمكنك فتحه عن بعد من <a href="https://findmymobile.samsung.com" target="_blank" style="color:var(--c-primary);">findmymobile.samsung.com</a>. هذه الطريقة لا تمسح البيانات وتزيل FRP فوراً.
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٦: FRP عبر EDL Mode (Qualcomm) -->
+<!-- ================================================================ -->
+<h2>💀 تخطي FRP عبر EDL Mode — أجهزة Qualcomm</h2>
+
+<div class="alert alert-danger">
+  <span class="alert-icon">🚨</span>
+  <div>
+    <strong>هذه طريقة متقدمة.</strong> تحتاج EDL Mode (راجع الفصل ١٠). إذا لم تكن مرتاحاً مع EDL، استخدم الأدوات المدفوعة بدلاً من ذلك.
+  </div>
+</div>
+
+<h3>📋 خطوات مسح FRP عبر QFIL:</h3>
+<div class="diagram-box">
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>ادخل EDL Mode</strong> (9008) عبر Test Points أو EDL Cable.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>افتح QFIL.</strong> اختر Flat Build. حمل Programmer File المناسب لجهازك.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>اذهب إلى Tools > Partition Manager.</strong> انتظر حتى تظهر قائمة الأقسام.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text"><strong>ابحث عن هذه الأقسام وامسحها (Erase):</strong>
+    <ul style="margin-top:0.5rem; padding-right:1.2rem;">
+      <li><code>frp</code> — هذا هو الهدف الرئيسي</li>
+      <li><code>persist</code> — بحذر! يحتوي على WiFi/BT MAC</li>
+      <li><code>misc</code></li>
+    </ul>
+    </div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">5</div>
+    <div class="text"><strong>أعد التشغيل.</strong> FRP يجب أن يكون محذوفاً.</div>
+  </div>
+</div>
+
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div>
+    <strong>تحذير:</strong> لا تمسح <code>persist</code> إلا إذا كنت مضطراً. مسح persist = فقدان WiFi MAC و Bluetooth Address. إذا مسحته، ستحتاج لإعادة كتابته لاحقاً.
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٧: FRP MediaTek -->
+<!-- ================================================================ -->
+<h2>🔧 تخطي FRP على أجهزة MediaTek</h2>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">MediaTek — Format FRP Partition via SP Flash Tool</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 تخطي FRP على MediaTek عبر SP Flash Tool:</span>
+
+<span class="comment"># ١. حمل SP Flash Tool + ROM مع Scatter File لجهازك</span>
+
+<span class="comment"># ٢. افتح SP Flash Tool > اختر Scatter File</span>
+
+<span class="comment"># ٣. في علامة التبويب Format (وليس Download!)</span>
+
+<span class="comment"># ٤. اختر Manual Format</span>
+
+<span class="comment"># ٥. في Region: أدخل العنوان والحجم لقسم FRP
+#    (تجد هذه المعلومات في Scatter File)</span>
+
+<span class="comment"># ٦. اضغط Start > وصل الهاتف مطفأ</span>
+
+<span class="comment"># ٧. بعد الانتهاء: أعد التشغيل. FRP محذوف.</span>
+
+<span class="comment"># ⚠️⚠️⚠️ تحذير خطير:
+# لا تستخدم Format Whole Flash أبداً!
+# هذا يمسح كل شيء بما فيها IMEI و NVRAM!
+# استخدم Manual Format لقسم FRP فقط!</span></pre>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٨: أدوات مدفوعة لتخطي FRP -->
+<!-- ================================================================ -->
+<h2>🟠 أدوات مدفوعة لتخطي FRP</h2>
+
+<p>إذا لم تنجح أي من الطرق المجانية، هذه هي الأدوات المدفوعة الموثوقة:</p>
+
+<table class="data-table">
+  <tr>
+    <th>الأداة</th>
+    <th>الأجهزة المدعومة</th>
+    <th>التكلفة</th>
+    <th>طريقة العمل</th>
+    <th>الموثوقية</th>
+  </tr>
+  <tr>
+    <td><strong>SamFw FRP Tool</strong></td>
+    <td>Samsung</td>
+    <td>مجاني ✅</td>
+    <td>Download Mode + إزالة FRP</td>
+    <td>⭐⭐⭐⭐⭐ عالية جداً</td>
+  </tr>
+  <tr>
+    <td><strong>Chimera Tool</strong></td>
+    <td>Samsung, Huawei, LG, Xiaomi, Motorola</td>
+    <td>~$150/سنة</td>
+    <td>طرق متعددة حسب الجهاز</td>
+    <td>⭐⭐⭐⭐⭐ عالية جداً</td>
+  </tr>
+  <tr>
+    <td><strong>UnlockTool</strong></td>
+    <td>Samsung, Huawei, Xiaomi, Oppo, Vivo</td>
+    <td>~$100/سنة</td>
+    <td>Download Mode / EDL / BROM</td>
+    <td>⭐⭐⭐⭐ عالية</td>
+  </tr>
+  <tr>
+    <td><strong>iToolab UnlockGo</strong></td>
+    <td>Samsung, Huawei, Xiaomi, LG</td>
+    <td>~$30</td>
+    <td>واجهة سهلة — بنقرة واحدة</td>
+    <td>⭐⭐⭐⭐ عالية</td>
+  </tr>
+  <tr>
+    <td><strong>Tenorshare 4uKey</strong></td>
+    <td>Samsung, Huawei, Xiaomi, LG</td>
+    <td>~$30</td>
+    <td>واجهة سهلة — بنقرة واحدة</td>
+    <td>⭐⭐⭐⭐ عالية</td>
+  </tr>
+  <tr>
+    <td><strong>AnyUnlock</strong></td>
+    <td>Samsung, Huawei, Xiaomi</td>
+    <td>~$30</td>
+    <td>يزيل FRP وقفل الشاشة</td>
+    <td>⭐⭐⭐ جيدة</td>
+  </tr>
+</table>
+
+<div class="alert alert-success">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>نصيحة:</strong> إذا كنت فني صيانة وتستقبل أجهزة FRP بكثرة، <strong>اشترِ اشتراك Chimera Tool السنوي</strong>. سيدفع ثمنه في أول ٣-٥ عمليات FRP.
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٩: سيناريوهات واقعية -->
+<!-- ================================================================ -->
+<h2>🎬 سيناريوهات واقعية</h2>
+
+<!-- سيناريو ١ -->
+<h3>السيناريو ١: عميل نسي حسابه — Samsung A54</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(52,211,153,0.04),rgba(56,189,248,0.04)); border-color:rgba(52,211,153,0.2);">
+  <h4 style="margin-top:0; color:var(--c-success);">🟢 الموقف:</h4>
+  <p>العميل: "سويت فورمات من الريكفري، والآن يطلب حساب جوجل. المشكلة إني ما أذكر كلمة المرور." الهاتف: Samsung A54، Android 14.</p>
+
+  <h4 style="color:var(--c-primary);">🛒 الأدوات المتاحة:</h4>
+  <p>كمبيوتر + كابل USB + SamFw FRP Tool (مجاني)</p>
+
+  <h4 style="color:var(--c-success);">✅ الحل (١٠ دقائق):</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li>دخلنا Download Mode: خفض صوت + باور</li>
+    <li>شغلنا SamFw FRP Tool على الكمبيوتر</li>
+    <li>اخترنا طراز A54 من القائمة</li>
+    <li>وصلنا USB > ضغطنا Remove FRP</li>
+    <li>انتظرنا ٣ دقائق > الهاتف أعاد التشغيل بدون FRP!</li>
+  </ol>
+  <p><strong>النتيجة:</strong> تم تخطي FRP بنجاح. <strong>التكلفة: $0.</strong> ✅</p>
+</div>
+
+<!-- سيناريو ٢ -->
+<h3>السيناريو ٢: Xiaomi Redmi Note 12 — FRP بعد فورمات</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(251,191,36,0.04),rgba(56,189,248,0.04)); border-color:rgba(251,191,36,0.2);">
+  <h4 style="margin-top:0; color:var(--c-warning);">🟡 الموقف:</h4>
+  <p>العميل: "فورمات من الريكفري. الآن يطلب حساب جوجل. جربت كل الطرق اليدوية وما نفعت." الهاتف: Xiaomi Redmi Note 12، Android 13.</p>
+
+  <h4 style="color:var(--c-primary);">🛒 الأدوات المتاحة:</h4>
+  <p>كمبيوتر + كابل USB + Chimera Tool (اشتراك سنوي)</p>
+
+  <h4 style="color:var(--c-warning);">🤔 لماذا الطرق اليدوية لم تنجح؟</h4>
+  <p>Android 13 سد كل الثغرات. TalkBack و Google Assistant لم يعودا يعملان.</p>
+
+  <h4 style="color:var(--c-success);">✅ الحل (١٥ دقيقة):</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li>فتحنا Chimera Tool على الكمبيوتر</li>
+    <li>اخترنا "Xiaomi" > "FRP Remove"</li>
+    <li>اتبعنا التعليمات: دخلنا Fastboot > وصلنا USB</li>
+    <li>Chimera تعاملت مع FRP في ٥ دقائق</li>
+    <li>الهاتف أعاد التشغيل بدون FRP</li>
+  </ol>
+  <p><strong>النتيجة:</strong> تم تخطي FRP بنجاح. <strong>التكلفة: جزء من اشتراك Chimera ($150/سنة).</strong> ✅</p>
+</div>
+
+<!-- سيناريو ٣ -->
+<h3>السيناريو ٣: هاتف مسروق؟ — تحقق قبل أن تلمس!</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(248,113,113,0.04),rgba(251,191,36,0.04)); border-color:rgba(248,113,113,0.2);">
+  <h4 style="margin-top:0; color:var(--c-danger);">🚨 الموقف:</h4>
+  <p>جاءك شخص ومعه هاتف Samsung S23 Ultra. يقول "نسيت حساب جوجل". الهاتف في حالة ممتازة. الشخص متوتر. ليس معه علبة ولا فاتورة.</p>
+
+  <h4 style="color:var(--c-danger);">🚩 علامات الخطر:</h4>
+  <ul style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li>❌ لا يوجد إثبات ملكية (علبة، فاتورة)</li>
+    <li>❌ الشخص لا يعرف أي تفاصيل عن الحساب (حتى البريد الإلكتروني)</li>
+    <li>❌ الهاتف غالي جداً وشبه جديد</li>
+    <li>❌ الشخص متوتر ويستعجل</li>
+  </ul>
+
+  <h4 style="color:var(--c-success);">✅ الإجراء الصحيح:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>اطلب إثبات الملكية.</strong> علبة، فاتورة، إيميل تأكيد شراء.</li>
+    <li><strong>إذا لم يستطع:</strong> اطلب منه فتح حسابه أمامك على الكمبيوتر (google.com/account).</li>
+    <li><strong>إذا لم يستطع:</strong> اعتذر بلطف. "لا أستطيع مساعدتك بدون إثبات ملكية. هذا القانون."</li>
+    <li><strong>لا تلمس الهاتف.</strong> في بعض الدول، إزالة FRP من هاتف مسروق = جريمة.</li>
+  </ol>
+  <p><strong>النتيجة:</strong> حميت نفسك من المسؤولية القانونية. ✅</p>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١٠: نصائح ذهبية -->
+<!-- ================================================================ -->
+<h2>💎 نصائح ذهبية لتخطي FRP</h2>
+
+<div class="alert alert-success">
+  <span class="alert-icon">✅</span>
+  <div>
+    <strong>قواعد لا تنساها:</strong>
+    <ol style="margin-top:0.5rem; padding-right:1.2rem; line-height:2.2;">
+      <li><strong>FRP = حماية من السرقة.</strong> لا تزله إلا لمالك شرعي. اطلب إثبات الملكية دائماً.</li>
+      <li><strong>جرب الحلول القانونية أولاً.</strong> حساب Google الأصلي > استعادة كلمة المرور > Find My Mobile (Samsung).</li>
+      <li><strong>Samsung = الأسهل.</strong> SamFw Tool مجاني ويعمل على معظم الأجهزة.</li>
+      <li><strong>Android 10+ = لا طرق يدوية.</strong> لا تضيع وقتك مع TalkBack و Google Assistant على الأجهزة الحديثة.</li>
+      <li><strong>استثمر في Chimera Tool.</strong> إذا كنت فني صيانة، هذا الاشتراك سيدفع ثمنه سريعاً.</li>
+      <li><strong>لا تمسح persist في EDL.</strong> إلا إذا كنت مستعداً لإعادة كتابة WiFi MAC لاحقاً.</li>
+      <li><strong>لا Format Whole Flash في SP Flash Tool.</strong> هذا يمسح IMEI! استخدم Manual Format لقسم FRP فقط.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١١: جدول مقارنة — أفضل طريقة حسب الجهاز -->
+<!-- ================================================================ -->
+<h2>📊 أي طريقة FRP تختار؟ — حسب جهازك</h2>
+
+<table class="data-table">
+  <tr>
+    <th>الجهاز</th>
+    <th>أفضل طريقة</th>
+    <th>الخطة ب</th>
+    <th>التكلفة</th>
+  </tr>
+  <tr>
+    <td><strong>Samsung (كل الموديلات)</strong></td>
+    <td>SamFw FRP Tool</td>
+    <td>Chimera Tool</td>
+    <td>مجاني - $150/سنة</td>
+  </tr>
+  <tr>
+    <td><strong>Xiaomi (قديم — Android 9-)</strong></td>
+    <td>طرق يدوية (TalkBack/Assistant)</td>
+    <td>Chimera Tool</td>
+    <td>مجاني - $150/سنة</td>
+  </tr>
+  <tr>
+    <td><strong>Xiaomi (جديد — Android 10+)</strong></td>
+    <td>Chimera Tool / UnlockTool</td>
+    <td>EDL Mode</td>
+    <td>$100-150/سنة</td>
+  </tr>
+  <tr>
+    <td><strong>Huawei (كل الموديلات)</strong></td>
+    <td>Chimera Tool / HCU Client</td>
+    <td>مركز خدمة</td>
+    <td>$50-150</td>
+  </tr>
+  <tr>
+    <td><strong>Oppo / Realme</strong></td>
+    <td>UnlockTool</td>
+    <td>EDL Mode</td>
+    <td>$100/سنة</td>
+  </tr>
+  <tr>
+    <td><strong>Google Pixel</strong></td>
+    <td>حساب Google الأصلي</td>
+    <td>Android Flash Tool</td>
+    <td>مجاني</td>
+  </tr>
+  <tr>
+    <td><strong>OnePlus</strong></td>
+    <td>حساب Google الأصلي</td>
+    <td>MSM Download Tool</td>
+    <td>مجاني</td>
+  </tr>
+  <tr>
+    <td><strong>Qualcomm (عام)</strong></td>
+    <td>EDL + QFIL (Erase FRP)</td>
+    <td>Chimera Tool</td>
+    <td>مجاني - $150/سنة</td>
+  </tr>
+  <tr>
+    <td><strong>MediaTek (عام)</strong></td>
+    <td>SP Flash Tool (Manual Format)</td>
+    <td>Chimera Tool</td>
+    <td>مجاني - $150/سنة</td>
+  </tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- القسم ١٢: خلاصة -->
+<!-- ================================================================ -->
+<h2>🎯 خلاصة تخطي FRP</h2>
+
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(52,211,153,0.06),rgba(56,189,248,0.06)); border-color:rgba(52,211,153,0.3);">
+  <h3 style="margin-top:0; color:var(--c-success);">سلم تخطي FRP — من الأسهل للأصعب</h3>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">1</div>
+    <div class="text"><strong>تأكد من الملكية.</strong> اطلب إثباتاً. لا تتعامل مع هواتف مشبوهة.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">2</div>
+    <div class="text"><strong>جرب الحساب الأصلي.</strong> استعادة كلمة المرور > انتظر ٢٤ ساعة إذا غيرتها.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">3</div>
+    <div class="text"><strong>إذا Samsung:</strong> SamFw FRP Tool (مجاني). إذا لم ينفع: Chimera Tool.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">4</div>
+    <div class="text"><strong>إذا Qualcomm:</strong> EDL Mode > QFIL > Erase FRP partition.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">5</div>
+    <div class="text"><strong>إذا MediaTek:</strong> SP Flash Tool > Manual Format FRP. لا Format Whole Flash!</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">6</div>
+    <div class="text"><strong>حل أخير:</strong> Chimera Tool / UnlockTool (مدفوع). يعمل على كل الأجهزة تقريباً.</div>
+  </div>
+</div>
+
+<div class="next-prev">
+  <a href="chapter11.html" class="prev">← الفصل 11: إزالة قفل الشاشة</a>
+  <a href="index.html" class="next" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary)); color:#0f172a;">🏠 العودة للرئيسية →</a>
+</div>
+
+</main>
+
+</body>
+</html>

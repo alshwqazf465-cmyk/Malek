@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الفصل 11: إزالة قفل الشاشة | أكاديمية صيانة الهواتف</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg: #0f172a; --c-surface: #1e293b; --c-surface2: #334155;
+  --c-primary: #38bdf8; --c-secondary: #818cf8; --c-accent: #f472b6;
+  --c-success: #34d399; --c-warning: #fbbf24; --c-danger: #f87171;
+  --c-text: #f1f5f9; --c-text2: #94a3b8; --c-border: #334155;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Tajawal', sans-serif; background: var(--c-bg); color: var(--c-text); line-height: 1.9; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(15,23,42,0.92); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--c-border); padding: 0.75rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { font-weight: 800; font-size: 1.2rem; color: var(--c-primary); text-decoration: none; }
+.nav-back { color: var(--c-text2); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.nav-back:hover { color: var(--c-primary); }
+
+main { max-width: 1000px; margin: 0 auto; padding: 6rem 2rem 3rem; }
+
+.chapter-header {
+  text-align: center; margin-bottom: 3rem; padding: 2.5rem 2rem;
+  background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(129,140,248,0.1));
+  border-radius: 20px; border: 1px solid rgba(56,189,248,0.2);
+}
+.chapter-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 55px; height: 55px; background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; font-weight: 900; border-radius: 14px; font-size: 1.4rem; margin-bottom: 1rem;
+}
+.chapter-header h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 0.75rem; }
+.chapter-header p { color: var(--c-text2); font-size: 1.1rem; }
+
+h2 {
+  font-size: 1.8rem; font-weight: 800; margin: 3.5rem 0 2rem;
+  padding-right: 1rem; border-right: 4px solid var(--c-primary);
+  color: var(--c-text);
+}
+h3 { font-size: 1.3rem; font-weight: 700; margin: 2.5rem 0 1.2rem; color: var(--c-primary); }
+h4 { font-size: 1.1rem; font-weight: 700; margin: 2rem 0 1rem; color: var(--c-warning); }
+p { color: var(--c-text2); margin-bottom: 1rem; font-size: 1.05rem; line-height: 2; }
+
+.code-block {
+  background: #0d1117; border: 1px solid #30363d; border-radius: 14px;
+  overflow: hidden; margin: 2rem 0; direction: ltr; text-align: left;
+}
+.code-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.7rem 1.2rem; background: #161b22; border-bottom: 1px solid #30363d;
+}
+.code-title { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #8b949e; }
+.code-dots { display: flex; gap: 7px; }
+.code-dot { width: 11px; height: 11px; border-radius: 50%; }
+.code-dot.r { background: #ff5f56; } .code-dot.y { background: #ffbd2e; } .code-dot.g { background: #27c93f; }
+pre {
+  padding: 1.4rem; overflow-x: auto; font-family: 'Fira Code', monospace;
+  font-size: 0.88rem; line-height: 1.9; color: #e6edf3;
+}
+pre .comment { color: #8b949e; }
+pre .keyword { color: #ff7b72; }
+pre .string { color: #a5d6ff; }
+pre .func { color: #d2a8ff; }
+pre .num { color: #79c0ff; }
+pre .cmd { color: #7ee787; }
+pre .output { color: #a5d6ff; }
+pre .err { color: #ff7b72; }
+pre .warn { color: #fbbf24; }
+
+.data-table {
+  width: 100%; border-collapse: collapse; margin: 2rem 0;
+  background: var(--c-surface); border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--c-border);
+}
+.data-table th {
+  background: var(--c-surface2); padding: 1.1rem 1.3rem; text-align: right;
+  font-weight: 700; color: var(--c-primary); font-size: 0.9rem;
+}
+.data-table td {
+  padding: 1rem 1.3rem; border-top: 1px solid var(--c-border);
+  color: var(--c-text2); font-size: 0.92rem; line-height: 1.8;
+}
+.data-table tr:hover td { background: rgba(56,189,248,0.04); }
+
+.alert {
+  padding: 1.2rem 1.5rem; border-radius: 14px; margin: 2rem 0;
+  display: flex; align-items: flex-start; gap: 0.9rem; border: 1px solid;
+  font-size: 1rem;
+}
+.alert-info { background: rgba(56,189,248,0.06); border-color: rgba(56,189,248,0.25); color: var(--c-primary); }
+.alert-warn { background: rgba(251,191,36,0.06); border-color: rgba(251,191,36,0.25); color: var(--c-warning); }
+.alert-danger { background: rgba(248,113,113,0.06); border-color: rgba(248,113,113,0.25); color: var(--c-danger); }
+.alert-success { background: rgba(52,211,153,0.06); border-color: rgba(52,211,153,0.25); color: var(--c-success); }
+.alert-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+
+.diagram-box {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 18px; padding: 2rem; margin: 2rem 0;
+}
+.diagram-step {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem 1.2rem; margin: 0.5rem 0; border-radius: 12px;
+  background: rgba(56,189,248,0.04); border: 1px solid rgba(56,189,248,0.12);
+}
+.diagram-step .num {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.95rem; flex-shrink: 0;
+}
+.diagram-step .text { font-size: 0.95rem; color: var(--c-text); line-height: 1.7; }
+.diagram-arrow { text-align: center; font-size: 1.6rem; color: var(--c-primary); margin: 0.2rem 0; }
+
+.next-prev {
+  display: flex; justify-content: space-between; margin-top: 4rem;
+  padding-top: 2.5rem; border-top: 1px solid var(--c-border);
+}
+.next-prev a {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.9rem 1.8rem; border-radius: 14px;
+  text-decoration: none; font-weight: 700; transition: all 0.3s;
+}
+.next-prev .prev { color: var(--c-text2); border: 1px solid var(--c-border); }
+.next-prev .prev:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.next-prev .next {
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; box-shadow: 0 4px 15px rgba(56,189,248,0.3);
+}
+.next-prev .next:hover { transform: translateX(-3px); }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar-thumb { background: var(--c-surface2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-primary); }
+
+@media (max-width: 768px) {
+  main { padding: 5rem 1rem 2rem; }
+  .chapter-header h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">📱 أكاديمية صيانة الهواتف</a>
+  <a href="index.html" class="nav-back">← العودة للرئيسية</a>
+</nav>
+
+<main>
+
+<div class="chapter-header">
+  <div class="chapter-num">11</div>
+  <h1>إزالة قفل الشاشة</h1>
+  <p>نسيان كلمة المرور · النمط · PIN · بصمة · Face Unlock — حلول شاملة لكل أنواع الأقفال</p>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١: أنواع أقفال الشاشة -->
+<!-- ================================================================ -->
+<h2>🔐 أنواع أقفال الشاشة — افهم عدوك</h2>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>أول خطوة في إزالة القفل:</strong> معرفة <strong>نوع القفل</strong> و<strong>إصدار أندرويد</strong>. كل نوع له طريقة إزالة مختلفة. ما يصلح لـ PIN قد لا يصلح للنمط. وما يصلح لـ Android 9 قد لا يصلح لـ Android 14.
+  </div>
+</div>
+
+<table class="data-table">
+  <tr>
+    <th>نوع القفل</th>
+    <th>أين يُخزن؟</th>
+    <th>مستوى الأمان</th>
+    <th>سهولة الإزالة</th>
+  </tr>
+  <tr>
+    <td><strong>نمط (Pattern)</strong></td>
+    <td>ملف <code>gesture.key</code> في /data/system/</td>
+    <td>ضعيف</td>
+    <td>سهلة جداً ✅</td>
+  </tr>
+  <tr>
+    <td><strong>PIN (رقم سري)</strong></td>
+    <td>ملف <code>password.key</code> أو <code>locksettings.db</code></td>
+    <td>متوسط</td>
+    <td>سهلة ✅</td>
+  </tr>
+  <tr>
+    <td><strong>كلمة مرور (Password)</strong></td>
+    <td>ملف <code>password.key</code> أو <code>locksettings.db</code></td>
+    <td>قوي</td>
+    <td>متوسطة ⚠️</td>
+  </tr>
+  <tr>
+    <td><strong>بصمة (Fingerprint)</strong></td>
+    <td>مستشعر البصمة + /data/system/users/0/fpdata/</td>
+    <td>قوي</td>
+    <td>سهلة (بعد إزالة القفل الأساسي) ✅</td>
+  </tr>
+  <tr>
+    <td><strong>Face Unlock</strong></td>
+    <td>كاميرا أمامية + /data/system/users/0/face/</td>
+    <td>متوسط</td>
+    <td>سهلة (بعد إزالة القفل الأساسي) ✅</td>
+  </tr>
+</table>
+
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div>
+    <strong>ملاحظة مهمة:</strong> البصمة و Face Unlock هما <strong>أقفال ثانوية</strong>. بعد إعادة التشغيل، أندرويد يطلب القفل الأساسي (PIN/نمط/كلمة مرور) أولاً. لذلك إزالة القفل الأساسي = إزالة كل الأقفال.
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٢: الطريقة ١ — ADB (إذا كان USB Debugging مفعلاً) -->
+<!-- ================================================================ -->
+<h2>🟢 الطريقة ١: إزالة القفل عبر ADB (أسهل طريقة)</h2>
+
+<div class="alert alert-success">
+  <span class="alert-icon">✅</span>
+  <div>
+    <strong>شرط النجاح:</strong> يجب أن يكون <strong>USB Debugging مفعلاً</strong> على الهاتف. إذا كان مفعلاً، هذه أسهل وأسرع طريقة. لا تفقد البيانات!
+  </div>
+</div>
+
+<h3>📋 أ. إزالة النمط (Pattern):</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">إزالة قفل النمط عبر ADB</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يحذف ملف gesture.key المسؤول عن قفل النمط</span>
+
+<span class="comment"># ١. تأكد من اتصال ADB</span>
+<span class="cmd">adb</span> devices
+<span class="output">ABC123    device</span>   <span class="comment">← يجب أن يظهر device</span>
+
+<span class="comment"># ٢. ادخل Shell</span>
+<span class="cmd">adb</span> shell
+
+<span class="comment"># ٣. احذف ملف النمط</span>
+<span class="cmd">rm</span> /data/system/gesture.key
+
+<span class="comment"># ٤. أعد التشغيل</span>
+<span class="cmd">reboot</span>
+
+<span class="comment"># 📋 بعد إعادة التشغيل: سيظهر قفل النمط، لكن أي نمط سيفتحه!</span>
+<span class="comment"># ارسم أي نمط وسيدخل للهاتف.</span></pre>
+</div>
+
+<h3>📋 ب. إزالة PIN / كلمة المرور:</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">إزالة قفل PIN أو كلمة المرور عبر ADB</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 ماذا يفعل: يحذف ملفات كلمة المرور و PIN</span>
+
+<span class="cmd">adb</span> shell
+<span class="cmd">rm</span> /data/system/password.key
+<span class="cmd">rm</span> /data/system/locksettings.db
+<span class="cmd">rm</span> /data/system/locksettings.db-wal
+<span class="cmd">rm</span> /data/system/locksettings.db-shm
+<span class="cmd">reboot</span>
+
+<span class="comment"># 📋 بعد إعادة التشغيل: أدخل أي كلمة مرور أو PIN وسيفتح.</span></pre>
+</div>
+
+<h3>📋 ج. إزالة كل الأقفال دفعة واحدة (الطريقة الشاملة):</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">إزالة جميع أنواع الأقفال دفعة واحدة</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 أسهل طريقة — تمسح كل ملفات القفل دفعة واحدة</span>
+
+<span class="cmd">adb</span> shell
+<span class="cmd">rm</span> /data/system/gesture.key
+<span class="cmd">rm</span> /data/system/password.key
+<span class="cmd">rm</span> /data/system/locksettings.db
+<span class="cmd">rm</span> /data/system/locksettings.db-wal
+<span class="cmd">rm</span> /data/system/locksettings.db-shm
+<span class="cmd">rm</span> /data/system/gatekeeper.pattern.key
+<span class="cmd">rm</span> /data/system/gatekeeper.password.key
+<span class="cmd">reboot</span>
+
+<span class="comment"># ⚠️ إذا لم تنجح، جرب مع Root:</span>
+<span class="cmd">adb</span> shell
+<span class="cmd">su</span>
+<span class="cmd">rm</span> /data/system/gesture.key
+<span class="cmd">rm</span> /data/system/password.key
+<span class="cmd">rm</span> /data/system/locksettings.db
+<span class="cmd">rm</span> /data/system/locksettings.db-wal
+<span class="cmd">rm</span> /data/system/locksettings.db-shm
+<span class="cmd">rm</span> /data/system/gatekeeper.pattern.key
+<span class="cmd">rm</span> /data/system/gatekeeper.password.key
+<span class="cmd">reboot</span></pre>
+</div>
+
+<h3>📋 د. إزالة القفل عبر أمر واحد (Android 5-8):</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">أمر واحد لإزالة القفل (Android 5-8)</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 هذه الطريقة تعمل على Android 5 إلى 8 فقط</span>
+
+<span class="cmd">adb</span> shell content insert --uri content://settings/secure --bind name:s:user_setup_complete --bind value:s:1
+
+<span class="comment"># أو:</span>
+<span class="cmd">adb</span> shell am start -n com.google.android.gsf.login/
+<span class="cmd">adb</span> shell am start -n com.google.android.gsf.login.LoginActivity
+
+<span class="comment"># ثم أعد التشغيل</span>
+<span class="cmd">adb</span> reboot</pre>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٣: الطريقة ٢ — TWRP Recovery -->
+<!-- ================================================================ -->
+<h2>🟡 الطريقة ٢: إزالة القفل عبر TWRP Recovery</h2>
+
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div>
+    <strong>شرط النجاح:</strong> يجب أن يكون <strong>TWRP Recovery مثبتاً</strong> على الهاتف. إذا كان الهاتف يستخدم Recovery رسمي (Stock)، هذه الطريقة لن تعمل. تحتاج TWRP.
+  </div>
+</div>
+
+<h3>📋 خطوات إزالة القفل عبر TWRP:</h3>
+<div class="diagram-box">
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>ادخل TWRP Recovery:</strong> أطفئ الهاتف. اضغط <strong>رفع صوت + باور</strong> (أو حسب جهازك) حتى يظهر شعار TWRP.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>اذهب إلى Advanced > File Manager.</strong> هذا يفتح متصفح ملفات داخل TWRP.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>انتقل إلى المجلد:</strong> <code>/data/system/</code></div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text"><strong>احذف الملفات التالية</strong> (اختر الملف واضغط Delete):
+    <ul style="margin-top:0.5rem; padding-right:1.2rem;">
+      <li><code>gesture.key</code> — لقفل النمط</li>
+      <li><code>password.key</code> — لكلمة المرور</li>
+      <li><code>locksettings.db</code> — قاعدة بيانات الأقفال</li>
+      <li><code>locksettings.db-wal</code></li>
+      <li><code>locksettings.db-shm</code></li>
+      <li><code>gatekeeper.pattern.key</code></li>
+      <li><code>gatekeeper.password.key</code></li>
+    </ul>
+    </div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">5</div>
+    <div class="text"><strong>أعد التشغيل:</strong> Reboot > System. بعد الإقلاع، أي قفل سيفتح.</div>
+  </div>
+</div>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>بديل أسهل:</strong> في TWRP، اذهب إلى <strong>Advanced > Terminal</strong> واكتب:
+    <pre style="margin-top:0.5rem;"><span class="cmd">rm</span> /data/system/gesture.key
+<span class="cmd">rm</span> /data/system/password.key
+<span class="cmd">rm</span> /data/system/locksettings.db
+<span class="cmd">rm</span> /data/system/locksettings.db-wal
+<span class="cmd">rm</span> /data/system/locksettings.db-shm
+<span class="cmd">rm</span> /data/system/gatekeeper.pattern.key
+<span class="cmd">rm</span> /data/system/gatekeeper.password.key
+<span class="cmd">reboot</span></pre>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٤: الطريقة ٣ — Safe Mode -->
+<!-- ================================================================ -->
+<h2>🟢 الطريقة ٣: تجاوز القفل عبر Safe Mode</h2>
+
+<div class="alert alert-success">
+  <span class="alert-icon">✅</span>
+  <div>
+    <strong>هذه الطريقة تعمل فقط إذا:</strong> القفل موضوع بواسطة <strong>تطبيق خارجي</strong> (وليس قفل النظام). تطبيقات قفل الشاشة الخارجية تُعطّل في Safe Mode.
+  </div>
+</div>
+
+<h3>📋 خطوات الدخول إلى Safe Mode:</h3>
+<div class="diagram-box">
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>اضغط مطولاً على زر التشغيل</strong> حتى تظهر قائمة Power Off / Restart.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>اضغط مطولاً على "Power Off"</strong> (وليس الزر، بل الكلمة على الشاشة).</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>ستظهر نافذة "Reboot to Safe Mode".</strong> اضغط OK.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text"><strong>بعد الإقلاع،</strong> ستظهر كلمة "Safe Mode" في أسفل الشاشة. كل تطبيقات الطرف الثالث معطلة.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">5</div>
+    <div class="text"><strong>إذا اختفى القفل:</strong> اذهب للإعدادات > التطبيقات > ابحث عن تطبيق القفل > احذفه.</div>
+  </div>
+</div>
+
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div>Safe Mode <strong>لا يزيل قفل النظام</strong> (PIN/نمط/كلمة مرور). يزيل فقط أقفال التطبيقات الخارجية.</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٥: الطريقة ٤ — Samsung Find My Mobile -->
+<!-- ================================================================ -->
+<h2>🔵 الطريقة ٤: فتح القفل عبر Samsung Find My Mobile</h2>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>شرط النجاح:</strong> الجهاز يجب أن يكون <strong>مرتبطاً بحساب Samsung</strong> ومتصلاً بالإنترنت (WiFi أو بيانات). هذه الطريقة تعمل فقط على أجهزة Samsung.
+  </div>
+</div>
+
+<h3>📋 خطوات فتح القفل عن بعد:</h3>
+<div class="diagram-box">
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>افتح متصفحاً</strong> على أي جهاز (كمبيوتر أو هاتف آخر). اذهب إلى: <a href="https://findmymobile.samsung.com" target="_blank" style="color:var(--c-primary);">findmymobile.samsung.com</a></div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>سجل الدخول</strong> بنفس حساب Samsung الموجود على الهاتف المقفول.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>في القائمة اليسرى،</strong> اختر <strong>Unlock</strong> (إلغاء القفل).</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text"><strong>أدخل كلمة مرور حساب Samsung</strong> للتأكيد. اضغط Unlock.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">5</div>
+    <div class="text"><strong>سيتم إزالة القفل عن بعد.</strong> الهاتف سيبقى مفتوحاً (بدون قفل) حتى تعيد تعيين قفل جديد.</div>
+  </div>
+</div>
+
+<div class="alert alert-success">
+  <span class="alert-icon">✅</span>
+  <div>هذه الطريقة <strong>لا تمسح البيانات</strong> وتحافظ على كل شيء. إنها الطريقة المثالية لأجهزة Samsung.</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٦: الطريقة ٥ — Google Find My Device -->
+<!-- ================================================================ -->
+<h2>🔵 الطريقة ٥: مسح القفل عبر Google Find My Device</h2>
+
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div>
+    <strong>تنبيه:</strong> هذه الطريقة <strong>تمسح كل بيانات الهاتف</strong>! استخدمها فقط كحل أخير إذا لم تنجح أي طريقة أخرى. ستفقد الصور والتطبيقات والإعدادات.
+  </div>
+</div>
+
+<h3>📋 خطوات مسح الهاتف عن بعد (يفتح القفل):</h3>
+<div class="diagram-box">
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>افتح متصفحاً</strong> واذهب إلى: <a href="https://www.google.com/android/find" target="_blank" style="color:var(--c-primary);">google.com/android/find</a></div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>سجل الدخول</strong> بنفس حساب Google الموجود على الهاتف المقفول.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>اختر جهازك</strong> من القائمة. يجب أن يكون متصلاً بالإنترنت.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text"><strong>اختر "Erase Device"</strong> (مسح الجهاز). هذا سيمسح كل شيء ويزيل القفل.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">5</div>
+    <div class="text"><strong>بعد المسح،</strong> الهاتف سيكون مفتوحاً (بدون قفل). لكن كل البيانات ضاعت.</div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٧: الطريقة ٦ — Recovery Mode (Factory Reset) -->
+<!-- ================================================================ -->
+<h2>🔴 الطريقة ٦: مسح القفل عبر Recovery Mode (Factory Reset)</h2>
+
+<div class="alert alert-danger">
+  <span class="alert-icon">🚨</span>
+  <div>
+    <strong>تحذير:</strong> هذه الطريقة <strong>تمسح كل بيانات الهاتف</strong>! لكنها تعمل على <strong>جميع الأجهزة</strong> وتزيل أي نوع قفل. إذا لم تنجح أي طريقة أخرى، هذا هو الحل.
+  </div>
+</div>
+
+<h3>📋 خطوات الدخول إلى Recovery وعمل Factory Reset:</h3>
+<div class="diagram-box">
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>أطفئ الهاتف تماماً.</strong> إذا لم يستجب زر الباور، انتظر حتى تخلص البطارية.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>ادخل Recovery Mode:</strong> اضغط الأزرار حسب جهازك:
+    <ul style="margin-top:0.5rem; padding-right:1.2rem;">
+      <li><strong>Samsung:</strong> رفع صوت + Bixby + باور</li>
+      <li><strong>Xiaomi:</strong> رفع صوت + باور</li>
+      <li><strong>OnePlus:</strong> خفض صوت + باور</li>
+      <li><strong>Google Pixel:</strong> خفض صوت + باور</li>
+      <li><strong>Huawei:</strong> رفع صوت + باور</li>
+      <li><strong>معظم الأجهزة:</strong> رفع صوت + باور</li>
+    </ul>
+    </div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>في قائمة Recovery:</strong> استخدم أزرار الصوت للتنقل. اختر <strong>"Wipe data/factory reset"</strong>. اضغط زر الباور للتأكيد.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text"><strong>اختر "Factory data reset"</strong> أو "Yes" للتأكيد. انتظر حتى ينتهي.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">5</div>
+    <div class="text"><strong>اختر "Reboot system now".</strong> الهاتف سيقلع بدون قفل.</div>
+  </div>
+</div>
+
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div>
+    <strong>تنبيه مهم:</strong> بعد Factory Reset على Android 5.1+، سيواجهك <strong>FRP Lock</strong> (يطلب حساب Google القديم). هذه حماية من السرقة. إذا كان الهاتف لك، أدخل حساب Google الذي كان على الجهاز. إذا لم تتذكره، راجع الفصل ١٠ (قسم FRP).
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٨: الطريقة ٧ — إزالة قفل Samsung (طرق خاصة) -->
+<!-- ================================================================ -->
+<h2>🔷 الطريقة ٧: إزالة قفل Samsung — طرق خاصة</h2>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>سامسونج لها طرق خاصة</strong> لا تعمل مع الشركات الأخرى. إذا كان الجهاز Samsung، جرب هذه الطرق قبل الطرق العامة.
+  </div>
+</div>
+
+<h3>📋 أ. عبر Samsung Account (إذا كان مسجلاً):</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">فتح قفل Samsung عبر حساب Samsung</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 إذا كنت مسجلاً بحساب Samsung على الهاتف:</span>
+<span class="comment"># ١. على شاشة القفل، اضغط "نسيت كلمة المرور" أو "Forgot Password"</span>
+<span class="comment"># ٢. اختر "فتح عبر حساب Samsung"</span>
+<span class="comment"># ٣. أدخل بريد وكلمة مرور حساب Samsung</span>
+<span class="comment"># ٤. سيتم فتح الهاتف فوراً</span>
+<span class="comment"># هذه الطريقة لا تمسح أي بيانات!</span></pre>
+</div>
+
+<h3>📋 ب. عبر ADB + Samsung خاص:</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">إزالة قفل Samsung عبر ADB (طريقة محسنة)</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 لسامسونج تحديداً — جرب هذه الملفات الإضافية:</span>
+
+<span class="cmd">adb</span> shell
+<span class="cmd">rm</span> /data/system/gesture.key
+<span class="cmd">rm</span> /data/system/password.key
+<span class="cmd">rm</span> /data/system/locksettings.db
+<span class="cmd">rm</span> /data/system/locksettings.db-wal
+<span class="cmd">rm</span> /data/system/locksettings.db-shm
+<span class="cmd">rm</span> /data/system/gatekeeper.pattern.key
+<span class="cmd">rm</span> /data/system/gatekeeper.password.key
+
+<span class="comment"># سامسونج لديها ملفات إضافية:</span>
+<span class="cmd">rm</span> /data/system/users/0/settings_fingerprint.xml
+<span class="cmd">rm</span> /data/system/users/0/fpdata/user.db
+<span class="cmd">rm</span> /data/validity/template.db
+
+<span class="cmd">reboot</span></pre>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٩: الطريقة ٨ — إزالة القفل عبر أدوات مدفوعة -->
+<!-- ================================================================ -->
+<h2>🟠 الطريقة ٨: أدوات مدفوعة لإزالة القفل</h2>
+
+<p>إذا لم تنجح أي من الطرق المجانية، توجد أدوات مدفوعة متخصصة في إزالة أقفال الشاشة:</p>
+
+<table class="data-table">
+  <tr>
+    <th>الأداة</th>
+    <th>الأجهزة المدعومة</th>
+    <th>التكلفة</th>
+    <th>طريقة العمل</th>
+  </tr>
+  <tr>
+    <td><strong>Tenorshare 4uKey</strong></td>
+    <td>Samsung, Huawei, Xiaomi, LG</td>
+    <td>~$30</td>
+    <td>يوصل الهاتف بالكمبيوتر ويزيل القفل بنقرة واحدة</td>
+  </tr>
+  <tr>
+    <td><strong>Dr.Fone - Screen Unlock</strong></td>
+    <td>Samsung بشكل أساسي</td>
+    <td>~$30</td>
+    <td>يدخل Download Mode ويزيل القفل</td>
+  </tr>
+  <tr>
+    <td><strong>iMyFone LockWiper</strong></td>
+    <td>Samsung, Huawei, Xiaomi, Oppo</td>
+    <td>~$30</td>
+    <td>مسح كامل للقفل (يمسح البيانات)</td>
+  </tr>
+  <tr>
+    <td><strong>SamFw FRP Tool</strong></td>
+    <td>Samsung فقط</td>
+    <td>مجاني</td>
+    <td>يزيل FRP وقفل الشاشة عبر Download Mode</td>
+  </tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- القسم ١٠: سيناريوهات واقعية -->
+<!-- ================================================================ -->
+<h2>🎬 سيناريوهات واقعية</h2>
+
+<!-- سيناريو ١ -->
+<h3>السيناريو ١: نسيان النمط — USB Debugging مفعل</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(52,211,153,0.04),rgba(56,189,248,0.04)); border-color:rgba(52,211,153,0.2);">
+  <h4 style="margin-top:0; color:var(--c-success);">🟢 الموقف:</h4>
+  <p>العميل: "نسيت النمط. الهاتف Samsung A52. USB Debugging كان مفعلاً لأني كنت أستخدم ADB للتطوير."</p>
+
+  <h4 style="color:var(--c-primary);">🛒 الأدوات المتاحة:</h4>
+  <p>كمبيوتر + كابل USB + ADB مثبت (العميل مطور).</p>
+
+  <h4 style="color:var(--c-success);">✅ الحل (٣ دقائق):</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li>وصل الهاتف بالكمبيوتر</li>
+    <li><code>adb devices</code> — تأكد أن الهاتف يظهر</li>
+    <li><code>adb shell rm /data/system/gesture.key</code></li>
+    <li><code>adb shell rm /data/system/gatekeeper.pattern.key</code></li>
+    <li><code>adb reboot</code></li>
+    <li>بعد الإقلاع: ارسم أي نمط — سيفتح!</li>
+  </ol>
+  <p><strong>النتيجة:</strong> تم فتح الهاتف في ٣ دقائق. <strong>لم تفقد أي بيانات.</strong> ✅</p>
+</div>
+
+<!-- سيناريو ٢ -->
+<h3>السيناريو ٢: نسيان PIN — USB Debugging غير مفعل</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(251,191,36,0.04),rgba(56,189,248,0.04)); border-color:rgba(251,191,36,0.2);">
+  <h4 style="margin-top:0; color:var(--c-warning);">🟡 الموقف:</h4>
+  <p>العميل: "نسيت PIN. الهاتف Xiaomi Redmi Note 10. ما عمري فعلت USB Debugging."</p>
+
+  <h4 style="color:var(--c-primary);">🛒 الأدوات المتاحة:</h4>
+  <p>لا يوجد USB Debugging. لا يوجد TWRP. الهاتف Bootloader مقفول.</p>
+
+  <h4 style="color:var(--c-warning);">🤔 الخيارات المتاحة:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>Google Find My Device:</strong> إذا كان حساب Google مسجلاً والإنترنت شغالاً. لكن هذا سيمسح كل البيانات!</li>
+    <li><strong>Recovery Mode > Factory Reset:</strong> سيمسح كل البيانات.</li>
+    <li><strong>Mi Account:</strong> إذا كان مسجلاً بحساب Mi، يمكن فتحه عن بعد.</li>
+  </ol>
+
+  <h4 style="color:var(--c-success);">✅ الحل المطبق:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li>تأكدنا أن حساب Google مسجل والإنترنت شغال</li>
+    <li>ذهبنا إلى google.com/android/find</li>
+    <li>اخترنا "Erase Device" — مسح كامل</li>
+    <li>بعد المسح: الهاتف مفتوح. لكن البيانات ضاعت.</li>
+  </ol>
+  <p><strong>النتيجة:</strong> تم فتح الهاتف. <strong>لكن البيانات ضاعت.</strong> ⚠️</p>
+</div>
+
+<!-- سيناريو ٣ -->
+<h3>السيناريو ٣: هاتف Samsung مقفول — الحل الأمثل</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(56,189,248,0.04),rgba(129,140,248,0.04)); border-color:rgba(56,189,248,0.2);">
+  <h4 style="margin-top:0; color:var(--c-primary);">🔵 الموقف:</h4>
+  <p>العميل: "نسيت كلمة المرور. Samsung S22 Ultra. حساب Samsung مسجل."</p>
+
+  <h4 style="color:var(--c-primary);">🛒 الأدوات المتاحة:</h4>
+  <p>حساب Samsung مسجل. إنترنت شغال.</p>
+
+  <h4 style="color:var(--c-success);">✅ الحل (دقيقتان — بدون فقدان بيانات):</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li>فتحنا findmymobile.samsung.com على الكمبيوتر</li>
+    <li>سجلنا الدخول بحساب Samsung</li>
+    <li>اخترنا الجهاز > Unlock</li>
+    <li>أدخلنا كلمة مرور حساب Samsung للتأكيد</li>
+    <li>تم فتح الهاتف فوراً!</li>
+  </ol>
+  <p><strong>النتيجة:</strong> تم فتح الهاتف في دقيقتين. <strong>كل البيانات محفوظة.</strong> ✅</p>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١١: جدول اختيار الطريقة -->
+<!-- ================================================================ -->
+<h2>📊 أي طريقة تختار؟ — جدول مقارنة</h2>
+
+<table class="data-table">
+  <tr>
+    <th>الطريقة</th>
+    <th>تحتاج USB Debugging؟</th>
+    <th>تمسح البيانات؟</th>
+    <th>تعمل على كل الأجهزة؟</th>
+    <th>الأفضل لـ</th>
+  </tr>
+  <tr>
+    <td><strong>ADB</strong></td>
+    <td>✅ نعم</td>
+    <td>❌ لا</td>
+    <td>✅ نعم</td>
+    <td>أي جهاز مع USB Debugging مفعل</td>
+  </tr>
+  <tr>
+    <td><strong>TWRP</strong></td>
+    <td>❌ لا</td>
+    <td>❌ لا</td>
+    <td>❌ فقط مع TWRP</td>
+    <td>أجهزة عليها TWRP</td>
+  </tr>
+  <tr>
+    <td><strong>Samsung Find My Mobile</strong></td>
+    <td>❌ لا</td>
+    <td>❌ لا</td>
+    <td>❌ Samsung فقط</td>
+    <td>Samsung مع حساب Samsung</td>
+  </tr>
+  <tr>
+    <td><strong>Google Find My Device</strong></td>
+    <td>❌ لا</td>
+    <td>✅ نعم — يمسح الكل!</td>
+    <td>✅ نعم</td>
+    <td>حل أخير لأي جهاز</td>
+  </tr>
+  <tr>
+    <td><strong>Recovery Factory Reset</strong></td>
+    <td>❌ لا</td>
+    <td>✅ نعم — يمسح الكل!</td>
+    <td>✅ نعم</td>
+    <td>حل أخير (يعمل دائماً)</td>
+  </tr>
+  <tr>
+    <td><strong>Safe Mode</strong></td>
+    <td>❌ لا</td>
+    <td>❌ لا</td>
+    <td>✅ نعم</td>
+    <td>أقفال التطبيقات الخارجية فقط</td>
+  </tr>
+  <tr>
+    <td><strong>أدوات مدفوعة</strong></td>
+    <td>❌ لا</td>
+    <td>⚠️ بعضها يمسح</td>
+    <td>✅ نعم</td>
+    <td>حالات مستعصية</td>
+  </tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- القسم ١٢: نصائح ذهبية -->
+<!-- ================================================================ -->
+<h2>💎 نصائح ذهبية لإزالة أقفال الشاشة</h2>
+
+<div class="alert alert-success">
+  <span class="alert-icon">✅</span>
+  <div>
+    <strong>قواعد لا تنساها:</strong>
+    <ol style="margin-top:0.5rem; padding-right:1.2rem; line-height:2.2;">
+      <li><strong>اسأل العميل أولاً:</strong> "هل تذكر حساب Google؟ هل تذكر حساب Samsung؟" هذه الأسئلة توفر عليك ساعات.</li>
+      <li><strong>ابدأ بالطرق التي لا تمسح البيانات.</strong> ADB > Samsung Find My Mobile > TWRP. لا تمسح الجهاز إلا كحل أخير.</li>
+      <li><strong>FRP قادم.</strong> إذا مسحت الجهاز، ستواجه FRP. تأكد أن العميل يعرف حساب Google قبل المسح.</li>
+      <li><strong>USB Debugging صديقك.</strong> فعّله دائماً على هاتفك الشخصي. قد ينقذك يوماً ما.</li>
+      <li><strong>سجّل حساب Samsung.</strong> إذا كنت تستخدم Samsung، سجل حساباً. Find My Mobile مجاني وينقذك بدون فقدان بيانات.</li>
+      <li><strong>لا تثق بالأدوات "المعجزة".</strong> أي أداة تدعي "فتح أي هاتف في ثوانٍ" = غالباً احتيال.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١٣: خلاصة -->
+<!-- ================================================================ -->
+<h2>🎯 خلاصة إزالة قفل الشاشة</h2>
+
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(52,211,153,0.06),rgba(56,189,248,0.06)); border-color:rgba(52,211,153,0.3);">
+  <h3 style="margin-top:0; color:var(--c-success);">سلم إزالة القفل — من الأسهل للأصعب</h3>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">1</div>
+    <div class="text"><strong>اسأل العميل:</strong> هل تتذكر حساب Google/Samsung؟ هل USB Debugging مفعل؟</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">2</div>
+    <div class="text"><strong>إذا USB Debugging مفعل:</strong> ADB — أسهل وأسرع طريقة. لا تفقد بيانات.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">3</div>
+    <div class="text"><strong>إذا Samsung:</strong> Find My Mobile — مجاني ولا يمسح البيانات.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">4</div>
+    <div class="text"><strong>إذا TWRP مثبت:</strong> File Manager — احذف ملفات القفل. لا تفقد بيانات.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">5</div>
+    <div class="text"><strong>حل أخير:</strong> Google Find My Device أو Recovery Factory Reset. سيمسح البيانات لكنه يعمل دائماً.</div>
+  </div>
+</div>
+
+<div class="next-prev">
+  <a href="chapter10.html" class="prev">← الفصل 10: حالات خاصة</a>
+  <a href="index.html" class="next" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary)); color:#0f172a;">🏠 العودة للرئيسية →</a>
+</div>
+
+</main>
+
+</body>
+</html>
