@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الفصل 10: حالات خاصة | أكاديمية صيانة الهواتف</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg: #0f172a; --c-surface: #1e293b; --c-surface2: #334155;
+  --c-primary: #38bdf8; --c-secondary: #818cf8; --c-accent: #f472b6;
+  --c-success: #34d399; --c-warning: #fbbf24; --c-danger: #f87171;
+  --c-text: #f1f5f9; --c-text2: #94a3b8; --c-border: #334155;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Tajawal', sans-serif; background: var(--c-bg); color: var(--c-text); line-height: 1.9; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(15,23,42,0.92); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--c-border); padding: 0.75rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { font-weight: 800; font-size: 1.2rem; color: var(--c-primary); text-decoration: none; }
+.nav-back { color: var(--c-text2); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.nav-back:hover { color: var(--c-primary); }
+
+main { max-width: 1000px; margin: 0 auto; padding: 6rem 2rem 3rem; }
+
+.chapter-header {
+  text-align: center; margin-bottom: 3rem; padding: 2.5rem 2rem;
+  background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(129,140,248,0.1));
+  border-radius: 20px; border: 1px solid rgba(56,189,248,0.2);
+}
+.chapter-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 55px; height: 55px; background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; font-weight: 900; border-radius: 14px; font-size: 1.4rem; margin-bottom: 1rem;
+}
+.chapter-header h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 0.75rem; }
+.chapter-header p { color: var(--c-text2); font-size: 1.1rem; }
+
+h2 {
+  font-size: 1.8rem; font-weight: 800; margin: 3.5rem 0 2rem;
+  padding-right: 1rem; border-right: 4px solid var(--c-primary);
+  color: var(--c-text);
+}
+h3 { font-size: 1.3rem; font-weight: 700; margin: 2.5rem 0 1.2rem; color: var(--c-primary); }
+h4 { font-size: 1.1rem; font-weight: 700; margin: 2rem 0 1rem; color: var(--c-warning); }
+p { color: var(--c-text2); margin-bottom: 1rem; font-size: 1.05rem; line-height: 2; }
+
+.code-block {
+  background: #0d1117; border: 1px solid #30363d; border-radius: 14px;
+  overflow: hidden; margin: 2rem 0; direction: ltr; text-align: left;
+}
+.code-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.7rem 1.2rem; background: #161b22; border-bottom: 1px solid #30363d;
+}
+.code-title { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #8b949e; }
+.code-dots { display: flex; gap: 7px; }
+.code-dot { width: 11px; height: 11px; border-radius: 50%; }
+.code-dot.r { background: #ff5f56; } .code-dot.y { background: #ffbd2e; } .code-dot.g { background: #27c93f; }
+pre {
+  padding: 1.4rem; overflow-x: auto; font-family: 'Fira Code', monospace;
+  font-size: 0.88rem; line-height: 1.9; color: #e6edf3;
+}
+pre .comment { color: #8b949e; }
+pre .keyword { color: #ff7b72; }
+pre .string { color: #a5d6ff; }
+pre .func { color: #d2a8ff; }
+pre .num { color: #79c0ff; }
+pre .cmd { color: #7ee787; }
+pre .output { color: #a5d6ff; }
+pre .err { color: #ff7b72; }
+pre .warn { color: #fbbf24; }
+
+.data-table {
+  width: 100%; border-collapse: collapse; margin: 2rem 0;
+  background: var(--c-surface); border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--c-border);
+}
+.data-table th {
+  background: var(--c-surface2); padding: 1.1rem 1.3rem; text-align: right;
+  font-weight: 700; color: var(--c-primary); font-size: 0.9rem;
+}
+.data-table td {
+  padding: 1rem 1.3rem; border-top: 1px solid var(--c-border);
+  color: var(--c-text2); font-size: 0.92rem; line-height: 1.8;
+}
+.data-table tr:hover td { background: rgba(56,189,248,0.04); }
+
+.alert {
+  padding: 1.2rem 1.5rem; border-radius: 14px; margin: 2rem 0;
+  display: flex; align-items: flex-start; gap: 0.9rem; border: 1px solid;
+  font-size: 1rem;
+}
+.alert-info { background: rgba(56,189,248,0.06); border-color: rgba(56,189,248,0.25); color: var(--c-primary); }
+.alert-warn { background: rgba(251,191,36,0.06); border-color: rgba(251,191,36,0.25); color: var(--c-warning); }
+.alert-danger { background: rgba(248,113,113,0.06); border-color: rgba(248,113,113,0.25); color: var(--c-danger); }
+.alert-success { background: rgba(52,211,153,0.06); border-color: rgba(52,211,153,0.25); color: var(--c-success); }
+.alert-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+
+.diagram-box {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 18px; padding: 2rem; margin: 2rem 0;
+}
+.diagram-step {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem 1.2rem; margin: 0.5rem 0; border-radius: 12px;
+  background: rgba(56,189,248,0.04); border: 1px solid rgba(56,189,248,0.12);
+}
+.diagram-step .num {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 0.95rem; flex-shrink: 0;
+}
+.diagram-step .text { font-size: 0.95rem; color: var(--c-text); line-height: 1.7; }
+.diagram-arrow { text-align: center; font-size: 1.6rem; color: var(--c-primary); margin: 0.2rem 0; }
+
+.img-wrap {
+  border-radius: 16px; overflow: hidden; margin: 2rem 0;
+  border: 1px solid var(--c-border); background: var(--c-surface);
+}
+.img-wrap img { width: 100%; height: auto; display: block; }
+.img-caption {
+  padding: 0.85rem 1.2rem; text-align: center; color: var(--c-text2);
+  font-size: 0.88rem; background: var(--c-surface); border-top: 1px solid var(--c-border);
+}
+
+.next-prev {
+  display: flex; justify-content: space-between; margin-top: 4rem;
+  padding-top: 2.5rem; border-top: 1px solid var(--c-border);
+}
+.next-prev a {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.9rem 1.8rem; border-radius: 14px;
+  text-decoration: none; font-weight: 700; transition: all 0.3s;
+}
+.next-prev .prev { color: var(--c-text2); border: 1px solid var(--c-border); }
+.next-prev .prev:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.next-prev .next {
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; box-shadow: 0 4px 15px rgba(56,189,248,0.3);
+}
+.next-prev .next:hover { transform: translateX(-3px); }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar-thumb { background: var(--c-surface2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-primary); }
+
+@media (max-width: 768px) {
+  main { padding: 5rem 1rem 2rem; }
+  .chapter-header h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">📱 أكاديمية صيانة الهواتف</a>
+  <a href="index.html" class="nav-back">← العودة للرئيسية</a>
+</nav>
+
+<main>
+
+<div class="chapter-header">
+  <div class="chapter-num">10</div>
+  <h1>حالات خاصة</h1>
+  <p>Hard Brick · FRP · Bootloader Locked — الحلول النهائية لأصعب المشاكل</p>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١: Hard Brick -->
+<!-- ================================================================ -->
+<h2>💀 Hard Brick — الهاتف الميت تماماً</h2>
+
+<div class="alert alert-danger">
+  <span class="alert-icon">🚨</span>
+  <div>
+    <strong>ما هو Hard Brick؟</strong> هو أسوأ حالة يمكن أن يصل إليها الهاتف. لا شعار، لا شحن، لا اهتزاز، لا Fastboot، لا Recovery، لا Download Mode. الهاتف يبدو "ميتاً" تماماً. لكن <strong>لا تيأس</strong> — ٦٠٪ من الهواتف الميتة يمكن إنقاذها!
+  </div>
+</div>
+
+<h3>📋 الأسباب الأربعة الرئيسية لـ Hard Brick:</h3>
+<table class="data-table">
+  <tr>
+    <th>السبب</th>
+    <th>كيف يحدث؟</th>
+    <th>نسبة الحدوث</th>
+    <th>قابلية الإصلاح</th>
+  </tr>
+  <tr>
+    <td><strong>تفليش Bootloader خاطئ</strong></td>
+    <td>فلشت ROM لطراز مختلف. أو فلشت BL/ABOOT غير متوافق.</td>
+    <td>٤٠٪</td>
+    <td>✅ عالية (EDL/Preloader)</td>
+  </tr>
+  <tr>
+    <td><strong>انقطاع التيار أثناء التفليش</strong></td>
+    <td>الكابل انفصل، الكمبيوتر أطفئ، أو الكهرباء قطعت أثناء كتابة قسم حرج (مثل aboot أو sbl).</td>
+    <td>٣٠٪</td>
+    <td>✅ عالية (EDL/Preloader)</td>
+  </tr>
+  <tr>
+    <td><strong>تلف eMMC/UFS (ذاكرة التخزين)</strong></td>
+    <td>شريحة التخزين الداخلية تالفة فيزيائياً. لا يمكن القراءة أو الكتابة عليها.</td>
+    <td>٢٠٪</td>
+    <td>❌ منخفضة (تحتاج استبدال)</td>
+  </tr>
+  <tr>
+    <td><strong>تلف PMIC كامل</strong></td>
+    <td>دارة الطاقة محروقة بالكامل. لا يصل جهد لأي مكان في البوردة.</td>
+    <td>١٠٪</td>
+    <td>⚠️ متوسطة (استبدال PMIC)</td>
+  </tr>
+</table>
+
+<h3>🔍 كيف تفرق بين Hard Brick ومشكلة بطارية؟</h3>
+<div class="diagram-box">
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>قس البطارية بالملتيميتر.</strong> إذا 0V = البطارية تالفة (وليس Hard Brick). إذا 3.7V+ = تابع.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>جرب باور سبلاي على VBAT.</strong> إذا سحب الهاتف 0A = Hard Brick. إذا سحب 0.5A+ = المشكلة في الشاشة أو الإضاءة.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>وصل الهاتف بالكمبيوتر.</strong> راقب Device Manager. إذا ظهر "Qualcomm 9008" أو "MediaTek USB Port" = Hard Brick (لكنه قابل للإصلاح!). إذا لم يظهر شيء = تلف PMIC.</div>
+  </div>
+</div>
+
+<h3>🩺 حلول Hard Brick حسب المعالج:</h3>
+<table class="data-table">
+  <tr>
+    <th>المعالج</th>
+    <th>الوضع الذي يدخله</th>
+    <th>الأداة المطلوبة</th>
+    <th>الملفات المطلوبة</th>
+    <th>الصعوبة</th>
+  </tr>
+  <tr>
+    <td><strong>Qualcomm</strong></td>
+    <td>EDL Mode (9008)</td>
+    <td>QPST / QFIL</td>
+    <td>Programmer (firehose) + Raw XML</td>
+    <td>🔥🔥🔥 متوسطة</td>
+  </tr>
+  <tr>
+    <td><strong>MediaTek</strong></td>
+    <td>Preloader / BROM</td>
+    <td>SP Flash Tool</td>
+    <td>Scatter File + ROM</td>
+    <td>🔥🔥 سهل نسبياً</td>
+  </tr>
+  <tr>
+    <td><strong>Samsung Exynos</strong></td>
+    <td>Download Mode (نادراً ما يفقده)</td>
+    <td>Odin</td>
+    <td>BL + AP + CP + CSC</td>
+    <td>🔥🔥 سهل نسبياً</td>
+  </tr>
+  <tr>
+    <td><strong>Huawei Kirin</strong></td>
+    <td>USB COM 1.0</td>
+    <td>DC-Phoenix (مدفوع)</td>
+    <td>Board Firmware</td>
+    <td>🔥🔥🔥🔥🔥 صعبة جداً</td>
+  </tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- القسم ٢: EDL Mode -->
+<!-- ================================================================ -->
+<h2>🔌 EDL Mode (Emergency Download Mode) — منفذ Qualcomm 9008</h2>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>ما هو EDL Mode؟</strong> هو "الباب الخلفي" لكل أجهزة Qualcomm. وضع طوارئ منخفض المستوى يسمح بالكتابة مباشرة على الذاكرة حتى لو كان Bootloader تالفاً. يظهر في Device Manager كـ <strong>"Qualcomm HS-USB QDLoader 9008"</strong>.
+  </div>
+</div>
+
+<h3>📥 طرق الدخول إلى EDL Mode:</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">طرق الدخول إلى EDL Mode (Qualcomm 9008)</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 الطريقة ١: عبر ADB (إذا كان الهاتف يعمل جزئياً)</span>
+<span class="cmd">adb shell</span> su -c <span class="string">"reboot edl"</span>
+<span class="comment"># أو: adb reboot edl</span>
+
+<span class="comment"># 📌 الطريقة ٢: عبر Fastboot</span>
+<span class="cmd">fastboot</span> oem edl
+
+<span class="comment"># 📌 الطريقة ٣: Test Points (الطريقة الأكيدة للـ Hard Brick)</span>
+<span class="comment"># هذه هي الطريقة التي ستحتاجها غالباً:</span>
+<span class="comment"># ١. افتح الهاتف واكشف البوردة</span>
+<span class="comment"># ٢. ابحث عن نقطتي Test Point (عادة مكتوب عليهما TP أو موجودتين قرب eMMC)</span>
+<span class="comment"># ٣. قصر (Short) النقطتين معاً بملقط معدني</span>
+<span class="comment"># ٤. استمر في القصر ووصّل كابل USB بالكمبيوتر</span>
+<span class="comment"># ٥. انتظر ٣ ثوانٍ ثم ارفع الملقط</span>
+<span class="comment"># ٦. يجب أن يظهر "Qualcomm HS-USB QDLoader 9008" في Device Manager</span>
+
+<span class="comment"># 📌 الطريقة ٤: EDL Cable (Deep Flash Cable)</span>
+<span class="comment"># كابل USB معدّل يحتوي على زر. يمسك الزر ويوصل USB = يدخل EDL.</span>
+
+<span class="comment"># ⚠️ تحذير: Test Points تختلف من جهاز لآخر.
+# ابحث في Google Images عن "جهازك + test point edl" قبل أن تفتح.</span></pre>
+</div>
+
+<h3>🚀 خطوات التفليش عبر QFIL (بعد الدخول لـ EDL):</h3>
+<div class="diagram-box">
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>تأكد من تعريفات Qualcomm.</strong> في Device Manager يجب أن يظهر "Qualcomm HS-USB QDLoader 9008" تحت Ports (COM & LPT). إذا ظهر "Unknown Device" = ثبّت Qualcomm Drivers.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>حمل QFIL</strong> (جزء من QPST). افتحه كمسؤول.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>اختر Flat Build.</strong> في تبويب Flat Build:<br>
+    • Programmer Path: اختر ملف <code>prog_emmc_firehose_xxxx.mbn</code> الخاص بجهازك<br>
+    • Load XML: اختر <code>rawprogram0.xml</code> (يأتي مع ROM)<br>
+    • Patch XML: اختر <code>patch0.xml</code></div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text"><strong>اختر المنفذ.</strong> في الأعلى، اختر المنفذ الذي يظهر عليه الهاتف (مثلاً COM3). إذا لم يظهر = الهاتف ليس في EDL.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">5</div>
+    <div class="text"><strong>اضغط Download.</strong> يبدأ التفليش. يظهر تقدم في الأسفل. انتظر حتى ينتهي. <strong>لا تفصل الكابل!</strong></div>
+  </div>
+</div>
+
+<div class="alert alert-danger">
+  <span class="alert-icon">🚨</span>
+  <div>
+    <strong>تحذير مهم:</strong> Programmer File (firehose) يجب أن يكون <strong>مطابقاً لطراز جهازك بالضبط</strong>. استخدام ملف خاطئ = Brick دائم. ابحث في XDA Developers عن "جهازك + firehose programmer".
+  </div>
+</div>
+
+<!-- Hard Brick MediaTek -->
+<h3>🩺 Hard Brick MediaTek — حل BROM Mode:</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">SP Flash Tool — إنقاذ Hard Brick MediaTek</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 خطوات إنقاذ Hard Brick MediaTek:</span>
+
+<span class="comment"># ١. ثبت MTK VCOM Drivers (تحتاج تعطيل Driver Signature في ويندوز)</span>
+
+<span class="comment"># ٢. حمل SP Flash Tool + ROM مع Scatter File</span>
+
+<span class="comment"># ٣. افتح SP Flash Tool > اختر Scatter File</span>
+
+<span class="comment"># ٤. اختر Download Only (وليس Format All!)</span>
+
+<span class="comment"># ٥. اضغط Download</span>
+
+<span class="comment"># ٦. الآن: أطفئ الهاتف تماماً (انزع البطارية إن أمكن)</span>
+
+<span class="comment"># ٧. وصّل USB والهاتف مطفأ</span>
+
+<span class="comment"># ٨. سيتعرف SP Flash Tool على الهاتف في BROM Mode ويبدأ التفليش</span>
+
+<span class="comment"># ⚠️ إذا لم يتعرف: جرب Test Points (مثل Qualcomm)</span>
+<span class="comment"># ⚠️ لا تستخدم Format All أبداً! سيمسح IMEI و NVRAM.</span></pre>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٣: FRP -->
+<!-- ================================================================ -->
+<h2>🔐 FRP — Factory Reset Protection (حماية إعادة ضبط المصنع)</h2>
+
+<div class="img-wrap">
+  <img src="images/3_What_Is_Google_FRP_and_How_to_Bypass.png" alt="FRP Lock">
+  <div class="img-caption">شاشة FRP Lock — تطلب حساب Google الذي كان على الجهاز قبل إعادة الضبط</div>
+</div>
+
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div>
+    <strong>تنبيه مهم:</strong> FRP هو نظام حماية من Google لمنع استخدام الهاتف المسروق. ظهر منذ Android 5.1. هذا الدليل مخصص <strong>لمساعدة المالك الشرعي</strong> الذي نسي حسابه فقط. استخدام هذه المعلومات لأغراض غير قانونية جريمة.
+  </div>
+</div>
+
+<h3>📋 ما هو FRP بالضبط؟</h3>
+<p>عندما تعمل Factory Reset من Recovery (وليس من داخل النظام)، يطلب منك الهاتف بعد الإقلاع <strong>حساب Google الذي كان مسجلاً على الهاتف قبل إعادة الضبط</strong>. هذا يمنع اللص من مسح الهاتف واستخدامه. لكنه أيضاً يسبب مشكلة للمالك الشرعي إذا نسي حسابه أو اشترى هاتفاً مستعملاً مربوطاً بحساب قديم.</p>
+
+<h3>🟢 الحلول القانونية (الأفضل والأسهل):</h3>
+<table class="data-table">
+  <tr>
+    <th>الطريقة</th>
+    <th>الوصف</th>
+    <th>المتطلبات</th>
+    <th>معدل النجاح</th>
+  </tr>
+  <tr>
+    <td><strong>حساب Google الأصلي</strong></td>
+    <td>أدخل البريد الإلكتروني وكلمة المرور اللذين كانا على الجهاز</td>
+    <td>تذكر الحساب</td>
+    <td>١٠٠٪ ✅</td>
+  </tr>
+  <tr>
+    <td><strong>Samsung Find My Mobile</strong></td>
+    <td>إذا كان الجهاز مربوطاً بحساب Samsung، يمكن فتحه عن بعد من findmymobile.samsung.com</td>
+    <td>حساب Samsung + الجهاز متصل بالإنترنت</td>
+    <td>١٠٠٪ ✅</td>
+  </tr>
+  <tr>
+    <td><strong>Google Account Recovery</strong></td>
+    <td>استعادة كلمة مرور حساب Google عبر google.com/accounts/recovery</td>
+    <td>رقم هاتف أو بريد احتياطي</td>
+    <td>٨٠٪ ✅</td>
+  </tr>
+  <tr>
+    <td><strong>إثبات الملكية لمركز الخدمة</strong></td>
+    <td>اذهب لمركز خدمة معتمد (سامسونج/شاومي...) مع فاتورة الشراء. سيفتحونه لك.</td>
+    <td>فاتورة الشراء الأصلية</td>
+    <td>١٠٠٪ ✅</td>
+  </tr>
+  <tr>
+    <td><strong>الاتصال بالبائع</strong></td>
+    <td>إذا اشتريت الجهاز مستعملاً، اتصل بالبائع واطلب منه حساب Google.</td>
+    <td>تواصل مع البائع</td>
+    <td>متغير</td>
+  </tr>
+</table>
+
+<h3>🟡 الحلول التقنية (للأجهزة القديمة — Android 5 إلى 9):</h3>
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div>هذه الطرق كانت تعمل على Android 5-9. في Android 10+، Google سدت معظم هذه الثغرات وأصبحت عملية تجاوز FRP أصعب بكثير.</div>
+</div>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">FRP Bypass — Android 5-6 (TalkBack Method)</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 طريقة TalkBack (Android 5-6)</span>
+
+<span class="comment"># ١. على شاشة الترحيب، اضغط مطولاً بإصبعين لتفعيل TalkBack</span>
+
+<span class="comment"># ٢. ارسم حرف L على الشاشة (اسحب لأسفل ثم لليمين)</span>
+<span class="comment">#    هذا يفتح Global Context Menu</span>
+
+<span class="comment"># ٣. اختر TalkBack Settings</span>
+
+<span class="comment"># ٤. اختر Help & Feedback</span>
+
+<span class="comment"># ٥. اضغط على أي فيديو YouTube</span>
+<span class="comment">#    هذا يفتح تطبيق YouTube</span>
+
+<span class="comment"># ٦. في YouTube: اضغط على أيقونة المشاركة > Chrome</span>
+
+<span class="comment"># ٧. في Chrome: ابحث عن "FRP bypass apk"</span>
+<span class="comment">#    أو حمل QuickShortcutMaker</span>
+
+<span class="comment"># ٨. افتح التطبيق وابحث عن "Google Account Manager"</span>
+<span class="comment">#    أضف حساباً جديداً > أعد التشغيل</span></pre>
+</div>
+
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">FRP Bypass — Android 7-9 (QuickShortcutMaker)</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 طريقة QuickShortcutMaker (Android 7-9)</span>
+
+<span class="comment"># ١. أوصل الهاتف بشبكة WiFi</span>
+
+<span class="comment"># ٢. في شاشة تسجيل الدخول، اضغط على "إنشاء حساب"</span>
+
+<span class="comment"># ٣. في شاشة الاسم، اضغط مطولاً على أي حقل نصي</span>
+<span class="comment">#    حتى تظهر قائمة منبثقة</span>
+
+<span class="comment"># ٤. اختر "Assist" أو "Google Assistant"</span>
+
+<span class="comment"># ٥. في Google Assistant: اكتب "Open Chrome"</span>
+
+<span class="comment"># ٦. في Chrome: حمل QuickShortcutMaker APK</span>
+
+<span class="comment"># ٧. افتح QuickShortcutMaker</span>
+<span class="comment">#    ابحث عن "Google Account Manager"</span>
+
+<span class="comment"># ٨. اختر "Type Email and Password"</span>
+<span class="comment">#    أدخل حساباً جديداً</span>
+
+<span class="comment"># ٩. أعد التشغيل. الهاتف مفتوح الآن بالحساب الجديد.</span></pre>
+</div>
+
+<h3>🔴 FRP في Android 10+ (أحدث الأجهزة):</h3>
+<div class="alert alert-danger">
+  <span class="alert-icon">🚨</span>
+  <div>
+    <strong>الواقع:</strong> في Android 10+، Google جعلت FRP bypass شبه مستحيل عبر الطرق اليدوية. الحلول المتاحة حالياً:
+    <ul style="margin-top:0.5rem; padding-right:1.2rem;">
+      <li><strong>أدوات مدفوعة:</strong> Chimera Tool، UFI Box، Miracle Box — تدعم FRP bypass لأجهزة متعددة (~$100-200).</li>
+      <li><strong>سامسونج:</strong> Combination Firmware + FRP Tool (للفنيين فقط).</li>
+      <li><strong>Qualcomm:</strong> EDL Mode + FRP Partition Erase (عبر QFIL).</li>
+      <li><strong>MediaTek:</strong> SP Flash Tool + Format FRP Partition (لكن بحذر — Format All يمسح IMEI!).</li>
+    </ul>
+  </div>
+</div>
+
+<h3>🔧 FRP عبر EDL Mode (Qualcomm):</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">مسح FRP عبر QFIL (لأجهزة Qualcomm)</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 مسح FRP Partition عبر QFIL (Qualcomm)</span>
+
+<span class="comment"># ١. ادخل EDL Mode (راجع قسم Hard Brick أعلاه)</span>
+
+<span class="comment"># ٢. افتح QFIL > Flat Build</span>
+
+<span class="comment"># ٣. حمل Programmer File المناسب لجهازك</span>
+
+<span class="comment"># ٤. اختر Tools > Partition Manager</span>
+
+<span class="comment"># ٥. انتظر حتى تظهر قائمة الأقسام</span>
+
+<span class="comment"># ٦. ابحث عن الأقسام التالية واضغط عليها ثم Erase:</span>
+<span class="comment">#    - frp</span>
+<span class="comment">#    - persist (بحذر! يحتوي على WiFi/Bluetooth MAC)</span>
+<span class="comment">#    - misc</span>
+
+<span class="comment"># ٧. أعد التشغيل. FRP يجب أن يكون محذوفاً.</span>
+
+<span class="comment"># ⚠️ تحذير: لا تمسح persist إلا إذا كنت مضطراً.
+# مسح persist = فقدان WiFi MAC و Bluetooth Address.</span></pre>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٤: Bootloader Locked -->
+<!-- ================================================================ -->
+<h2>🔒 Bootloader Locked — محمل الإقلاع المقفول</h2>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>ما هو Bootloader؟</strong> هو أول برنامج يعمل عند تشغيل الهاتف. يتحقق من توقيع النظام. إذا كان مقفولاً (Locked)، يرفض تشغيل أي نظام غير موقع رسمياً من الشركة. فتحه يسمح بتثبيت ROMs مخصصة و Root.
+  </div>
+</div>
+
+<h3>📊 حالة Bootloader لكل شركة:</h3>
+<table class="data-table">
+  <tr>
+    <th>الشركة</th>
+    <th>حالة Bootloader</th>
+    <th>طريقة الفتح</th>
+    <th>القيود</th>
+  </tr>
+  <tr>
+    <td><strong>Google Pixel</strong></td>
+    <td>✅ قابل للفتح</td>
+    <td><code>fastboot flashing unlock</code></td>
+    <td>فقط إذا لم يكن Verizon model. يمسح البيانات.</td>
+  </tr>
+  <tr>
+    <td><strong>OnePlus</strong></td>
+    <td>✅ قابل للفتح</td>
+    <td><code>fastboot flashing unlock</code></td>
+    <td>أسهل شركة. فتح فوري. يمسح البيانات.</td>
+  </tr>
+  <tr>
+    <td><strong>Xiaomi</strong></td>
+    <td>✅ قابل للفتح</td>
+    <td>Mi Unlock Tool</td>
+    <td>انتظار ١٦٨ ساعة (٧ أيام). يمسح البيانات.</td>
+  </tr>
+  <tr>
+    <td><strong>Samsung</strong></td>
+    <td>✅ قابل للفتح</td>
+    <td><code>fastboot oem unlock</code> (أو في الإعدادات)</td>
+    <td>Knox eFuse يتفعل = فقدان Samsung Pay و Secure Folder للأبد.</td>
+  </tr>
+  <tr>
+    <td><strong>Motorola</strong></td>
+    <td>✅ قابل للفتح</td>
+    <td>كود فتح من موقع Motorola</td>
+    <td>يحتاج تسجيل في الموقع. الضمان يلغى.</td>
+  </tr>
+  <tr>
+    <td><strong>Sony</strong></td>
+    <td>✅ قابل للفتح</td>
+    <td>كود فتح من موقع Sony</td>
+    <td>يفقد بعض ميزات الكاميرا (DRM keys).</td>
+  </tr>
+  <tr>
+    <td><strong>Huawei</strong></td>
+    <td>❌ مغلق نهائياً</td>
+    <td>لا يوجد حل رسمي</td>
+    <td>منذ ٢٠١٨. أدوات مدفوعة فقط (غير مضمونة).</td>
+  </tr>
+  <tr>
+    <td><strong>Honor</strong></td>
+    <td>❌ مغلق نهائياً</td>
+    <td>لا يوجد حل رسمي</td>
+    <td>نفس Huawei.</td>
+  </tr>
+  <tr>
+    <td><strong>Oppo/Realme</strong></td>
+    <td>⚠️ صعب</td>
+    <td>Deep Test App + انتظار</td>
+    <td>ليس متاحاً لكل الموديلات. يحتاج موافقة.</td>
+  </tr>
+</table>
+
+<h3>⚠️ Samsung Knox eFuse:</h3>
+<div class="alert alert-danger">
+  <span class="alert-icon">🚨</span>
+  <div>
+    <strong>ما هو Knox؟</strong> هو نظام أمان من سامسونج. يحتوي على eFuse (فيوز إلكتروني). عند فتح Bootloader، <strong>يحترق هذا الفيوز فيزيائياً</strong> ولا يمكن إعادته أبداً. النتيجة:
+    <ul style="margin-top:0.5rem; padding-right:1.2rem;">
+      <li>❌ Samsung Pay يتوقف عن العمل للأبد (حتى لو أغلقت Bootloader مجدداً)</li>
+      <li>❌ Secure Folder يتوقف عن العمل للأبد</li>
+      <li>❌ بعض تطبيقات البنوك والحكومة ترفض العمل</li>
+      <li>❌ الضمان يلغى في بعض الدول</li>
+    </ul>
+    <strong>لا تفتح Bootloader في سامسونج إلا إذا كنت متأكداً أنك لا تحتاج هذه الميزات.</strong>
+  </div>
+</div>
+
+<h3>📋 أوامر فتح وقفل Bootloader:</h3>
+<div class="code-block">
+  <div class="code-header">
+    <span class="code-title">أوامر Fastboot لفتح وقفل Bootloader</span>
+    <div class="code-dots"><span class="code-dot r"></span><span class="code-dot y"></span><span class="code-dot g"></span></div>
+  </div>
+  <pre><span class="comment"># 📌 للأجهزة القديمة (Samsung, HTC, Sony)</span>
+<span class="cmd">fastboot</span> oem unlock           <span class="comment"># فتح Bootloader</span>
+<span class="cmd">fastboot</span> oem lock             <span class="comment"># قفل Bootloader</span>
+
+<span class="comment"># 📌 للأجهزة الحديثة (Pixel, OnePlus, Xiaomi, Motorola)</span>
+<span class="cmd">fastboot</span> flashing unlock      <span class="comment"># فتح Bootloader</span>
+<span class="cmd">fastboot</span> flashing lock        <span class="comment"># قفل Bootloader</span>
+
+<span class="comment"># 📌 التحقق من حالة Bootloader</span>
+<span class="cmd">fastboot</span> oem device-info      <span class="comment"># يظهر locked/unlocked</span>
+<span class="cmd">fastboot</span> getvar unlocked      <span class="comment"># yes/no</span>
+
+<span class="comment"># ⚠️⚠️⚠️ تحذير:
+# ١. فتح Bootloader يمسح كل بيانات الهاتف!
+# ٢. قفل Bootloader أيضاً يمسح كل البيانات!
+# ٣. لا تقفل Bootloader أبداً وأنت تستخدم ROM غير رسمي = Brick دائم!</span></pre>
+</div>
+
+<h3>🚀 إجراء فتح Bootloader لـ Xiaomi (الأكثر تعقيداً):</h3>
+<div class="diagram-box">
+  <h4 style="margin-top:0; color:var(--c-warning);">🔶 خطوات فتح Bootloader لـ Xiaomi</h4>
+  <div class="diagram-step">
+    <div class="num">1</div>
+    <div class="text"><strong>أنشئ حساب Mi</strong> على الهاتف. استخدمه لمدة أسبوع على الأقل. كلما كان الحساب أقدم، كانت فرصة الموافقة أعلى.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">2</div>
+    <div class="text"><strong>فعّل خيارات المطور</strong> > فعّل <strong>OEM Unlocking</strong> و <strong>USB Debugging</strong>.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">3</div>
+    <div class="text"><strong>في الإعدادات > حساب Mi > Mi Cloud</strong>، تأكد أنك مسجل الدخول.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">4</div>
+    <div class="text"><strong>حمل Mi Unlock Tool</strong> على الكمبيوتر من <a href="https://en.miui.com/unlock/" target="_blank" style="color:var(--c-primary);">en.miui.com/unlock</a>. سجل الدخول بنفس حساب Mi.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">5</div>
+    <div class="text"><strong>ادخل Fastboot</strong> (خفض صوت + باور). وصّل USB. اضغط Unlock في الأداة.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">6</div>
+    <div class="text"><strong>رسالة "انتظر ١٦٨ ساعة".</strong> هذه المدة إجبارية. لا يمكن تجاوزها. لا تفصل حساب Mi أو تعيد ضبط الهاتف أثناء الانتظار.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num">7</div>
+    <div class="text"><strong>بعد ١٦٨ ساعة</strong>، جرب مرة أخرى. هذه المرة سيتم الفتح. الهاتف سيعيد التشغيل ويمسح كل البيانات.</div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٥: سيناريوهات واقعية -->
+<!-- ================================================================ -->
+<h2>🎬 سيناريوهات واقعية</h2>
+
+<!-- سيناريو ١ -->
+<h3>السيناريو ١: هاتف مات بعد تفليش ROM خاطئ</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(248,113,113,0.04),rgba(251,191,36,0.04)); border-color:rgba(248,113,113,0.2);">
+  <h4 style="margin-top:0; color:var(--c-danger);">🧊 الموقف:</h4>
+  <p>أحدهم فلش ROM لـ Samsung Galaxy S10 (SM-G973F) على جهاز SM-G973U (نسخة أمريكية). الآن الهاتف ميت تماماً. لا Download Mode، لا شحن، شاشة سوداء.</p>
+
+  <h4 style="color:var(--c-warning);">🤔 التشخيص:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>هذا Hard Brick.</strong> Bootloader تم استبداله بآخر غير متوافق.</li>
+    <li>Samsung SM-G973U معالجها Qualcomm Snapdragon 855.</li>
+    <li>لإنقاذه: نحتاج EDL Mode.</li>
+  </ol>
+
+  <h4 style="color:var(--c-success);">✅ الحل:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li>ابحث عن Test Points لـ SM-G973U في Google Images</li>
+    <li>قصر النقطتين ووصل USB للدخول إلى EDL (9008)</li>
+    <li>في QFIL: حمل Programmer File المناسب لـ SM-G973U</li>
+    <li>حمل ROM الأصلي (Full Factory Image) لـ SM-G973U</li>
+    <li>فلش عبر QFIL. الهاتف سيعود للحياة.</li>
+  </ol>
+</div>
+
+<!-- سيناريو ٢ -->
+<h3>السيناريو ٢: عميل اشترى هاتفاً مستعملاً وفيه FRP</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(251,191,36,0.04),rgba(56,189,248,0.04)); border-color:rgba(251,191,36,0.2);">
+  <h4 style="margin-top:0; color:var(--c-warning);">📡 الموقف:</h4>
+  <p>جاءك عميل ومعه Samsung Galaxy A52. اشتراه مستعملاً من Facebook Marketplace. عمل Factory Reset والآن يطلب حساب Google القديم. البائع لا يرد.</p>
+
+  <h4 style="color:var(--c-warning);">🤔 التشخيص:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li>هذا <strong>FRP Lock.</strong> الهاتف مربوط بحساب Google الخاص بالمالك السابق.</li>
+    <li>Android 11 على هذا الجهاز = الطرق اليدوية القديمة لن تعمل.</li>
+    <li>العميل ليس لصاً — لديه إثبات شراء (محادثة Facebook). لكن هذا ليس كافياً لجوجل.</li>
+  </ol>
+
+  <h4 style="color:var(--c-success);">✅ الحلول (مرتبة من الأفضل للأسوأ):</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>الأفضل:</strong> اطلب من العميل الاتصال بالبائع مرة أخرى. حتى لو تجاهله، رسالة واحدة "سأبلغ عنك للشرطة" قد تغير رأيه.</li>
+    <li><strong>إذا لم ينفع:</strong> استخدم Chimera Tool (مدفوع) لعمل FRP Bypass لـ Samsung A52. التكلفة ~$20-30 للعملية الواحدة.</li>
+    <li><strong>بديل:</strong> Combination Firmware + SamFw FRP Tool.</li>
+    <li><strong>آخر حل:</strong> اذهب لمركز خدمة سامسونج مع إثبات الشراء (إذا كان متوفراً).</li>
+  </ol>
+</div>
+
+<!-- سيناريو ٣ -->
+<h3>السيناريو ٣: Bootloader مقفول على Huawei</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(129,140,248,0.04),rgba(244,114,182,0.04)); border-color:rgba(129,140,248,0.2);">
+  <h4 style="margin-top:0; color:var(--c-secondary);">🔒 الموقف:</h4>
+  <p>عميل يريد تفليش ROM عالمي على Huawei P30 Pro. لكن Bootloader مقفول. ذهب لموقع Huawei لطلب كود فتح — الموقع يقول "الخدمة غير متوفرة".</p>
+
+  <h4 style="color:var(--c-warning);">🤔 التشخيص:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li>Huawei أوقفت خدمة فتح Bootloader <strong>رسمياً في ٢٠١٨</strong>. لا يوجد طريق رسمي.</li>
+    <li>جميع المواقع التي تدعي "فتح Bootloader لـ Huawei" = احتيال ٩٩٪.</li>
+    <li>الحل الوحيد الموثوق: DC-Unlocker أو HCU Client (أدوات مدفوعة).</li>
+  </ol>
+
+  <h4 style="color:var(--c-success);">✅ الحل الواقعي:</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li>إذا كان العميل <strong>مصراً</strong>: استخدم HCU Client لقراءة كود فتح Bootloader (~$20).</li>
+    <li>إذا نجح: استخدم الكود مع <code>fastboot oem unlock [الكود]</code>.</li>
+    <li><strong>لكن:</strong> حتى بعد الفتح، Huawei تفتقر لدعم Custom ROM بسبب عدم توفر مصادر Kernel.</li>
+    <li><strong>نصيحة للعميل:</strong> "إذا كنت تريد حرية التعديل، اشترِ OnePlus أو Google Pixel. Huawei لم تعد خياراً للمطورين."</li>
+  </ol>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٦: نصائح ذهبية -->
+<!-- ================================================================ -->
+<h2>💎 نصائح ذهبية للحالات الخاصة</h2>
+
+<div class="alert alert-success">
+  <span class="alert-icon">✅</span>
+  <div>
+    <strong>قواعد لا تنساها:</strong>
+    <ol style="margin-top:0.5rem; padding-right:1.2rem; line-height:2.2;">
+      <li><strong>Hard Brick ليس نهاية العالم.</strong> إذا كان الكمبيوتر يتعرف على الهاتف كـ 9008 أو MTK USB Port = يمكن إنقاذه.</li>
+      <li><strong>لا تستخدم Format All أبداً.</strong> في SP Flash Tool و QFIL، هذا الخيار يمسح IMEI و NVRAM للأبد.</li>
+      <li><strong>FRP: الحلول القانونية أولاً.</strong> جرب استعادة الحساب قبل أن تلجأ للأدوات المدفوعة. ٥٠٪ من الحالات تحل مجاناً.</li>
+      <li><strong>لا تقفل Bootloader على ROM غير رسمي.</strong> Brick دائم. هذه القاعدة لا تُكسر.</li>
+      <li><strong>Huawei = تجنب.</strong> إذا كان العميل يريد تعديل نظامه، انصحه بشراء OnePlus أو Pixel. Huawei انتهت كمطور.</li>
+      <li><strong>احفظ Programmer Files.</strong> لكل جهاز Qualcomm تعمل عليه، احفظ firehose programmer. قد تحتاجه بعد سنوات.</li>
+      <li><strong>Test Points هي المفتاح.</strong> تعلم كيف تجد Test Points لأشهر الأجهزة. هذا العلم وحده يساوي ثروة.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٧: ملخص سريع — حلول الطوارئ -->
+<!-- ================================================================ -->
+<h2>🎯 ملخص سريع — حلول الطوارئ في بطاقة واحدة</h2>
+
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(248,113,113,0.06),rgba(251,191,36,0.06)); border-color:rgba(248,113,113,0.3);">
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">1</div>
+    <div class="text"><strong>Hard Brick Qualcomm:</strong> Test Points → EDL (9008) → QFIL + Programmer + Raw XML → Flash</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">2</div>
+    <div class="text"><strong>Hard Brick MediaTek:</strong> SP Flash Tool + Scatter → Download Only → وصل USB والجهاز مطفأ</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">3</div>
+    <div class="text"><strong>FRP Android 5-9:</strong> طرق يدوية (TalkBack / QuickShortcutMaker)</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">4</div>
+    <div class="text"><strong>FRP Android 10+:</strong> Chimera Tool / UFI Box / EDL Partition Erase</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-danger),var(--c-warning));">5</div>
+    <div class="text"><strong>Bootloader:</strong> Pixel/OnePlus = فتح فوري. Xiaomi = ١٦٨ ساعة. Samsung = Knox يضيع. Huawei = مستحيل.</div>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٨: خلاصة -->
+<!-- ================================================================ -->
+<h2>🎯 خلاصة الحالات الخاصة</h2>
+
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(52,211,153,0.06),rgba(56,189,248,0.06)); border-color:rgba(52,211,153,0.3);">
+  <h3 style="margin-top:0; color:var(--c-success);">القواعد الذهبية للحالات الخاصة</h3>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">1</div>
+    <div class="text"><strong>لا تيأس من Hard Brick.</strong> إذا ظهر في Device Manager = قابل للإصلاح.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">2</div>
+    <div class="text"><strong>FRP: ابدأ بالحلول القانونية.</strong> استعادة الحساب > Samsung Find My Mobile > إثبات الملكية.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">3</div>
+    <div class="text"><strong>Bootloader: اعرف عواقب الفتح.</strong> Knox، DRM Keys، الضمان — كلها قد تضيع.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">4</div>
+    <div class="text"><strong>Test Points هي سر المهنة.</strong> تعلمها لأشهر الأجهزة. هذا ما يميز الفني المحترف.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">5</div>
+    <div class="text"><strong>لا Format All أبداً.</strong> هذا الخيار يمسح IMEI. استخدم Download Only أو Firmware Upgrade.</div>
+  </div>
+</div>
+
+<div class="alert alert-info">
+  <span class="alert-icon">🎓</span>
+  <div><strong>تهانينا!</strong> لقد أكملت المنهج الذهبي لصيانة الهواتف. أنت الآن تملك أساساً متيناً في السوفتوير والهاردوير. استمر في التعلم، ومارس كل يوم، وستصبح محترفاً.</div>
+</div>
+
+<div class="next-prev">
+  <a href="chapter9.html" class="prev">← الفصل 9: أدوات ومعدات</a>
+  <a href="index.html" class="next" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary)); color:#0f172a;">🏠 العودة للرئيسية →</a>
+</div>
+
+</main>
+
+</body>
+</html>

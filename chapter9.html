@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الفصل 9: أدوات ومعدات | أكاديمية صيانة الهواتف</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg: #0f172a; --c-surface: #1e293b; --c-surface2: #334155;
+  --c-primary: #38bdf8; --c-secondary: #818cf8; --c-accent: #f472b6;
+  --c-success: #34d399; --c-warning: #fbbf24; --c-danger: #f87171;
+  --c-text: #f1f5f9; --c-text2: #94a3b8; --c-border: #334155;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Tajawal', sans-serif; background: var(--c-bg); color: var(--c-text); line-height: 1.9; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(15,23,42,0.92); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--c-border); padding: 0.75rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { font-weight: 800; font-size: 1.2rem; color: var(--c-primary); text-decoration: none; }
+.nav-back { color: var(--c-text2); text-decoration: none; font-weight: 500; transition: color 0.2s; }
+.nav-back:hover { color: var(--c-primary); }
+
+main { max-width: 1000px; margin: 0 auto; padding: 6rem 2rem 3rem; }
+
+.chapter-header {
+  text-align: center; margin-bottom: 3rem; padding: 2.5rem 2rem;
+  background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(129,140,248,0.1));
+  border-radius: 20px; border: 1px solid rgba(56,189,248,0.2);
+}
+.chapter-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 55px; height: 55px; background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; font-weight: 900; border-radius: 14px; font-size: 1.4rem; margin-bottom: 1rem;
+}
+.chapter-header h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 0.75rem; }
+.chapter-header p { color: var(--c-text2); font-size: 1.1rem; }
+
+h2 {
+  font-size: 1.8rem; font-weight: 800; margin: 3.5rem 0 2rem;
+  padding-right: 1rem; border-right: 4px solid var(--c-primary);
+  color: var(--c-text);
+}
+h3 { font-size: 1.3rem; font-weight: 700; margin: 2.5rem 0 1.2rem; color: var(--c-primary); }
+h4 { font-size: 1.1rem; font-weight: 700; margin: 2rem 0 1rem; color: var(--c-warning); }
+p { color: var(--c-text2); margin-bottom: 1rem; font-size: 1.05rem; line-height: 2; }
+
+.data-table {
+  width: 100%; border-collapse: collapse; margin: 2rem 0;
+  background: var(--c-surface); border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--c-border);
+}
+.data-table th {
+  background: var(--c-surface2); padding: 1.1rem 1.3rem; text-align: right;
+  font-weight: 700; color: var(--c-primary); font-size: 0.9rem;
+}
+.data-table td {
+  padding: 1rem 1.3rem; border-top: 1px solid var(--c-border);
+  color: var(--c-text2); font-size: 0.92rem; line-height: 1.8;
+}
+.data-table tr:hover td { background: rgba(56,189,248,0.04); }
+
+.alert {
+  padding: 1.2rem 1.5rem; border-radius: 14px; margin: 2rem 0;
+  display: flex; align-items: flex-start; gap: 0.9rem; border: 1px solid;
+  font-size: 1rem;
+}
+.alert-info { background: rgba(56,189,248,0.06); border-color: rgba(56,189,248,0.25); color: var(--c-primary); }
+.alert-warn { background: rgba(251,191,36,0.06); border-color: rgba(251,191,36,0.25); color: var(--c-warning); }
+.alert-success { background: rgba(52,211,153,0.06); border-color: rgba(52,211,153,0.25); color: var(--c-success); }
+.alert-danger { background: rgba(248,113,113,0.06); border-color: rgba(248,113,113,0.25); color: var(--c-danger); }
+.alert-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+
+.tool-card {
+  background: var(--c-surface); border: 1px solid var(--c-border);
+  border-radius: 16px; padding: 1.8rem; margin: 1.5rem 0;
+  border-right: 5px solid var(--c-primary);
+}
+.tool-card h4 { color: var(--c-primary); margin: 0 0 0.8rem 0; font-size: 1.2rem; }
+.tool-card p { color: var(--c-text2); font-size: 0.95rem; margin: 0.5rem 0; line-height: 1.9; }
+.tool-card .price { 
+  background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3);
+  border-radius: 8px; padding: 0.5rem 1rem; display: inline-block;
+  color: var(--c-success); font-weight: 700; margin: 0.5rem 0;
+}
+.tool-card .level {
+  background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3);
+  border-radius: 8px; padding: 0.5rem 1rem; display: inline-block;
+  color: var(--c-warning); font-weight: 700; margin: 0.5rem 0.5rem;
+}
+
+.img-wrap {
+  border-radius: 16px; overflow: hidden; margin: 2rem 0;
+  border: 1px solid var(--c-border); background: var(--c-surface);
+}
+.img-wrap img { width: 100%; height: auto; display: block; }
+.img-caption {
+  padding: 0.85rem 1.2rem; text-align: center; color: var(--c-text2);
+  font-size: 0.88rem; background: var(--c-surface); border-top: 1px solid var(--c-border);
+}
+
+.next-prev {
+  display: flex; justify-content: space-between; margin-top: 4rem;
+  padding-top: 2.5rem; border-top: 1px solid var(--c-border);
+}
+.next-prev a {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.9rem 1.8rem; border-radius: 14px;
+  text-decoration: none; font-weight: 700; transition: all 0.3s;
+}
+.next-prev .prev { color: var(--c-text2); border: 1px solid var(--c-border); }
+.next-prev .prev:hover { border-color: var(--c-primary); color: var(--c-primary); }
+.next-prev .next {
+  background: linear-gradient(135deg, var(--c-primary), var(--c-secondary));
+  color: #0f172a; box-shadow: 0 4px 15px rgba(56,189,248,0.3);
+}
+.next-prev .next:hover { transform: translateX(-3px); }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--c-bg); }
+::-webkit-scrollbar-thumb { background: var(--c-surface2); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--c-primary); }
+
+@media (max-width: 768px) {
+  main { padding: 5rem 1rem 2rem; }
+  .chapter-header h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">📱 أكاديمية صيانة الهواتف</a>
+  <a href="index.html" class="nav-back">← العودة للرئيسية</a>
+</nav>
+
+<main>
+
+<div class="chapter-header">
+  <div class="chapter-num">09</div>
+  <h1>أدوات ومعدات الصيانة</h1>
+  <p>برمجية + مادية + روابط تحميل + دليل الشراء للمبتدئين والمحترفين</p>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١: مقدمة -->
+<!-- ================================================================ -->
+<h2>🛠️ أدوات الصيانة — استثمر بذكاء</h2>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>قاعدة ذهبية:</strong> لا تشترِ كل الأدوات دفعة واحدة. ابدأ بالأساسيات، وكلما تعلمت مهارة جديدة، اشترِ أداتها. الأدوات الرخيصة جداً ستكلفك أكثر على المدى الطويل — قطعة أصلية واحدة تدمرها أداة رديئة = ثمن الأداة الجيدة كاملاً.
+  </div>
+</div>
+
+<div class="img-wrap">
+  <img src="images/6_Cell_Phone_Repair_Technician_s_Workstation.png" alt="ورشة صيانة محترفة">
+  <div class="img-caption">ورشة صيانة محترفة: ميكروسكوب، محطة لحام، باور سبلاي، أدوات دقيقة</div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٢: الأدوات البرمجية -->
+<!-- ================================================================ -->
+<h2>💻 الأدوات البرمجية الأساسية</h2>
+
+<p>هذه هي البرامج التي <strong>لا غنى عنها</strong> لأي فني صيانة. جميعها مجانية إلا إذا ذُكر غير ذلك:</p>
+
+<table class="data-table">
+  <tr>
+    <th>الأداة</th>
+    <th>الوظيفة</th>
+    <th>المنصات</th>
+    <th>الرابط</th>
+    <th>لماذا تحتاجها؟</th>
+  </tr>
+  <tr>
+    <td><strong>Android SDK Platform Tools</strong></td>
+    <td>ADB + Fastboot</td>
+    <td>كل الأجهزة</td>
+    <td><a href="https://developer.android.com/tools/releases/platform-tools" target="_blank" style="color:var(--c-primary);">رابط رسمي</a></td>
+    <td>أساس كل شيء. بدونها لا يوجد ADB ولا Fastboot. <strong>حمّلها أولاً.</strong></td>
+  </tr>
+  <tr>
+    <td><strong>Samsung Odin</strong></td>
+    <td>تفليش سامسونج</td>
+    <td>Samsung فقط</td>
+    <td>SamMobile / XDA</td>
+    <td>الأداة الوحيدة لتفليش سامسونج. بدونها لا يمكنك إصلاح أي Galaxy.</td>
+  </tr>
+  <tr>
+    <td><strong>Mi Flash Tool</strong></td>
+    <td>تفليش شاومي</td>
+    <td>Xiaomi فقط</td>
+    <td><a href="https://xiaomiflashtool.com/" target="_blank" style="color:var(--c-primary);">رابط</a></td>
+    <td>لتفليش Fastboot ROM على أجهزة شاومي. يحتاج Bootloader مفتوح.</td>
+  </tr>
+  <tr>
+    <td><strong>QPST / QFIL</strong></td>
+    <td>تفليش Qualcomm عبر EDL</td>
+    <td>Qualcomm</td>
+    <td><a href="https://qpstool.com/" target="_blank" style="color:var(--c-primary);">رابط</a></td>
+    <td>لإنقاذ أجهزة Qualcomm من Hard Brick. يعمل في EDL Mode (9008).</td>
+  </tr>
+  <tr>
+    <td><strong>SP Flash Tool</strong></td>
+    <td>تفليش MediaTek</td>
+    <td>MediaTek</td>
+    <td><a href="https://spflashtool.com/" target="_blank" style="color:var(--c-primary);">رابط</a></td>
+    <td>لتفليش أجهزة MediaTek (Xiaomi القديمة، Oppo، Vivo، Infinix).</td>
+  </tr>
+  <tr>
+    <td><strong>Miracle Box</strong></td>
+    <td>FRP، فتح شبكة، IMEI</td>
+    <td>متعددة</td>
+    <td>~$100</td>
+    <td>أداة مدفوعة. مفيدة لإصلاح FRP وفتح الشبكة على أجهزة متعددة.</td>
+  </tr>
+  <tr>
+    <td><strong>Chimera Tool</strong></td>
+    <td>IMEI، FRP، شبكة، إصلاح</td>
+    <td>متعددة</td>
+    <td>~$150/سنة</td>
+    <td>من أقوى الأدوات المدفوعة. تدعم Samsung و Huawei و LG و Xiaomi.</td>
+  </tr>
+  <tr>
+    <td><strong>DC-Unlocker</strong></td>
+    <td>فتح شبكة Huawei/ZTE</td>
+    <td>Huawei, ZTE, Sierra</td>
+    <td>~$50</td>
+    <td>الأداة الوحيدة الموثوقة لفتح شبكة Huawei بعد إغلاق Bootloader.</td>
+  </tr>
+  <tr>
+    <td><strong>UFI Box</strong></td>
+    <td>eMMC/UFS مباشر (ISP)</td>
+    <td>متعددة</td>
+    <td>~$200</td>
+    <td>للمحترفين فقط. يتيح قراءة وكتابة شريحة التخزين مباشرة.</td>
+  </tr>
+</table>
+
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div>
+    <strong>تحذير من أدوات "المعجزة":</strong> أي أداة تدعي "إصلاح كل المشاكل بنقرة واحدة" = غالباً احتيال. التزم بالأدوات المعروفة في المجتمع (XDA Developers، GSMHosting).
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٣: الأدوات المادية — الأساسيات -->
+<!-- ================================================================ -->
+<h2>🔧 الأدوات المادية — الأساسيات (Tier 1)</h2>
+
+<p>هذه هي <strong>أول ٥ أدوات</strong> يجب أن تشتريها. تكفي لـ ٧٠٪ من الإصلاحات:</p>
+
+<!-- أداة ١: عدة المفكات -->
+<div class="tool-card">
+  <h4>🔧 ١. عدة مفكات دقيقة (Precision Screwdriver Kit)</h4>
+  <p><strong>لماذا تحتاجها؟</strong> بدونها لا يمكنك فتح أي هاتف. تحتاج أنواعاً متعددة: Phillips #00 (معظم الهواتف)، Pentalobe (آيفون)، Tri-wing (بعض Nintendo).</p>
+  <p><strong>أفضل خيار للمبتدئين:</strong> Xiaomi Mijia Precision Screwdriver Kit (~$15) أو iFixit Essential Toolkit (~$30).</p>
+  <p><strong>نصيحة:</strong> لا تشترِ المجموعات الرخيصة جداً ($3-5). رؤوسها تتآكل بسرعة وقد تدمر رأس البرغي في أول استخدام.</p>
+  <span class="price">💰 $15-50</span>
+  <span class="level">⭐ ضرورية جداً</span>
+</div>
+
+<!-- أداة ٢: سشوار صناعي -->
+<div class="tool-card" style="border-right-color: var(--c-warning);">
+  <h4 style="color:var(--c-warning);">🌡️ ٢. سشوار صناعي (Heat Gun) — 858D أو 8786D</h4>
+  <p><strong>لماذا تحتاجه؟</strong> لتسخين الغراء حول الشاشة، إزالة ICs من البوردة، فك القطع الملتصقة. <strong>لا تستخدم سشوار شعر عادي</strong> — حرارته غير منتظمة وقد تحرق الشاشة.</p>
+  <p><strong>أفضل خيار:</strong> 858D (~$25-35 على AliExpress). يسمح بالتحكم في الحرارة وسرعة الهواء. هذا هو المعيار الذهبي لمبتدئي الصيانة.</p>
+  <p><strong>نصيحة:</strong> للحام وإزالة ICs، تحتاج محطة هواء ساخن (Hot Air Rework Station) مثل 8786D التي تجمع بين الهواء الساخن وكاوية اللحام في جهاز واحد (~$50-80).</p>
+  <span class="price">💰 $25-40 (858D) | $50-80 (8786D)</span>
+  <span class="level">⭐⭐ ضرورية للهاردوير</span>
+</div>
+
+<!-- أداة ٣: ملتيميتر -->
+<div class="tool-card" style="border-right-color: var(--c-success);">
+  <h4 style="color:var(--c-success);">📏 ٣. ملتيميتر رقمي (Digital Multimeter)</h4>
+  <p><strong>لماذا تحتاجه؟</strong> هو <strong>أهم أداة تشخيصية</strong>. بدونه لا يمكنك قياس الفولت، فحص الشورت، فحص المكثفات والمقاومات. هو العين التي ترى بها الكهرباء.</p>
+  <p><strong>أفضل خيار للمبتدئين:</strong> Uni-T UT61E (~$30-50) أو Aneng AN8008 (~$20-30).</p>
+  <p><strong>للمحترفين:</strong> Fluke 117 (~$200). أدق وأسرع لكنه غالٍ.</p>
+  <p><strong>نصيحة:</strong> لا تشترِ الملتيميتر الرخيص بـ $5. قراءاته غير دقيقة وقد يحرق إذا قسته خطأ.</p>
+  <span class="price">💰 $20-50 (جيد) | $200+ (محترف)</span>
+  <span class="level">⭐⭐⭐⭐⭐ أهم أداة</span>
+</div>
+
+<!-- أداة ٤: باور سبلاي -->
+<div class="tool-card" style="border-right-color: var(--c-accent);">
+  <h4 style="color:var(--c-accent);">🔌 ٤. مصدر طاقة قابل للتعديل (DC Power Supply)</h4>
+  <p><strong>لماذا تحتاجه؟</strong> لتشغيل الهاتف بدون بطارية وتشخيص مشاكل الشحن. ترى كم أمبير يسحب الهاتف — إذا سحب 0A = ميت. إذا سحب 2A+ = شورت. إذا سحب 0.5A = طبيعي.</p>
+  <p><strong>أفضل خيار:</strong> KORAD KA3005D (~$60) أو Wanptek 30V 5A (~$50).</p>
+  <p><strong>نصيحة:</strong> اختر باور سبلاي بـ 30V و 5A على الأقل. تحتاج 4.2V للبطارية وحتى 5V لفحص مسار الشحن.</p>
+  <span class="price">💰 $50-80</span>
+  <span class="level">⭐⭐⭐⭐ ضروري للهاردوير</span>
+</div>
+
+<!-- أداة ٥: ميكروسكوب -->
+<div class="tool-card" style="border-right-color: #a78bfa;">
+  <h4 style="color:#a78bfa;">🔬 ٥. ميكروسكوب رقمي (Digital Microscope)</h4>
+  <p><strong>لماذا تحتاجه؟</strong> العين المجردة لا ترى ٨٠٪ من مشاكل البوردة. Cold Solder، تآكل، أرجل IC مقطوعة، شروخ دقيقة — كلها تحتاج تكبير 10x-20x على الأقل.</p>
+  <p><strong>أفضل خيار للمبتدئين:</strong> ميكروسكوب USB رقمي (~$20-40). يوصل بالكمبيوتر.</p>
+  <p><strong>للمحترفين:</strong> ميكروسكوب Trinocular Stereo (مثل AmScope) مع عدسة 7x-45x (~$300-600).</p>
+  <p><strong>نصيحة:</strong> ابدأ بالرقمي الرخيص. إذا دخلت في الهاردوير جدياً، استثمر في الـ Stereo.</p>
+  <span class="price">💰 $20-40 (رقمي) | $300+ (احترافي)</span>
+  <span class="level">⭐⭐⭐⭐ ضروري للهاردوير</span>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٤: باقي الأدوات المادية -->
+<!-- ================================================================ -->
+<h2>🔧 الأدوات المادية — المتقدمة (Tier 2)</h2>
+
+<p>هذه الأدوات تحتاجها عندما تتقدم في الصيانة وتبدأ في إصلاح الهاردوير:</p>
+
+<!-- أداة ٦: محطة لحام -->
+<div class="tool-card" style="border-right-color: #f97316;">
+  <h4 style="color:#f97316;">🔥 ٦. محطة لحام هواء ساخن + كاوية (Hot Air + Soldering Iron)</h4>
+  <p><strong>لماذا تحتاجها؟</strong> لإزالة وتركيب ICs الصغيرة على البوردة. بدونها لا يمكنك استبدال IC شحن أو PMIC أو Touch IC. المحطة تجمع بين الهواء الساخن (لإزالة وتركيب ICs) والكاوية (للحام الدقيق).</p>
+  <p><strong>أفضل خيار:</strong> <strong>8786D</strong> (~$50-80) هي الأكثر شيوعاً بين المبتدئين. تجمع هواء ساخن + كاوية في جهاز واحد. لجهاز أفضل: <strong>Quick 861DW</strong> (~$300) — معيار صناعي.</p>
+  <p><strong>نصيحة:</strong> لا تشترِ محطة لحام بدون تحكم في الحرارة. تحتاج ضبط الحرارة بدقة: 350-380°C للهواء الساخن، 320-350°C للكاوية.</p>
+  <span class="price">💰 $50-80 (8786D) | $300+ (Quick)</span>
+  <span class="level">⭐⭐⭐⭐ أساسية للهاردوير</span>
+</div>
+
+<!-- أداة ٧: مكشط بلاستيكي -->
+<div class="tool-card">
+  <h4>🪛 ٧. أدوات الفتح البلاستيكية (Plastic Pry Tools)</h4>
+  <p><strong>لماذا تحتاجها؟</strong> لفتح الهواتف بدون خدش الهيكل أو كسر الزجاج. المعدن يخدش ويسبب شورت إذا لمس البوردة. البلاستيك آمن.</p>
+  <p><strong>أفضل خيار:</strong> مجموعة iFixit Jimmy + Spudger (~$15) أو مجموعة رخيصة من AliExpress (~$5).</p>
+  <p><strong>نصيحة:</strong> اشترِ مجموعة من 10-15 قطعة مختلفة. ستحتاج المكشط الرفيع للمساحات الضيقة، والمكشط العريض للشاشات الكبيرة.</p>
+  <span class="price">💰 $5-15</span>
+  <span class="level">⭐⭐⭐⭐⭐ ضرورية جداً</span>
+</div>
+
+<!-- أداة ٨: ملقط -->
+<div class="tool-card" style="border-right-color: var(--c-warning);">
+  <h4 style="color:var(--c-warning);">👌 ٨. ملقط دقيق ESD-Safe</h4>
+  <p><strong>لماذا تحتاجه؟</strong> للتعامل مع المكثفات والمقاومات والـ ICs الصغيرة. أصابعك أكبر من أن تمسك مكثفاً بحجم 0201 (0.6mm × 0.3mm)!</p>
+  <p><strong>أفضل خيار:</strong> ملقط ESD بتصميم منحني (Curved Tip) من iFixit أو Hakko (~$5-15).</p>
+  <p><strong>نصيحة:</strong> ESD-Safe يعني مضاد للكهرباء الساكنة. الكهرباء الساكنة قد تدمر IC! لا تستخدم ملقطاً معدنياً عادياً أبداً.</p>
+  <span class="price">💰 $5-15</span>
+  <span class="level">⭐⭐⭐⭐ ضروري للهاردوير</span>
+</div>
+
+<!-- أداة ٩: سجادة ESD -->
+<div class="tool-card" style="border-right-color: var(--c-success);">
+  <h4 style="color:var(--c-success);">🟩 ٩. سجادة مضادة للكهرباء الساكنة (ESD Mat)</h4>
+  <p><strong>لماذا تحتاجها؟</strong> لحماية البوردة والـ ICs من الكهرباء الساكنة. لمسة واحدة بإصبعك قد تولد 1000V من الكهرباء الساكنة — كافية لحرق IC حساس!</p>
+  <p><strong>أفضل خيار:</strong> Kaisi ESD Mat (~$10-20). تأتي مع سوار أرضي (Wrist Strap).</p>
+  <p><strong>نصيحة:</strong> <strong>استخدم السوار الأرضي دائماً.</strong> وصله بالأرضي (GND). هذه عادة المحترفين.</p>
+  <span class="price">💰 $10-20</span>
+  <span class="level">⭐⭐⭐⭐ أساسية للسلامة</span>
+</div>
+
+<!-- أداة ١٠: كحول -->
+<div class="tool-card" style="border-right-color: var(--c-primary);">
+  <h4>🧴 ١٠. كحول أيزوبروبيل 99% (Isopropyl Alcohol)</h4>
+  <p><strong>لماذا تحتاجه؟</strong> لتنظيف البوردة من التآكل، بقايا اللحام (Flux)، والغبار. 99% يعني أنه نقي تقريباً ولا يحتوي على ماء (الماء = تآكل).</p>
+  <p><strong>أفضل خيار:</strong> أي ماركة صيدلية أو إلكترونية بتركيز 99%. (~$5-10 للتر).</p>
+  <p><strong>نصيحة:</strong> <strong>لا تستخدم أسيتون (مزيل طلاء الأظافر)!</strong> الأسيتون يأكل البلاستيك والغراء والموصلات. استخدم فقط أيزوبروبيل 99%.</p>
+  <span class="price">💰 $5-10</span>
+  <span class="level">⭐⭐⭐⭐⭐ ضروري جداً</span>
+</div>
+
+<!-- أداة ١١: سلك لحام -->
+<div class="tool-card" style="border-right-color: var(--c-accent);">
+  <h4 style="color:var(--c-accent);">🧵 ١١. سلك لحام BGA + فلوكس</h4>
+  <p><strong>لماذا تحتاجه؟</strong> لـ Reball (إعادة لحام) الـ ICs. سلك اللحام يذوب عند ~180-220°C. الفلوكس يساعد اللحام على الالتصاق ويمنع الأكسدة.</p>
+  <p><strong>أفضل خيار:</strong> سلك لحام 0.3mm أو 0.5mm (رصاص-قصدير 63/37). فلوكس Amtech NC-559 (~$5-10).</p>
+  <p><strong>نصيحة:</strong> لا تشترِ سلك لحام رخيص. الرديء لا يذوب جيداً ويترك بقايا. Amtech هو المعيار الذهبي للفلوكس.</p>
+  <span class="price">💰 $5-15</span>
+  <span class="level">⭐⭐⭐ للهاردوير المتقدم</span>
+</div>
+
+<!-- أداة ١٢: قصدير BGA -->
+<div class="tool-card" style="border-right-color: #f472b6;">
+  <h4 style="color:#f472b6;">🟡 ١٢. كرات لحام BGA (BGA Balls)</h4>
+  <p><strong>لماذا تحتاجها؟</strong> عندما تزيل IC من البوردة، تحتاج لإعادة وضع كرات لحام جديدة على أرجل الـ IC قبل إعادة تركيبه. هذه الكرات تأتي بأحجام مختلفة (0.3mm، 0.45mm، 0.6mm).</p>
+  <p><strong>أفضل خيار:</strong> مجموعة BGA Balls متعددة الأحجام (~$5-10 على AliExpress).</p>
+  <p><strong>نصيحة:</strong> استخدم Stencil (قالب) خاص بالـ IC الذي تعمل عليه. الـ Stencil يضمن وضع الكرات في أماكنها الصحيحة.</p>
+  <span class="price">💰 $5-10</span>
+  <span class="level">⭐⭐⭐ للهاردوير المتقدم</span>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٥: جدول كامل للأدوات المادية -->
+<!-- ================================================================ -->
+<h2>📊 جدول كامل للأدوات المادية</h2>
+
+<table class="data-table">
+  <tr>
+    <th>#</th>
+    <th>الأداة</th>
+    <th>الوظيفة</th>
+    <th>السعر التقريبي</th>
+    <th>الأهمية</th>
+    <th>متى تشتريها؟</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>عدة مفكات دقيقة</td>
+    <td>فك وتركيب البراغي</td>
+    <td>$15-50</td>
+    <td>⭐⭐⭐⭐⭐</td>
+    <td>أول أداة — اليوم الأول</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>ملتيميتر رقمي</td>
+    <td>قياس الفولت، فحص الشورت</td>
+    <td>$20-50</td>
+    <td>⭐⭐⭐⭐⭐</td>
+    <td>أول أداة — اليوم الأول</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>مكشط بلاستيكي</td>
+    <td>فتح الهواتف بدون خدش</td>
+    <td>$5-15</td>
+    <td>⭐⭐⭐⭐⭐</td>
+    <td>أول أداة — اليوم الأول</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>كحول أيزوبروبيل 99%</td>
+    <td>تنظيف البوردة والغراء</td>
+    <td>$5-10</td>
+    <td>⭐⭐⭐⭐⭐</td>
+    <td>أول أداة — اليوم الأول</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td>سشوار صناعي (858D)</td>
+    <td>تسخين الغراء، إزالة ICs</td>
+    <td>$25-40</td>
+    <td>⭐⭐⭐⭐</td>
+    <td>بعد أول شهر</td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td>باور سبلاي</td>
+    <td>تشغيل بدون بطارية، تشخيص الشحن</td>
+    <td>$50-80</td>
+    <td>⭐⭐⭐⭐</td>
+    <td>بعد أول شهرين</td>
+  </tr>
+  <tr>
+    <td>7</td>
+    <td>ميكروسكوب رقمي</td>
+    <td>رؤية ICs الصغيرة والتآكل</td>
+    <td>$20-40</td>
+    <td>⭐⭐⭐⭐</td>
+    <td>بعد أول شهرين</td>
+  </tr>
+  <tr>
+    <td>8</td>
+    <td>ملقط ESD-Safe</td>
+    <td>حمل المكثفات والـ ICs</td>
+    <td>$5-15</td>
+    <td>⭐⭐⭐⭐</td>
+    <td>مع السشوار</td>
+  </tr>
+  <tr>
+    <td>9</td>
+    <td>سجادة ESD</td>
+    <td>حماية من الكهرباء الساكنة</td>
+    <td>$10-20</td>
+    <td>⭐⭐⭐⭐</td>
+    <td>مع السشوار</td>
+  </tr>
+  <tr>
+    <td>10</td>
+    <td>محطة لحام (8786D)</td>
+    <td>لحام وإزالة ICs</td>
+    <td>$50-80</td>
+    <td>⭐⭐⭐⭐</td>
+    <td>بعد ٣-٦ أشهر</td>
+  </tr>
+  <tr>
+    <td>11</td>
+    <td>سلك لحام + فلوكس</td>
+    <td>لحام و Reball</td>
+    <td>$5-15</td>
+    <td>⭐⭐⭐</td>
+    <td>مع محطة اللحام</td>
+  </tr>
+  <tr>
+    <td>12</td>
+    <td>كرات BGA + Stencil</td>
+    <td>Reball ICs</td>
+    <td>$5-10</td>
+    <td>⭐⭐⭐</td>
+    <td>مع محطة اللحام</td>
+  </tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- القسم ٦: نصائح الشراء حسب الميزانية -->
+<!-- ================================================================ -->
+<h2>💰 نصائح الشراء حسب الميزانية</h2>
+
+<h3>🟢 الميزانية الدنيا (~$50) — للمبتدئ الذي يريد البدء:</h3>
+<div class="alert alert-success">
+  <span class="alert-icon">✅</span>
+  <div>
+    <strong>قائمة التسوق بـ $50:</strong>
+    <ul style="margin-top:0.5rem; padding-right:1.2rem;">
+      <li>عدة مفكات دقيقة: ~$15</li>
+      <li>ملتيميتر Aneng AN8008: ~$25</li>
+      <li>مكشط بلاستيكي: ~$5</li>
+      <li>كحول أيزوبروبيل: ~$5</li>
+    </ul>
+    <p style="margin-top:0.5rem;">بهذه الأدوات يمكنك: تشخيص ٨٠٪ من المشاكل، فتح الهواتف، تنظيف البوردات، فحص البطارية والشورت.</p>
+  </div>
+</div>
+
+<h3>🟡 الميزانية المتوسطة (~$200) — للفني الجاد:</h3>
+<div class="alert alert-warn">
+  <span class="alert-icon">⚠️</span>
+  <div>
+    <strong>أضف إلى القائمة السابقة:</strong>
+    <ul style="margin-top:0.5rem; padding-right:1.2rem;">
+      <li>سشوار صناعي 858D: ~$35</li>
+      <li>باور سبلاي: ~$60</li>
+      <li>ميكروسكوب رقمي USB: ~$30</li>
+      <li>ملقط ESD + سجادة ESD: ~$25</li>
+    </ul>
+    <p style="margin-top:0.5rem;">بهذه الأدوات يمكنك: إزالة ICs صغيرة، تشغيل الهواتف بدون بطارية، رؤية التآكل، فحص مسارات الشحن.</p>
+  </div>
+</div>
+
+<h3>🔴 الميزانية الاحترافية (~$500+) — لفتح ورشة:</h3>
+<div class="alert alert-danger">
+  <span class="alert-icon">🚨</span>
+  <div>
+    <strong>أضف إلى القائمتين السابقتين:</strong>
+    <ul style="margin-top:0.5rem; padding-right:1.2rem;">
+      <li>محطة لحام 8786D (أو Quick 861DW): ~$80-300</li>
+      <li>ميكروسكوب Stereo Trinocular: ~$300+</li>
+      <li>سلك لحام + فلوكس + كرات BGA: ~$25</li>
+      <li>أدوات برمجية مدفوعة (Chimera/UFI): ~$150-200/سنة</li>
+    </ul>
+    <p style="margin-top:0.5rem;">بهذه الأدوات يمكنك: Reball أي IC، استبدال IC شحن/PMIC/Touch، إصلاح Hard Brick، فتح شبكة.</p>
+  </div>
+</div>
+
+<div class="alert alert-info">
+  <span class="alert-icon">💡</span>
+  <div>
+    <strong>نصيحة ذهبية:</strong> لا تشترِ كل شيء دفعة واحدة. ابدأ بـ Tier 1 (أساسيات). عندما تواجه هاتفاً يحتاج سشواراً، اشتري السشوار. عندما تحتاج Reball، اشتري محطة اللحام. <strong>الأدوات تشترى عند الحاجة، وليس قبلها.</strong>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٧: دليل الشراء — من أين تشتري؟ -->
+<!-- ================================================================ -->
+<h2>🛒 دليل الشراء — من أين تشتري الأدوات؟</h2>
+
+<table class="data-table">
+  <tr>
+    <th>المتجر</th>
+    <th>ماذا تشتري منه؟</th>
+    <th>المميزات</th>
+    <th>العيوب</th>
+    <th>مناسب لـ</th>
+  </tr>
+  <tr>
+    <td><strong>AliExpress</strong></td>
+    <td>كل الأدوات المادية: سشوار، ملتيميتر، باور سبلاي، ميكروسكوب، مفكات، كحول، لحام</td>
+    <td>أرخص الأسعار، شحن لمعظم الدول، تنوع هائل</td>
+    <td>شحن بطيء (2-6 أسابيع)، جودة متفاوتة، إرجاع صعب</td>
+    <td>الجميع — خاصة المبتدئين بميزانية محدودة</td>
+  </tr>
+  <tr>
+    <td><strong>Amazon</strong></td>
+    <td>أدوات أصلية: iFixit، Hakko، Fluke، Weller</td>
+    <td>شحن سريع، إرجاع سهل، جودة مضمونة</td>
+    <td>أسعار أعلى من AliExpress، ليس كل المنتجات متاحة</td>
+    <td>من يريد الجودة والسرعة</td>
+  </tr>
+  <tr>
+    <td><strong>iFixit Store</strong></td>
+    <td>عدة المفكات، أدوات الفتح، قطع غيار أصلية</td>
+    <td>أفضل جودة في السوق، ضمان مدى الحياة على المفكات</td>
+    <td>غالي نسبياً</td>
+    <td>المحترفين</td>
+  </tr>
+  <tr>
+    <td><strong>Banggood</strong></td>
+    <td>مشابه لـ AliExpress — أدوات صيانة عامة</td>
+    <td>شحن أسرع أحياناً، عروض جيدة</td>
+    <td>نفس عيوب AliExpress</td>
+    <td>بديل لـ AliExpress</td>
+  </tr>
+  <tr>
+    <td><strong>eBay</strong></td>
+    <td>أدوات مستعملة، قطع غيار نادرة</td>
+    <td>قد تجد صفقات جيدة على أدوات مستعملة</td>
+    <td>جودة غير مضمونة</td>
+    <td>الباحثين عن الصفقات</td>
+  </tr>
+</table>
+
+<h3>🔗 روابط مباشرة لأهم الأدوات:</h3>
+<div class="alert alert-info">
+  <span class="alert-icon">🔗</span>
+  <div>
+    <strong>روابط سريعة (ابحث في AliExpress أو Amazon):</strong>
+    <ul style="margin-top:0.5rem; padding-right:1.2rem;">
+      <li><strong>سشوار 858D:</strong> ابحث عن "858D Hot Air Station" — اختر البائع الذي لديه أكثر من 1000 تقييم إيجابي</li>
+      <li><strong>ملتيميتر AN8008:</strong> "Aneng AN8008 True RMS Multimeter" — ممتاز للمبتدئين</li>
+      <li><strong>باور سبلاي:</strong> "KORAD KA3005D" أو "Wanptek 30V 5A Power Supply"</li>
+      <li><strong>مفكات iFixit:</strong> "iFixit Essential Electronics Toolkit" على Amazon أو iFixit.com</li>
+      <li><strong>ميكروسكوب رقمي:</strong> "Andonstar AD106S" أو "Jiusion USB Microscope"</li>
+      <li><strong>فلوكس Amtech:</strong> "Amtech NC-559 Flux" — تأكد من أنه أصلي!</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٨: نصائح ذهبية -->
+<!-- ================================================================ -->
+<h2>💎 نصائح ذهبية لشراء واستخدام الأدوات</h2>
+
+<div class="alert alert-success">
+  <span class="alert-icon">✅</span>
+  <div>
+    <strong>قواعد لا تنساها:</strong>
+    <ol style="margin-top:0.5rem; padding-right:1.2rem; line-height:2.2;">
+      <li><strong>لا تشترِ أرخص أداة.</strong> فرق السعر بين الرخيص والجيد هو $10-20. هذه توفر عليك تدمير هاتف قيمته $500.</li>
+      <li><strong>اقرأ التقييمات.</strong> على AliExpress، اختر البائعين الذين لديهم 4.8+ نجوم وآلاف التقييمات.</li>
+      <li><strong>اشتري الأدوات قبل أن تحتاجها.</strong> إذا انتظرت حتى يأتيك هاتف يحتاج Reball لتشتري محطة اللحام، ستخسر العميل.</li>
+      <li><strong>تعلم استخدام الأداة قبل استخدامها على هاتف عميل.</strong> تدرب على بوردات ميتة أو هواتف تالفة.</li>
+      <li><strong>حافظ على أدواتك.</strong> نظف رؤوس المفكات بعد كل استخدام. غطِّ الملتيميتر. لا تترك الكحول مفتوحاً.</li>
+      <li><strong>استثمر في التعليم قبل الأدوات.</strong> دورة تدريبية واحدة = ثمن عدة أدوات. الأدوات بدون معرفة = خطر.</li>
+      <li><strong>لا تشترِ أدوات "المعجزة".</strong> أي جهاز يدعي "إصلاح كل شيء بزر واحد" = احتيال.</li>
+    </ol>
+  </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ٩: مقارنات -->
+<!-- ================================================================ -->
+<h2>⚖️ مقارنات سريعة بين خيارات شائعة</h2>
+
+<table class="data-table">
+  <tr>
+    <th>الفئة</th>
+    <th>الخيار الاقتصادي</th>
+    <th>الخيار المتوسط</th>
+    <th>الخيار الاحترافي</th>
+  </tr>
+  <tr>
+    <td><strong>ملتيميتر</strong></td>
+    <td>Aneng AN8008 (~$25)</td>
+    <td>Uni-T UT61E (~$50)</td>
+    <td>Fluke 117 (~$200)</td>
+  </tr>
+  <tr>
+    <td><strong>سشوار صناعي</strong></td>
+    <td>858D (~$30)</td>
+    <td>8786D (~$60)</td>
+    <td>Quick 861DW (~$300)</td>
+  </tr>
+  <tr>
+    <td><strong>باور سبلاي</strong></td>
+    <td>Wanptek 30V 3A (~$35)</td>
+    <td>Wanptek 30V 5A (~$50)</td>
+    <td>KORAD KA3005D (~$80)</td>
+  </tr>
+  <tr>
+    <td><strong>مفكات</strong></td>
+    <td>AliExpress Kit (~$8)</td>
+    <td>Xiaomi Mijia (~$15)</td>
+    <td>iFixit Pro Tech Toolkit (~$70)</td>
+  </tr>
+  <tr>
+    <td><strong>ميكروسكوب</strong></td>
+    <td>USB رقمي (~$25)</td>
+    <td>Andonstar AD106S (~$70)</td>
+    <td>AmScope Stereo (~$400)</td>
+  </tr>
+  <tr>
+    <td><strong>محطة لحام</strong></td>
+    <td>8786D (~$60)</td>
+    <td>Atten ST-862D (~$150)</td>
+    <td>Quick 861DW (~$300)</td>
+  </tr>
+</table>
+
+<!-- ================================================================ -->
+<!-- القسم ١٠: سيناريوهات واقعية -->
+<!-- ================================================================ -->
+<h2>🎬 سيناريوهات واقعية</h2>
+
+<h3>السيناريو ١: بدأت للتو بميزانية $100</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(52,211,153,0.04),rgba(56,189,248,0.04)); border-color:rgba(52,211,153,0.2);">
+  <h4 style="margin-top:0; color:var(--c-success);">🟢 الموقف:</h4>
+  <p>أنت مبتدئ. تريد أن تبدأ في صيانة الهواتف. ميزانيتك $100 فقط. ماذا تشتري؟</p>
+
+  <h4 style="color:var(--c-primary);">🛒 قائمة التسوق ($95-105):</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>عدة مفكات:</strong> Xiaomi Mijia أو iFixit Essential (~$15)</li>
+    <li><strong>ملتيميتر:</strong> Aneng AN8008 (~$25)</li>
+    <li><strong>مكشط بلاستيكي:</strong> مجموعة من AliExpress (~$5)</li>
+    <li><strong>كحول أيزوبروبيل 99%:</strong> (~$5)</li>
+    <li><strong>سشوار 858D:</strong> (~$35)</li>
+    <li><strong>ملقط ESD:</strong> (~$10)</li>
+  </ol>
+
+  <h4 style="color:var(--c-success);">✅ ما يمكنك إصلاحه بهذه الأدوات:</h4>
+  <p>تغيير شاشات، تغيير بطاريات، تغيير بورت شحن، تنظيف بوردات من التآكل، تشخيص ٨٠٪ من المشاكل، فتح جميع الهواتف.</p>
+
+  <h4 style="color:var(--c-warning);">⚠️ ما لا يمكنك إصلاحه:</h4>
+  <p>Reball IC، استبدال IC (تحتاج محطة لحام). تشغيل هاتف بدون بطارية (تحتاج باور سبلاي).</p>
+</div>
+
+<h3>السيناريو ٢: تريد فتح ورشة بميزانية $500</h3>
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(56,189,248,0.04),rgba(129,140,248,0.04)); border-color:rgba(56,189,248,0.2);">
+  <h4 style="margin-top:0; color:var(--c-primary);">🔵 الموقف:</h4>
+  <p>أنت فني متوسط الخبرة. تريد فتح ورشة صغيرة. ميزانيتك $500 للأدوات. ماذا تشتري؟</p>
+
+  <h4 style="color:var(--c-primary);">🛒 قائمة التسوق (~$490-510):</h4>
+  <ol style="color:var(--c-text2); padding-right:1.5rem; line-height:2.2;">
+    <li><strong>عدة مفكات iFixit:</strong> (~$40)</li>
+    <li><strong>ملتيميتر Uni-T UT61E:</strong> (~$50)</li>
+    <li><strong>باور سبلاي KORAD:</strong> (~$80)</li>
+    <li><strong>محطة لحام 8786D:</strong> (~$70)</li>
+    <li><strong>ميكروسكوب Andonstar:</strong> (~$70)</li>
+    <li><strong>سجادة ESD + ملقط + فلوكس + سلك لحام:</strong> (~$40)</li>
+    <li><strong>أدوات فتح + كحول:</strong> (~$20)</li>
+    <li><strong>اشتراك Chimera Tool (سنة):</strong> (~$150)</li>
+  </ol>
+
+  <h4 style="color:var(--c-success);">✅ ما يمكنك إصلاحه:</h4>
+  <p>كل شيء تقريباً: شاشات، بطاريات، IC شحن، PMIC، Touch IC، Hard Brick، FRP، فتح شبكة، إصلاح IMEI.</p>
+</div>
+
+<!-- ================================================================ -->
+<!-- القسم ١١: خلاصة -->
+<!-- ================================================================ -->
+<h2>🎯 خلاصة الأدوات والمعدات</h2>
+
+<div class="diagram-box" style="background:linear-gradient(135deg,rgba(52,211,153,0.06),rgba(56,189,248,0.06)); border-color:rgba(52,211,153,0.3);">
+  <h3 style="margin-top:0; color:var(--c-success);">الأدوات في ٥ نقاط</h3>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">1</div>
+    <div class="text"><strong>ابدأ بالأساسيات.</strong> مفكات + ملتيميتر + مكشط + كحول. هذه تكفي لـ ٧٠٪ من الإصلاحات.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">2</div>
+    <div class="text"><strong>أضف السشوار والباور سبلاي.</strong> عندما تبدأ في تشخيص مشاكل الشحن والإقلاع.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">3</div>
+    <div class="text"><strong>أضف محطة اللحام والميكروسكوب.</strong> عندما تبدأ في Reball واستبدال ICs.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">4</div>
+    <div class="text"><strong>أضف الأدوات المدفوعة.</strong> Chimera / UFI عندما تحتاج إصلاح IMEI أو فتح شبكة.</div>
+  </div>
+  <div class="diagram-arrow">⬇</div>
+  <div class="diagram-step">
+    <div class="num" style="background:linear-gradient(135deg,var(--c-success),var(--c-primary));">5</div>
+    <div class="text"><strong>استثمر في تعليمك.</strong> كل أداة جديدة = مهارة جديدة. تعلم قبل أن تشتري.</div>
+  </div>
+</div>
+
+<div class="alert alert-info">
+  <span class="alert-icon">📚</span>
+  <div><strong>في الفصل القادم (الفصل ١٠: حالات خاصة):</strong> Hard Brick، FRP، Bootloader مقفول — الحلول النهائية لأصعب المشاكل.</div>
+</div>
+
+<div class="next-prev">
+  <a href="chapter8.html" class="prev">← الفصل 8: الهاردوير الأساسي</a>
+  <a href="chapter10.html" class="next">الفصل 10: حالات خاصة →</a>
+</div>
+
+</main>
+
+</body>
+</html>
